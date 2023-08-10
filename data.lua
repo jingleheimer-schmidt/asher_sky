@@ -1,5 +1,5 @@
 
-local constants = require("constants")
+local constants = require("__asher_sky__/constants")
 
 for animation_name, animation_data in pairs(constants.ability_data) do
     local animation = {
