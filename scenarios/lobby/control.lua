@@ -5,20 +5,6 @@
 local constants = require("__asher_sky__/constants")
 local raw_abilities_data = constants.ability_data
 
-local basic_player_data = {
-    level = 0,
-    exp = 0,
-    abilities = {
-        punch = {
-            level = 1,
-            cooldown = math.ceil(raw_abilities_data.punch.default_cooldown),
-            damage = raw_abilities_data.punch.default_damage,
-            radius = raw_abilities_data.punch.default_radius,
-            damage_multiplier = raw_abilities_data.punch.damage_multiplier,
-        },
-    },
-}
-
 ---@param orientation float -- 0 to 1
 ---@param angle float -- 0 to 1, added to orientation
 ---@return float -- 0 to 1
@@ -694,7 +680,6 @@ end
 local function on_tick(event)
 
     if not script.level and script.level.mod_name == "asher_sky" then return end
-
     global.game_state = global.game_state or "lobby"
 
     -- lobby mode --
