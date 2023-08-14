@@ -186,9 +186,7 @@ local animation_functions = {
     punch = draw_animation,
     cure = draw_animation,
     slash = draw_animation,
-    -- rocket_launcher = function ()
-    --     return
-    -- end,
+    -- rocket_launcher = function() return end,
 }
 
 local function draw_animations(ability_name, ability_data, player)
