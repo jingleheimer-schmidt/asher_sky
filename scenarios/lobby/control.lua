@@ -211,7 +211,7 @@ end
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 local function activate_ability(ability_name, ability_data, player)
-    draw_animation(ability_name, ability_data, player)
+    draw_animations(ability_name, ability_data, player)
     damage_enemies(ability_name, ability_data, player)
 end
 
