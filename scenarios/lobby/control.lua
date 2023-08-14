@@ -937,6 +937,20 @@ local function on_tick(event)
                 reset_health(player)
             end
         end
+        if game.tick % (60 * 7) == 0 then
+            local enemies = lobby_surface.find_entities_filtered{type = "unit", force = "enemy"}
+            if #enemies == 0 then
+                local positions = {
+                    {x = 12, y = 12},
+                    {x = -12, y = 12},
+                    {x = 12, y = -12},
+                    {x = -12, y = -12},
+                }
+                local index = math.random(1, #positions)
+                local position = positions[index]
+                spawn_new_enemy(lobby_surface, position, "small-biter")
+            end
+        end
     end
 
     -- arena mode --
