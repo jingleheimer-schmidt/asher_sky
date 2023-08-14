@@ -148,6 +148,30 @@ local function activate_slash_damage(ability_data, player)
     damage_enemies_in_radius(radius, damage, position, surface, player)
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_rocket_launcher(ability_data, player)
+    local surface = player.surface
+    local enemy = surface.find_nearest_enemy{
+        position = player.position,
+        max_distance = ability_data.radius,
+        force = player.force,
+    }
+    if not enemy then return end
+    local rocket = surface.create_entity{
+        name = "rocket",
+        position = player.position,
+        direction = player.character.direction,
+        force = player.force,
+        target = enemy,
+        source = player.character,
+        speed = 1/25,
+        max_range = ability_data.radius * 1.5,
+        player = player,
+        character = player.character,
+    }
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
