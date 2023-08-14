@@ -166,7 +166,7 @@ local function activate_rocket_launcher(ability_data, player)
         force = player.force,
         target = enemy,
         source = player.character,
-        speed = 1/25,
+        speed = 1/10,
         max_range = ability_data.radius * 1.5,
         player = player,
         character = player.character,
@@ -187,6 +187,36 @@ local animation_functions = {
     cure = draw_animation,
     slash = draw_animation,
     -- rocket_launcher = function() return end,
+}
+
+---@param ability_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_damage(ability_name, ability_data, player)
+    ability_data.damage = ability_data.damage * ability_data.damage_multiplier
+    game.print("Level up! " .. ability_name .. " damage is now " .. ability_data.damage .. ".")
+end
+
+---@param ability_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_radius(ability_name, ability_data, player)
+    ability_data.radius = ability_data.radius + 1
+    game.print("Level up! " .. ability_name .. " radius is now " .. ability_data.radius .. ".")
+end
+
+---@param ability_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_cooldown(ability_name, ability_data, player)
+    ability_data.cooldown = math.ceil(ability_data.cooldown - ability_data.cooldown * 0.125)
+    game.print("Level up! " .. ability_name .. " cooldown is now " .. ability_data.cooldown .. ".")
+end
+
+local ability_upgrade_functions = {
+    ["damage"] = upgrade_damage,
+    ["radius"] = upgrade_radius,
+    ["cooldown"] = upgrade_cooldown,
 }
 
 local function draw_animations(ability_name, ability_data, player)
@@ -214,33 +244,55 @@ local function activate_ability(ability_name, ability_data, player)
     damage_enemies(ability_name, ability_data, player)
 end
 
----@param abilities table<string, active_ability_data>
 ---@param player LuaPlayer
-local function upgrade_random_ability(abilities, player)
-    local ability_names = {}
-    for ability_name, ability_data in pairs(abilities) do
-        if ability_data.level < 10 then
-            table.insert(ability_names, ability_name)
+local function upgrade_random_ability(player)
+    local player_data = global.player_data[player.index]
+    local abilities = player_data.abilities --[[@as table<string, active_ability_data>]]
+    local upgradeable_abilities = {}
+    for _, ability in pairs(abilities) do
+        local level = ability.level
+        if ability.upgrade_order[level] then
+            table.insert(upgradeable_abilities, ability.name)
         end
     end
-    local ability_name = ability_names[math.random(#ability_names)]
+    if #upgradeable_abilities == 0 then
+        game.print("no more abilities to upgrade!")
+        return
+    end
+    local ability_name = upgradeable_abilities[math.random(#upgradeable_abilities)]
     local ability_data = abilities[ability_name]
-    local upgrade_type = math.random(1, 4)
-    if upgrade_type == 1 then
-        ability_data.cooldown = math.ceil(ability_data.cooldown - ability_data.cooldown * 0.125)
-        game.print("Level up! " .. ability_name .. " cooldown is now " .. ability_data.cooldown .. ".")
-    elseif upgrade_type == 2 then
-        ability_data.radius = ability_data.radius + 1
-        game.print("Level up! " .. ability_name .. " radius is now " .. ability_data.radius .. ".")
-    elseif upgrade_type == 3 then
-        ability_data.damage = ability_data.damage * ability_data.damage_multiplier
-        game.print("Level up! " .. ability_name .. " damage is now " .. ability_data.damage .. ".")
-    elseif upgrade_type == 4 then
-        local character_running_speed_modifier = player.character_running_speed_modifier
-        player.character_running_speed_modifier = character_running_speed_modifier + 0.25
-        game.print("Level up! " .. "player" .. " speed is now " .. character_running_speed_modifier + 0.25 .. ".")
+    local upgrade_type = ability_data.upgrade_order[ability_data.level]
+    local upgrade = ability_upgrade_functions[upgrade_type]
+    if upgrade then
+        upgrade(ability_name, ability_data, player)
+        ability_data.level = ability_data.level + 1
     end
 end
+
+-- ---@param abilities table<string, active_ability_data>
+-- ---@param player LuaPlayer
+-- local function upgrade_random_ability(abilities, player)
+--     local ability_names = {}
+--     for ability_name, ability_data in pairs(abilities) do
+--         if ability_data.level < 10 then
+--             table.insert(ability_names, ability_name)
+--         end
+--     end
+--     local ability_name = ability_names[math.random(#ability_names)]
+--     local ability_data = abilities[ability_name]
+--     local upgrade_type = math.random(1, 4)
+--     if upgrade_type == 1 then
+--         upgrade_cooldown(ability_name, ability_data, player)
+--     elseif upgrade_type == 2 then
+--         upgrade_radius(ability_name, ability_data, player)
+--     elseif upgrade_type == 3 then
+--         upgrade_damage(ability_name, ability_data, player)
+--     elseif upgrade_type == 4 then
+--         local character_running_speed_modifier = player.character_running_speed_modifier
+--         player.character_running_speed_modifier = character_running_speed_modifier + 0.25
+--         game.print("Level up! " .. "player" .. " speed is now " .. character_running_speed_modifier + 0.25 .. ".")
+--     end
+-- end
 
 ---@param ability_name string
 ---@param player LuaPlayer
@@ -248,11 +300,13 @@ local function unlock_named_ability(ability_name, player)
     local player_data = global.player_data[player.index]
     if not player_data.abilities[ability_name] then
         player_data.abilities[ability_name] = {
+            name = ability_name,
             level = 1,
             cooldown = math.ceil(raw_abilities_data[ability_name].default_cooldown),
             damage = raw_abilities_data[ability_name].default_damage,
             radius = raw_abilities_data[ability_name].default_radius,
             damage_multiplier = raw_abilities_data[ability_name].damage_multiplier,
+            upgrade_order = raw_abilities_data[ability_name].upgrade_order,
         }
         game.print("New ability unlocked! " .. ability_name .. " is now level 1.")
         global.available_abilities[ability_name] = false
@@ -344,7 +398,7 @@ local function on_entity_died(event)
         if player_data.exp >= 10 * player_data.level then
             player_data.exp = 0
             player_data.level = player_data.level + 1
-            upgrade_random_ability(player_data.abilities, player)
+            upgrade_random_ability(player)
             local shimmer_data = { radius = 2, level = 1, cooldown = 0, damage = 0 }
             draw_animation("shimmer", shimmer_data, player)
             if player_data.level % 5 == 0 then
@@ -352,9 +406,10 @@ local function on_entity_died(event)
             end
         end
         update_kill_counter(player)
+        local enemy_name = entity.name
         local radius = math.random(25, 50)
         local position = get_random_position_on_circumference(player.position, radius)
-        local enemy_name = entity.name
+        position = player.surface.find_non_colliding_position(enemy_name, position, 64, 1) or position
         spawn_new_enemy(player.surface, position, enemy_name, player)
     end
 end
@@ -641,11 +696,13 @@ local function set_ability(ability_name, player)
         exp = 0,
         abilities = {
             [ability_name] = {
+                name = ability_name,
                 level = 1,
                 cooldown = math.ceil(raw_abilities_data[ability_name].default_cooldown),
                 damage = raw_abilities_data[ability_name].default_damage,
                 radius = raw_abilities_data[ability_name].default_radius,
                 damage_multiplier = raw_abilities_data[ability_name].damage_multiplier,
+                upgrade_order = raw_abilities_data[ability_name].upgrade_order,
             }
         },
     }
@@ -1008,8 +1065,10 @@ script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_entity_died, on_entity_died)
 
 ---@class active_ability_data
+---@field name string
 ---@field level number
 ---@field cooldown number
 ---@field damage number
 ---@field radius number
 ---@field damage_multiplier number
+---@field upgrade_order string[]
