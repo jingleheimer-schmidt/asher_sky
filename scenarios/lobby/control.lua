@@ -238,8 +238,8 @@ local function upgrade_random_ability(abilities, player)
         game.print("Level up! " .. ability_name .. " damage is now " .. ability_data.damage .. ".")
     elseif upgrade_type == 4 then
         local character_running_speed_modifier = player.character_running_speed_modifier
-        character_running_speed_modifier = character_running_speed_modifier + 0.125
-        game.print("Level up! " .. "player" .. " speed is now " .. ability_data.level .. ".")
+        player.character_running_speed_modifier = character_running_speed_modifier + 0.25
+        game.print("Level up! " .. "player" .. " speed is now " .. character_running_speed_modifier + 0.25 .. ".")
     end
 end
 
