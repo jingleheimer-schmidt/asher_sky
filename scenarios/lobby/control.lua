@@ -367,7 +367,7 @@ local difficulty_offsets = {
 local ability_offsets = {
     burst = { x = -7, y = 8 },
     punch = { x = 0, y = 8 },
-    cure = { x = 7, y = 8 },
+    rocket_launcher = { x = 7, y = 8 },
 }
 local top_right_offset = { x = 2, y = -2}
 local bottom_right_offset = { x = 2, y = 1}
@@ -449,7 +449,7 @@ local walkway_tiles = {
             {x = -1, y = 5},
         },
     },
-    cure = {
+    rocket_launcher = {
         ["hazard-concrete-left"] = {
             {x = 7, y = 2},
             {x = 7, y = 3},
@@ -841,8 +841,8 @@ local function on_tick(event)
                         scale = 3,
                         draw_on_ground = true,
                     },
-                    cure = rendering.draw_text{
-                        text = "Cure",
+                    rocket_launcher = rendering.draw_text{
+                        text = "Rocket",
                         surface = lobby_surface,
                         target = {x = 7, y = 7},
                         color = {r = 1, g = 1, b = 1},
@@ -921,8 +921,8 @@ local function on_tick(event)
                         set_starting_ability("punch", player)
                     end
                 elseif x < 10 and x > 4 then
-                    if not (lobby_options.starting_ability == "cure") then
-                        set_starting_ability("cure", player)
+                    if not (lobby_options.starting_ability == "rocket_launcher") then
+                        set_starting_ability("rocket_launcher", player)
                     end
                 else
                     reset_health(player)
