@@ -336,6 +336,7 @@ end
 ---@param event EventData.on_entity_died
 local function on_entity_died(event)
     local entity = event.entity
+    if not (entity.surface.name == "arena") then return end
     local cause = event.cause
     local player = cause and cause.type == "character" and cause.player
     if player then
