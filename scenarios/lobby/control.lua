@@ -352,6 +352,10 @@ local function on_entity_died(event)
             end
         end
         update_kill_counter(player)
+        local radius = math.random(25, 50)
+        local position = get_random_position_on_circumference(player.position, radius)
+        local enemy_name = entity.name
+        spawn_new_enemy(player.surface, position, enemy_name, player)
     end
 end
 
