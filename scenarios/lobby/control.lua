@@ -27,6 +27,8 @@ local function on_init()
         burst = true,
         punch = true,
         cure = true,
+        slash = true,
+        rocket_launcher = true,
     }
 end
 
