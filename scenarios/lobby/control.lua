@@ -309,6 +309,30 @@ local function update_kill_counter(player)
     rendering.set_text(kill_counter.render_id, "Kills: " .. kill_counter.kill_count)
 end
 
+local function get_position_on_circumference(center, radius, angle)
+    local x = center.x + radius * math.cos(angle)
+    local y = center.y + radius * math.sin(angle)
+    return { x = x, y = y }
+end
+
+local function get_random_position_on_circumference(center, radius)
+    local angle = math.random() * 2 * math.pi
+    return get_position_on_circumference(center, radius, angle)
+end
+
+---@param surface LuaSurface
+---@param position MapPosition
+---@param name string
+---@param player LuaPlayer?
+local function spawn_new_enemy(surface, position, name, player)
+    local enemy = surface.create_entity{
+        name = name,
+        position = position,
+        force = game.forces.enemy,
+        target = player and player.character or nil,
+    }
+end
+
 ---@param event EventData.on_entity_died
 local function on_entity_died(event)
     local entity = event.entity
