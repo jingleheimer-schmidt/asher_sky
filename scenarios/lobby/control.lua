@@ -180,6 +180,23 @@ local damage_functions = {
     rocket_launcher = activate_rocket_launcher,
 }
 
+local animation_functions = {
+    burst = draw_animation,
+    punch = draw_animation,
+    cure = draw_animation,
+    slash = draw_animation,
+    -- rocket_launcher = function ()
+    --     return
+    -- end,
+}
+
+local function draw_animations(ability_name, ability_data, player)
+    local animate = animation_functions and animation_functions[ability_name]
+    if animate then
+        animate(ability_name, ability_data, player)
+    end
+end
+
 ---@param ability_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
