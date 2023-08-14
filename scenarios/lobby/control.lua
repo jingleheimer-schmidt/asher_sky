@@ -176,6 +176,8 @@ local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
     cure = activate_cure_damage,
+    slash = activate_slash_damage,
+    rocket_launcher = activate_rocket_launcher,
 }
 
 ---@param ability_name string
