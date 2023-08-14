@@ -929,6 +929,7 @@ local function on_tick(event)
                 end
             elseif y < 3 and y > -3 then
                 if x < 24 and x > 18 then
+                    initialize_player_data(player)
                     enter_arena()
                 else
                     reset_health(player)
