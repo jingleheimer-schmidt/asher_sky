@@ -37,6 +37,7 @@ end
 ---@param player LuaPlayer
 ---@param position MapPosition?
 local function draw_animation(animation_name, ability_data, player, position)
+    if not animation_name then return end
     local raw_ability_data = raw_abilities_data[animation_name]
     local time_to_live = raw_ability_data.frame_count --[[@as uint]]
     local character = player.character
