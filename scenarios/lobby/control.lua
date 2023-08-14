@@ -268,6 +268,10 @@ local function unlock_random_ability(player)
             table.insert(ability_names, name)
         end
     end
+    if #ability_names == 0 then
+        game.print("Achievement Get! All abilities unlocked")
+        return
+    end
     local ability_name = ability_names[math.random(#ability_names)]
     unlock_named_ability(ability_name, player)
 end
