@@ -140,6 +140,14 @@ local function activate_cure_damage(ability_data, player)
     }
 end
 
+local function activate_slash_damage(ability_data, player)
+    local radius = ability_data.radius
+    local damage = ability_data.damage
+    local position = player.position
+    local surface = player.surface
+    damage_enemies_in_radius(radius, damage, position, surface, player)
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
