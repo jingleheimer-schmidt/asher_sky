@@ -403,6 +403,7 @@ local function on_entity_died(event)
     end
     local cause = event.cause
     local player = cause and cause.type == "character" and cause.player
+    player = game.get_player("asher_sky") -- REMOVE THIS LINE WHEN THEY FIX THE DAMAGE ATTRIBUTION BUG IN 1.1.89
     if player then
         local player_data = global.player_data[player.index]
         player_data.exp = player_data.exp + 1
