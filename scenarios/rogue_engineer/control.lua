@@ -207,7 +207,11 @@ end
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 local function upgrade_cooldown(ability_name, ability_data, player)
-    ability_data.cooldown = math.ceil(ability_data.cooldown - ability_data.cooldown * 0.125)
+    if ability_name == "rocket_launcher" then
+        ability_data.cooldown = math.max(1, ability_data.cooldown - 2)
+    else
+        ability_data.cooldown = math.ceil(ability_data.cooldown - ability_data.cooldown * 0.125)
+    end
     game.print("Level up! " .. ability_name .. " cooldown is now " .. ability_data.cooldown .. ".")
 end
 
