@@ -1062,7 +1062,59 @@ local function on_tick(event)
         local balance = difficulties[global.lobby_options.difficulty] * 60
         if game.tick % balance == 0 then
             for _, player in pairs(game.connected_players) do
+                local player_data = global.player_data[player.index]
+                local level = player_data.level
                 local enemy_name = "small-biter"
+                if level >= 10 then
+                    if math.random() < 0.2 then
+                        enemy_name = "medium-biter"
+                    end
+                end
+                if level >= 20 then
+                    if math.random() < 0.2 then
+                        enemy_name = "small-spitter"
+                    end
+                end
+                if level >= 30 then
+                    if math.random() < 0.2 then
+                        enemy_name = "big-biter"
+                    end
+                end
+                if level >= 40 then
+                    if math.random() < 0.2 then
+                        enemy_name = "medium-spitter"
+                    end
+                end
+                if level >= 50 then
+                    if math.random() < 0.2 then
+                        enemy_name = "behemoth-biter"
+                    end
+                end
+                if level >= 60 then
+                    if math.random() < 0.2 then
+                        enemy_name = "big-spitter"
+                    end
+                end
+                if level >= 70 then
+                    if math.random() < 0.2 then
+                        enemy_name = "small-worm"
+                    end
+                end
+                if level >= 80 then
+                    if math.random() < 0.2 then
+                        enemy_name = "behemoth-spitter"
+                    end
+                end
+                if level >= 90 then
+                    if math.random() < 0.2 then
+                        enemy_name = "medium-worm"
+                    end
+                end
+                if level >= 100 then
+                    if math.random() < 0.2 then
+                        enemy_name = "big-worm"
+                    end
+                end
                 local radius = math.random(25, 55)
                 local position = get_random_position_on_circumference(player.position, radius)
                 position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
