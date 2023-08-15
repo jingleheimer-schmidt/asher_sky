@@ -698,10 +698,15 @@ local function update_lobby_tiles()
     surface.set_tiles(tiles)
 end
 
+---@class player_data
+---@field level uint
+---@field exp uint
+---@field abilities table<string, active_ability_data>
+
 ---@param ability_name string
 ---@param player LuaPlayer
 local function set_ability(ability_name, player)
-    global.player_data = global.player_data or {}
+    global.player_data = global.player_data or {} --[[@type table<uint, player_data>]]
     global.player_data[player.index] = {
         level = 0,
         exp = 0,
