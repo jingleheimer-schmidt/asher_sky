@@ -418,7 +418,7 @@ local function on_entity_died(event)
         end
         update_kill_counter(player)
         local enemy_name = entity.name
-        local radius = math.random(25, 50)
+        local radius = math.random(25, 55)
         local position = get_random_position_on_circumference(player.position, radius)
         position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
         spawn_new_enemy(player.surface, position, enemy_name, player)
@@ -1063,7 +1063,7 @@ local function on_tick(event)
         if game.tick % balance == 0 then
             for _, player in pairs(game.connected_players) do
                 local enemy_name = "small-biter"
-                local radius = math.random(25, 75)
+                local radius = math.random(25, 55)
                 local position = get_random_position_on_circumference(player.position, radius)
                 position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
                 spawn_new_enemy(player.surface, position, enemy_name, player)
