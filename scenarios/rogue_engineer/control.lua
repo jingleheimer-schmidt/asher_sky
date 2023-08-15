@@ -1051,7 +1051,7 @@ local function on_tick(event)
         local balance = difficulties[global.lobby_options.difficulty] * 60
         if game.tick % balance == 0 then
             for _, player in pairs(game.connected_players) do
-                local radius = math.random(25, 50)
+                local radius = math.random(25, 75)
                 local position = get_random_position_on_circumference(player.position, radius)
                 local enemy_name = "small-biter"
                 spawn_new_enemy(player.surface, position, enemy_name, player)
