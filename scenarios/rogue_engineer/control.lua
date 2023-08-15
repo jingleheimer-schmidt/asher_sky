@@ -392,6 +392,15 @@ end
 local function on_entity_died(event)
     local entity = event.entity
     if not (entity.surface.name == "arena") then return end
+    if entity.type == "character" then
+        entity.surface.create_entity{
+            name = "atomic-rocket",
+            position = entity.position,
+            force = entity.force,
+            speed = 10,
+            target = entity.position,
+        }
+    end
     local cause = event.cause
     local player = cause and cause.type == "character" and cause.player
     if player then
