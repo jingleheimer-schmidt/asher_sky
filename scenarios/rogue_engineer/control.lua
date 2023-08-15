@@ -167,9 +167,7 @@ local function activate_rocket_launcher(ability_data, player)
         target = enemy,
         source = player.character,
         speed = 1/10,
-        max_range = ability_data.radius * 1.5,
-        player = player,
-        character = player.character,
+        max_range = ability_data.radius * 20,
     }
 end
 
