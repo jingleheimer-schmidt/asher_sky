@@ -18,6 +18,17 @@ local function rotate_orientation(orientation, angle)
     return new_orientation
 end
 
+local function get_position_on_circumference(center, radius, angle)
+    local x = center.x + radius * math.cos(angle)
+    local y = center.y + radius * math.sin(angle)
+    return { x = x, y = y }
+end
+
+local function get_random_position_on_circumference(center, radius)
+    local angle = math.random() * 2 * math.pi
+    return get_position_on_circumference(center, radius, angle)
+end
+
 local function on_init()
     global.player_data = {}
     global.damage_zones = {}
