@@ -192,7 +192,8 @@ local animation_functions = {
 ---@param player LuaPlayer
 local function upgrade_damage(ability_name, ability_data, player)
     ability_data.damage = ability_data.damage * ability_data.damage_multiplier
-    game.print("Level up! " .. ability_name .. " damage is now " .. ability_data.damage .. ".")
+    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " damage is now ", ability_data.damage, "."}
+    draw_upgrade_text(text, player)
 end
 
 ---@param ability_name string
@@ -200,7 +201,8 @@ end
 ---@param player LuaPlayer
 local function upgrade_radius(ability_name, ability_data, player)
     ability_data.radius = ability_data.radius + 1
-    game.print("Level up! " .. ability_name .. " radius is now " .. ability_data.radius .. ".")
+    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " radius is now ", ability_data.radius, "."}
+    draw_upgrade_text(text, player)
 end
 
 ---@param ability_name string
@@ -212,7 +214,8 @@ local function upgrade_cooldown(ability_name, ability_data, player)
     else
         ability_data.cooldown = math.ceil(ability_data.cooldown - ability_data.cooldown * 0.125)
     end
-    game.print("Level up! " .. ability_name .. " cooldown is now " .. ability_data.cooldown .. ".")
+    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " cooldown is now ", ability_data.cooldown, "."}
+    draw_upgrade_text(text, player)
 end
 
 local ability_upgrade_functions = {
@@ -310,7 +313,8 @@ local function unlock_named_ability(ability_name, player)
             damage_multiplier = raw_abilities_data[ability_name].damage_multiplier,
             upgrade_order = raw_abilities_data[ability_name].upgrade_order,
         }
-        game.print("New ability unlocked! " .. ability_name .. " is now level 1.")
+        local text = {"", "New ability unlocked! ", { "ability_locale." .. ability_name }, " is now level 1."}
+        draw_upgrade_text(text, player)
         global.available_abilities[ability_name] = false
     end
 end
