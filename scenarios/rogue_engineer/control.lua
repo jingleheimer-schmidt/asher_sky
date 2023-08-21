@@ -1144,5 +1144,15 @@ script.on_event(defines.events.on_entity_died, on_entity_died)
 ---@field cooldown number
 ---@field damage number
 ---@field radius number
+---@field default_cooldown number
+---@field default_damage number
+---@field default_radius number
 ---@field damage_multiplier number
+---@field radius_multiplier number
+---@field cooldown_multiplier number
 ---@field upgrade_order string[]
+
+---@class player_data
+---@field level uint
+---@field exp uint
+---@field abilities table<string, active_ability_data>
