@@ -1,6 +1,5 @@
 
-
--- local debug_mode = true
+local debug_mode = false
 
 require("util")
 local constants = require("__asher_sky__/constants")
