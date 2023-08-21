@@ -645,23 +645,6 @@ local function on_entity_died(event)
             speed = 10,
             target = entity.position,
         }
-        -- local remaining_enemies = surface.find_entities_filtered{
-        --     position = entity.position,
-        --     radius = 100,
-        --     force = "enemy",
-        --     type = "unit",
-        -- }
-        -- for _, enemy in pairs(remaining_enemies) do
-        --     for i = 1, 3 do
-        --         surface.create_entity{
-        --             name = "explosive-rocket",
-        --             position = entity.position,
-        --             force = entity.force,
-        --             speed = 1 / (60 * 2 * i),
-        --             target = enemy,
-        --         }
-        --     end
-        -- end
     end
     local cause = event.cause
     local player = cause and cause.type == "character" and cause.player
@@ -1169,13 +1152,6 @@ local function initialize_lobby(lobby_surface)
         }
         update_lobby_tiles()
     end
-    -- if not lobby_surface.find_entity("player-port", {x = -20, y = 0}) then
-    --     lobby_surface.create_entity{
-    --         name = "player-port",
-    --         position = {x = -20, y = 0},
-    --         force = "player",
-    --     }
-    -- end
 end
 
 local function initialize_statistics()
