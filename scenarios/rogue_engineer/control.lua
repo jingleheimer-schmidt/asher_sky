@@ -430,6 +430,22 @@ local function on_entity_died(event)
     end
 end
 
+---@param event EventData.on_player_respawned
+local function on_player_respawned(event)
+    if not (global.game_state == "arena") then return end
+    local player_index = event.player_index
+    local player = game.get_player(player_index)
+    if not player then return end
+    player.character_running_speed_modifier = 0.33
+    global.remaining_lives = global.remaining_lives or {}
+    global.remaining_lives[player_index] = global.remaining_lives[player_index] or 2
+    global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
+    local lives = global.remaining_lives[player_index]
+    if lives < 1 then
+        player.set_controller{type = defines.controllers.spectator}
+    end
+end
+
 local difficulty_offsets = {
     easy = { x = -7, y = -8 },
     normal = { x = 0, y = -8 },
@@ -1137,6 +1153,7 @@ end
 script.on_init(on_init)
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_entity_died, on_entity_died)
+script.on_event(defines.events.on_player_respawned, on_player_respawned)
 
 ---@class active_ability_data
 ---@field name string
