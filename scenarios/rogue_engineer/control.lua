@@ -81,7 +81,7 @@ local function randomize_starting_abilities()
     local available_abilities = util.table.deepcopy(global.available_abilities)
     local default_abilities = global.default_abilities
     local starting_ability = global.lobby_options.starting_ability
-    available_abilities[default_abilities[starting_ability]] = false
+    available_abilities[default_abilities[starting_ability]] = nil
     for ability_number, ability_name in pairs(default_abilities) do
         if not (ability_number == starting_ability) then
             local random_ability = random_table_key(available_abilities)
