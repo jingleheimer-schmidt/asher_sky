@@ -315,6 +315,127 @@ local ability_data = {
     }
 }
 
+local tile_tiers = {
+    ["stone-path"] = 1,
+    ["concrete"] = 2,
+    ["refined-concrete"] = 3,
+}
+
+local difficulty_offsets = {
+    easy = { x = -7, y = -8 },
+    normal = { x = 0, y = -8 },
+    hard = { x = 7, y = -8 },
+}
+local ability_offsets = {
+    ability_1 = { x = -7, y = 8 },
+    ability_2 = { x = 0, y = 8 },
+    ability_3 = { x = 7, y = 8 },
+}
+local top_right_offset = { x = 2, y = -2}
+local bottom_right_offset = { x = 2, y = 1}
+local bottom_left_offset = { x = -3, y = 1}
+local top_left_offset = { x = -3, y = -2}
+local difficulty_tile_names = {
+    easy = "green-refined-concrete",
+    normal = "yellow-refined-concrete",
+    hard = "red-refined-concrete",
+}
+local walkway_tiles = {
+    easy = {
+        ["hazard-concrete-right"] = {
+            {x = -7, y = -3},
+            {x = -7, y = -4},
+            {x = -7, y = -5},
+            {x = -7, y = -6},
+        },
+        ["hazard-concrete-left"] = {
+            {x = -8, y = -3},
+            {x = -8, y = -4},
+            {x = -8, y = -5},
+            {x = -8, y = -6},
+        },
+    },
+    normal = {
+        ["hazard-concrete-right"] = {
+            {x = 0, y = -3},
+            {x = 0, y = -4},
+            {x = 0, y = -5},
+            {x = 0, y = -6},
+        },
+        ["hazard-concrete-left"] = {
+            {x = -1, y = -3},
+            {x = -1, y = -4},
+            {x = -1, y = -5},
+            {x = -1, y = -6},
+        },
+    },
+    hard = {
+        ["hazard-concrete-right"] = {
+            {x = 7, y = -3},
+            {x = 7, y = -4},
+            {x = 7, y = -5},
+            {x = 7, y = -6},
+        },
+        ["hazard-concrete-left"] = {
+            {x = 6, y = -3},
+            {x = 6, y = -4},
+            {x = 6, y = -5},
+            {x = 6, y = -6},
+        },
+    },
+    ability_1 = {
+        ["hazard-concrete-left"] = {
+            {x = -7, y = 2},
+            {x = -7, y = 3},
+            {x = -7, y = 4},
+            {x = -7, y = 5},
+        },
+        ["hazard-concrete-right"] = {
+            {x = -8, y = 2},
+            {x = -8, y = 3},
+            {x = -8, y = 4},
+            {x = -8, y = 5},
+        },
+    },
+    ability_2 = {
+        ["hazard-concrete-left"] = {
+            {x = 0, y = 2},
+            {x = 0, y = 3},
+            {x = 0, y = 4},
+            {x = 0, y = 5},
+        },
+        ["hazard-concrete-right"] = {
+            {x = -1, y = 2},
+            {x = -1, y = 3},
+            {x = -1, y = 4},
+            {x = -1, y = 5},
+        },
+    },
+    ability_3 = {
+        ["hazard-concrete-left"] = {
+            {x = 7, y = 2},
+            {x = 7, y = 3},
+            {x = 7, y = 4},
+            {x = 7, y = 5},
+        },
+        ["hazard-concrete-right"] = {
+            {x = 6, y = 2},
+            {x = 6, y = 3},
+            {x = 6, y = 4},
+            {x = 6, y = 5},
+        },
+    },
+}
+
 return {
     ability_data = ability_data,
+    tile_tiers = tile_tiers,
+    difficulty_offsets = difficulty_offsets,
+    ability_offsets = ability_offsets,
+    top_right_offset = top_right_offset,
+    bottom_right_offset = bottom_right_offset,
+    bottom_left_offset = bottom_left_offset,
+    top_left_offset = top_left_offset,
+    difficulty_tile_names = difficulty_tile_names,
+    walkway_tiles = walkway_tiles,
 }

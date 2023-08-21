@@ -4,6 +4,15 @@
 
 require("util")
 local constants = require("__asher_sky__/constants")
+local tile_tiers = constants.tile_tiers
+local difficulty_tile_names = constants.difficulty_tile_names
+local difficulty_offsets = constants.difficulty_offsets
+local ability_offsets = constants.ability_offsets
+local top_right_offset = constants.top_right_offset
+local bottom_right_offset = constants.bottom_right_offset
+local bottom_left_offset = constants.bottom_left_offset
+local top_left_offset = constants.top_left_offset
+local walkway_tiles = constants.walkway_tiles
 local raw_abilities_data = constants.ability_data
 
 ---@param orientation float -- 0 to 1
@@ -106,12 +115,6 @@ local function draw_animation(animation_name, ability_data, player, position)
         animation_offset = -(game.tick * speed) % raw_ability_data.frame_count,
     }
 end
-
-local tile_tiers = {
-    ["stone-path"] = 1,
-    ["concrete"] = 2,
-    ["refined-concrete"] = 3,
-}
 
 ---@param animation_name string
 ---@param ability_data active_ability_data
@@ -703,112 +706,6 @@ local function on_player_respawned(event)
         player.set_controller{type = defines.controllers.spectator}
     end
 end
-
-local difficulty_offsets = {
-    easy = { x = -7, y = -8 },
-    normal = { x = 0, y = -8 },
-    hard = { x = 7, y = -8 },
-}
-local ability_offsets = {
-    ability_1 = { x = -7, y = 8 },
-    ability_2 = { x = 0, y = 8 },
-    ability_3 = { x = 7, y = 8 },
-}
-local top_right_offset = { x = 2, y = -2}
-local bottom_right_offset = { x = 2, y = 1}
-local bottom_left_offset = { x = -3, y = 1}
-local top_left_offset = { x = -3, y = -2}
-local difficulty_tile_names = {
-    easy = "green-refined-concrete",
-    normal = "yellow-refined-concrete",
-    hard = "red-refined-concrete",
-}
-local walkway_tiles = {
-    easy = {
-        ["hazard-concrete-right"] = {
-            {x = -7, y = -3},
-            {x = -7, y = -4},
-            {x = -7, y = -5},
-            {x = -7, y = -6},
-        },
-        ["hazard-concrete-left"] = {
-            {x = -8, y = -3},
-            {x = -8, y = -4},
-            {x = -8, y = -5},
-            {x = -8, y = -6},
-        },
-    },
-    normal = {
-        ["hazard-concrete-right"] = {
-            {x = 0, y = -3},
-            {x = 0, y = -4},
-            {x = 0, y = -5},
-            {x = 0, y = -6},
-        },
-        ["hazard-concrete-left"] = {
-            {x = -1, y = -3},
-            {x = -1, y = -4},
-            {x = -1, y = -5},
-            {x = -1, y = -6},
-        },
-    },
-    hard = {
-        ["hazard-concrete-right"] = {
-            {x = 7, y = -3},
-            {x = 7, y = -4},
-            {x = 7, y = -5},
-            {x = 7, y = -6},
-        },
-        ["hazard-concrete-left"] = {
-            {x = 6, y = -3},
-            {x = 6, y = -4},
-            {x = 6, y = -5},
-            {x = 6, y = -6},
-        },
-    },
-    ability_1 = {
-        ["hazard-concrete-left"] = {
-            {x = -7, y = 2},
-            {x = -7, y = 3},
-            {x = -7, y = 4},
-            {x = -7, y = 5},
-        },
-        ["hazard-concrete-right"] = {
-            {x = -8, y = 2},
-            {x = -8, y = 3},
-            {x = -8, y = 4},
-            {x = -8, y = 5},
-        },
-    },
-    ability_2 = {
-        ["hazard-concrete-left"] = {
-            {x = 0, y = 2},
-            {x = 0, y = 3},
-            {x = 0, y = 4},
-            {x = 0, y = 5},
-        },
-        ["hazard-concrete-right"] = {
-            {x = -1, y = 2},
-            {x = -1, y = 3},
-            {x = -1, y = 4},
-            {x = -1, y = 5},
-        },
-    },
-    ability_3 = {
-        ["hazard-concrete-left"] = {
-            {x = 7, y = 2},
-            {x = 7, y = 3},
-            {x = 7, y = 4},
-            {x = 7, y = 5},
-        },
-        ["hazard-concrete-right"] = {
-            {x = 6, y = 2},
-            {x = 6, y = 3},
-            {x = 6, y = 4},
-            {x = 6, y = 5},
-        },
-    },
-}
 
 local function reset_lobby_tiles()
     local surface = game.surfaces.lobby
