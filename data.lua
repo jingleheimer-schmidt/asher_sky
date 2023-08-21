@@ -19,3 +19,10 @@ end
 for _, character_prototype in pairs(data.raw.character) do
     character_prototype.healing_per_tick = 0
 end
+
+local discharge_defender = table.deepcopy(data.raw["combat-robot"]["defender"])
+discharge_defender.name = "discharge-defender"
+discharge_defender.attack_parameters = table.deepcopy(data.raw["active-defense-equipment"]["discharge-defense-equipment"].attack_parameters)
+discharge_defender.attack_parameters.cooldown = 55
+discharge_defender.time_to_live = 120
+data:extend{discharge_defender}
