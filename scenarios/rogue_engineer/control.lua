@@ -1036,7 +1036,7 @@ local function enter_arena()
                 local position = game.get_surface("arena").find_non_colliding_position("character", {x = 0, y = 0}, 100, 1)
                 position = position or {x = 0, y = 0}
                 player.teleport(position, "arena")
-                player.character_maximum_following_robot_count_bonus = 50
+                player.character_maximum_following_robot_count_bonus = 500
             end
         end
     end
