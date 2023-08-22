@@ -52,9 +52,10 @@ local function on_init()
         pavement = true,
         beam_chain = true,
         discharge_defender = true,
+        destroyer = true,
     }
     global.default_abilities = {
-        ability_1 = "discharge_defender",
+        ability_1 = "destroyer",
         ability_2 = "slash",
         ability_3 = "rocket_launcher",
     }
@@ -370,6 +371,24 @@ local function activate_discharge_defender(ability_data, player)
     }
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_destroyer_capsule(ability_data, player)
+    local surface = player.surface
+    local destroyer = surface.create_entity{
+        name = "destroyer",
+        position = player.position,
+        direction = player.character.direction,
+        force = player.force,
+        -- target = enemy,
+        target = player.character,
+        source = player.character,
+        speed = 1/10,
+        max_range = ability_data.radius * 20,
+        player = player,
+    }
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -379,6 +398,7 @@ local damage_functions = {
     -- pavement = function() return end,
     beam_chain = activate_beam_chain,
     discharge_defender = activate_discharge_defender,
+    destroyer = activate_destroyer_capsule,
 }
 
 local animation_functions = {
@@ -390,6 +410,7 @@ local animation_functions = {
     pavement = draw_pavement,
     -- beam_chain = draw_animation,
     -- discharge_defender = draw_animation,
+    -- destroyer = draw_animation,
 }
 
 ---@param text string|LocalisedString
