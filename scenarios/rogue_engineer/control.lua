@@ -701,6 +701,7 @@ local function on_player_respawned(event)
     local player = game.get_player(player_index)
     if not player then return end
     player.character_running_speed_modifier = 0.33
+    player.character_maximum_following_robot_count_bonus = 500
     global.remaining_lives = global.remaining_lives or {}
     global.remaining_lives[player_index] = global.remaining_lives[player_index] or 2
     global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
