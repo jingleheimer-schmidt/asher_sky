@@ -719,7 +719,7 @@ local function spawn_level_appropriate_enemy(player)
             enemy_name = "big-worm"
         end
     end
-    local radius = math.random(30, 40)
+    local radius = math.random(30, 50)
     local position = get_random_position_on_circumference(player.position, radius)
     position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
     spawn_new_enemy(player.surface, position, enemy_name, player)
