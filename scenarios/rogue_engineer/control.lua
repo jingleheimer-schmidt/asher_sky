@@ -1443,64 +1443,7 @@ local function on_tick(event)
         if game.tick % balance == 0 then
             for _, player in pairs(game.connected_players) do
                 update_kills_per_minute_counter(player)
-                if not (player.controller_type == defines.controllers.character) then break end
-                local player_data = global.player_data[player.index]
-                local level = player_data.level
-                local enemy_name = "small-biter"
-                if level >= 15 then
-                    if math.random() < 0.2 then
-                        enemy_name = "medium-biter"
-                    end
-                end
-                if level >= 30 then
-                    if math.random() < 0.2 then
-                        enemy_name = "small-spitter"
-                    end
-                end
-                if level >= 45 then
-                    if math.random() < 0.2 then
-                        enemy_name = "big-biter"
-                    end
-                end
-                if level >= 60 then
-                    if math.random() < 0.2 then
-                        enemy_name = "medium-spitter"
-                    end
-                end
-                if level >= 75 then
-                    if math.random() < 0.2 then
-                        enemy_name = "behemoth-biter"
-                    end
-                end
-                if level >= 90 then
-                    if math.random() < 0.2 then
-                        enemy_name = "big-spitter"
-                    end
-                end
-                if level >= 105 then
-                    if math.random() < 0.2 then
-                        enemy_name = "small-worm"
-                    end
-                end
-                if level >= 120 then
-                    if math.random() < 0.2 then
-                        enemy_name = "behemoth-spitter"
-                    end
-                end
-                if level >= 135 then
-                    if math.random() < 0.2 then
-                        enemy_name = "medium-worm"
-                    end
-                end
-                if level >= 150 then
-                    if math.random() < 0.2 then
-                        enemy_name = "big-worm"
-                    end
-                end
-                local radius = math.random(25, 55)
-                local position = get_random_position_on_circumference(player.position, radius)
-                position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
-                spawn_new_enemy(player.surface, position, enemy_name, player)
+                spawn_level_appropriate_enemy(player)
             end
         end
         local all_players_dead = true
