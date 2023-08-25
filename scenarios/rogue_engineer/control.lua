@@ -53,9 +53,10 @@ local function on_init()
         beam_chain = true,
         discharge_defender = true,
         destroyer = true,
+        landmine = true,
     }
     global.default_abilities = {
-        ability_1 = "destroyer",
+        ability_1 = "landmine",
         ability_2 = "slash",
         ability_3 = "rocket_launcher",
     }
@@ -389,6 +390,23 @@ local function activate_destroyer_capsule(ability_data, player)
     }
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_landmine_deployer(ability_data, player)
+    local surface = player.surface
+    local radius = math.random(0, ability_data.radius)
+    local position = get_position_on_circumference(player.position, radius, math.random() * 2 * math.pi)
+    local landmine = surface.create_entity{
+        name = "land-mine",
+        position = position,
+        force = player.force,
+        target = player.character,
+        source = player.character,
+        character = player.character,
+        player = player,
+    }
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -399,6 +417,7 @@ local damage_functions = {
     beam_chain = activate_beam_chain,
     discharge_defender = activate_discharge_defender,
     destroyer = activate_destroyer_capsule,
+    landmine = activate_landmine_deployer,
 }
 
 local animation_functions = {
@@ -411,6 +430,7 @@ local animation_functions = {
     -- beam_chain = draw_animation,
     -- discharge_defender = draw_animation,
     -- destroyer = draw_animation,
+    -- landmine = draw_animation,
 }
 
 ---@param text string|LocalisedString

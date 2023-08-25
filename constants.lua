@@ -460,7 +460,35 @@ local ability_data = {
             "cooldown",
             "cooldown",
         },
-    }
+    },
+    landmine = {
+        filename = "60FPS_FA01_06_Shimmer.png",
+        frame_count = 60,
+        line_length = 5,
+        width = 192,
+        height = 192,
+        target = "position",
+        default_cooldown = 60 * 2.75,
+        default_radius = 1,
+        default_damage = 1,
+        damage_multiplier = 1,
+        radius_multiplier = 0.5,
+        cooldown_multiplier = 19,
+        upgrade_order = {
+            "cooldown",
+            "cooldown",
+            "radius",
+            "cooldown",
+            "cooldown",
+            "radius",
+            "cooldown",
+            "cooldown",
+            "radius",
+            "cooldown",
+            "cooldown",
+            "radius",
+        },
+    },
 }
 
 return {
