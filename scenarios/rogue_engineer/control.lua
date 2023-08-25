@@ -448,8 +448,14 @@ local animation_functions = {
 
 ---@param text string|LocalisedString
 ---@param player LuaPlayer
-local function draw_upgrade_text(text, player)
-    local position = get_random_position_on_circumference(player.position, 5)
+---@param offset Vector?
+local function draw_upgrade_text(text, player, offset)
+    -- local position = get_random_position_on_circumference(player.position, 5)
+    local position = player.position
+    if offset then
+        position.x = position.x + offset.x
+        position.y = position.y + offset.y
+    end
     rendering.draw_text({
         text = text,
         surface = player.surface,
@@ -565,8 +571,8 @@ local function unlock_named_ability(ability_name, player)
             cooldown_multiplier = raw_data.cooldown_multiplier,
             upgrade_order = raw_data.upgrade_order,
         }
-        local text = {"", "New ability unlocked! ", { "ability_locale." .. ability_name }, " is now level 1."}
-        draw_upgrade_text(text, player)
+        local text = {"", "Ability unlocked! ", { "ability_locale." .. ability_name }, " is now level 1."}
+        draw_upgrade_text(text, player, { x = 0, y = -1 })
         global.available_abilities[ability_name] = false
     end
 end
