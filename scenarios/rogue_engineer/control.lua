@@ -443,8 +443,8 @@ local function draw_upgrade_text(text, player)
         target = position,
         color = player.color,
         time_to_live = 60 * 10,
-        scale = 5,
-        draw_on_ground = true,
+        scale = 3.5,
+        -- draw_on_ground = true,
         alignment = "center",
     })
 end
