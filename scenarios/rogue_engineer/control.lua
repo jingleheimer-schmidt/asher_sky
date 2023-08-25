@@ -648,6 +648,70 @@ local function spawn_new_enemy(surface, position, name, player)
     }
 end
 
+---@param player LuaPlayer
+local function spawn_level_appropriate_enemy(player)
+    if not (player.controller_type == defines.controllers.character) then return end
+    -- local player_data = global.player_data[player.index]
+    -- local level = player_data.level
+    local level = global.arena_start_tick and math.floor((game.tick - global.arena_start_tick) / 60 / 60) or 0
+    local enemy_name = "small-biter"
+    local chance = 15 / 100
+    if level >= 2.5 then
+        if math.random() < chance - 1/100 then
+            enemy_name = "medium-biter"
+        end
+    end
+    if level >= 5 then
+        if math.random() < chance - 2/100 then
+            enemy_name = "small-spitter"
+        end
+    end
+    if level >= 7.5 then
+        if math.random() < chance - 3/100 then
+            enemy_name = "big-biter"
+        end
+    end
+    if level >= 10 then
+        if math.random() < chance - 4/100 then
+            enemy_name = "medium-spitter"
+        end
+    end
+    if level >= 12.5 then
+        if math.random() < chance - 5/100 then
+            enemy_name = "behemoth-biter"
+        end
+    end
+    if level >= 15 then
+        if math.random() < chance - 6/100 then
+            enemy_name = "big-spitter"
+        end
+    end
+    if level >= 17.5 then
+        if math.random() < chance - 7/100 then
+            enemy_name = "small-worm"
+        end
+    end
+    if level >= 20 then
+        if math.random() < chance - 8/100 then
+            enemy_name = "behemoth-spitter"
+        end
+    end
+    if level >= 22.5 then
+        if math.random() < chance - 9/100 then
+            enemy_name = "medium-worm"
+        end
+    end
+    if level >= 25 then
+        if math.random() < chance - 10/100 then
+            enemy_name = "big-worm"
+        end
+    end
+    local radius = math.random(30, 40)
+    local position = get_random_position_on_circumference(player.position, radius)
+    position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
+    spawn_new_enemy(player.surface, position, enemy_name, player)
+end
+
 local function on_player_died(event)
     game.set_game_state {
         game_finished = false,
