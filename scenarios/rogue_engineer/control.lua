@@ -55,6 +55,18 @@ local function on_init()
         destroyer = true,
         landmine = true,
     }
+    global.available_starting_abilities = {
+        burst = true,
+        punch = true,
+        -- cure = true,
+        slash = true,
+        rocket_launcher = true,
+        -- pavement = true,
+        -- beam_chain = true,
+        -- discharge_defender = true,
+        destroyer = true,
+        -- landmine = true,
+    }
     global.default_abilities = {
         ability_1 = "landmine",
         ability_2 = "slash",
@@ -80,7 +92,8 @@ local function random_table_key(table_param)
 end
 
 local function randomize_starting_abilities()
-    local available_abilities = util.table.deepcopy(global.available_abilities)
+    -- local available_abilities = util.table.deepcopy(global.available_abilities)
+    local available_abilities = util.table.deepcopy(global.available_starting_abilities)
     local default_abilities = global.default_abilities
     local starting_ability = global.lobby_options.starting_ability
     available_abilities[default_abilities[starting_ability]] = nil
