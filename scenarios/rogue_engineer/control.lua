@@ -751,9 +751,13 @@ local function on_entity_died(event)
         }
     end
     local cause = event.cause
-    local player = cause and cause.type == "character" and cause.player
-    if cause and cause.type == "combat-robot" then
+    local cause_type = cause and cause.type
+    local player = cause and cause_type == "character" and cause.player or nil
+    if cause and cause_type == "combat-robot" then
         player = cause.combat_robot_owner and cause.combat_robot_owner.player
+    end
+    if cause and cause_type == "land-mine" and cause.last_user then
+        player = cause.last_user --[[@as LuaPlayer]]
     end
     if player and player.character then
         local player_data = global.player_data[player.index]
