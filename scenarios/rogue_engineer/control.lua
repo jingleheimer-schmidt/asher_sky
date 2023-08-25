@@ -550,19 +550,20 @@ end
 local function unlock_named_ability(ability_name, player)
     local player_data = global.player_data[player.index]
     if not player_data.abilities[ability_name] then
+        local raw_data = raw_abilities_data[ability_name]
         player_data.abilities[ability_name] = {
             name = ability_name,
             level = 1,
-            cooldown = math.ceil(raw_abilities_data[ability_name].default_cooldown),
-            damage = raw_abilities_data[ability_name].default_damage,
-            radius = raw_abilities_data[ability_name].default_radius,
-            default_cooldown = raw_abilities_data[ability_name].default_cooldown,
-            default_damage = raw_abilities_data[ability_name].default_damage,
-            default_radius = raw_abilities_data[ability_name].default_radius,
-            damage_multiplier = raw_abilities_data[ability_name].damage_multiplier,
-            radius_multiplier = raw_abilities_data[ability_name].radius_multiplier,
-            cooldown_multiplier = raw_abilities_data[ability_name].cooldown_multiplier,
-            upgrade_order = raw_abilities_data[ability_name].upgrade_order,
+            cooldown = math.ceil(raw_data.default_cooldown),
+            damage = raw_data.default_damage,
+            radius = raw_data.default_radius,
+            default_cooldown = raw_data.default_cooldown,
+            default_damage = raw_data.default_damage,
+            default_radius = raw_data.default_radius,
+            damage_multiplier = raw_data.damage_multiplier,
+            radius_multiplier = raw_data.radius_multiplier,
+            cooldown_multiplier = raw_data.cooldown_multiplier,
+            upgrade_order = raw_data.upgrade_order,
         }
         local text = {"", "New ability unlocked! ", { "ability_locale." .. ability_name }, " is now level 1."}
         draw_upgrade_text(text, player)
@@ -984,6 +985,7 @@ end
 ---@param player LuaPlayer
 local function set_ability(ability_name, player)
     global.player_data = global.player_data or {} --[[@type table<uint, player_data>]]
+    local raw_data = raw_abilities_data[ability_name]
     global.player_data[player.index] = {
         level = 0,
         exp = 0,
@@ -991,16 +993,16 @@ local function set_ability(ability_name, player)
             [ability_name] = {
                 name = ability_name,
                 level = 1,
-                cooldown = math.ceil(raw_abilities_data[ability_name].default_cooldown),
-                damage = raw_abilities_data[ability_name].default_damage,
-                radius = raw_abilities_data[ability_name].default_radius,
-                default_cooldown = raw_abilities_data[ability_name].default_cooldown,
-                default_damage = raw_abilities_data[ability_name].default_damage,
-                default_radius = raw_abilities_data[ability_name].default_radius,
-                damage_multiplier = raw_abilities_data[ability_name].damage_multiplier,
-                radius_multiplier = raw_abilities_data[ability_name].radius_multiplier,
-                cooldown_multiplier = raw_abilities_data[ability_name].cooldown_multiplier,
-                upgrade_order = raw_abilities_data[ability_name].upgrade_order,
+                cooldown = math.ceil(raw_data.default_cooldown),
+                damage = raw_data.default_damage,
+                radius = raw_data.default_radius,
+                default_cooldown = raw_data.default_cooldown,
+                default_damage = raw_data.default_damage,
+                default_radius = raw_data.default_radius,
+                damage_multiplier = raw_data.damage_multiplier,
+                radius_multiplier = raw_data.radius_multiplier,
+                cooldown_multiplier = raw_data.cooldown_multiplier,
+                upgrade_order = raw_data.upgrade_order,
             }
         },
     }
