@@ -65,7 +65,7 @@ end
 
 ---@param direction defines.direction
 ---@return defines.direction
-local function flip_direction(direction)
+local function opposite_direction(direction)
     return (direction + 4) % 8
 end
 
@@ -77,5 +77,5 @@ return {
     random_table_key = random_table_key,
     offset_vector = offset_vector,
     direction_to_angle = direction_to_angle,
-    flip_direction = flip_direction
+    opposite_direction = opposite_direction
 }
