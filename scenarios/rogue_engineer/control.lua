@@ -903,8 +903,7 @@ local function on_player_respawned(event)
     global.remaining_lives = global.remaining_lives or {}
     global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
     global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
-    local lives = global.remaining_lives[player_index]
-    if lives < 1 then
+    if global.remaining_lives[player_index] < 1 then
         player.set_controller{type = defines.controllers.spectator}
     end
 end
