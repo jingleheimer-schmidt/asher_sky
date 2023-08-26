@@ -69,7 +69,7 @@ local function on_init()
         -- landmine = true,
     }
     global.default_abilities = {
-        ability_1 = "landmine",
+        ability_1 = "beam_chain",
         ability_2 = "slash",
         ability_3 = "rocket_launcher",
     }
