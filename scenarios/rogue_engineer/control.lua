@@ -1151,13 +1151,14 @@ local function on_tick(event)
 
     if not script.level and script.level.mod_name == "asher_sky" then return end
     global.game_state = global.game_state or "lobby"
+    local connected_players = game.connected_players
 
     -- lobby mode --
     if global.game_state == "lobby" then
 
         local lobby_surface = game.surfaces.lobby
         initialize_lobby()
-        for _, player in pairs(game.connected_players) do
+        for _, player in pairs(connected_players) do
             local position = player.position
             if not (player.surface_index == lobby_surface.index) then
                 player.teleport(position, lobby_surface)
@@ -1247,7 +1248,7 @@ local function on_tick(event)
 
     -- arena mode --
 
-    for _, player in pairs(game.connected_players) do
+    for _, player in pairs(connected_players) do
         if not player.character then break end
         global.player_data[player.index] = global.player_data[player.index] or initialize_player_data(player)
         local player_data = global.player_data[player.index]
@@ -1281,12 +1282,12 @@ local function on_tick(event)
         }
         local balance = difficulties[global.lobby_options.difficulty]
         if game.tick % balance == 0 then
-            for _, player in pairs(game.connected_players) do
+            for _, player in pairs(connected_players) do
                 update_kills_per_minute_counter(player)
                 spawn_level_appropriate_enemy(player)
             end
         end
-        for _, player in pairs(game.connected_players) do
+        for _, player in pairs(connected_players) do
             local position = player.position
             global.previous_positions = global.previous_positions or {}
             global.previous_positions[player.index] = global.previous_positions[player.index] or position
@@ -1300,7 +1301,7 @@ local function on_tick(event)
             global.previous_positions[player.index] = position
         end
         local all_players_dead = true
-        for _, player in pairs(game.connected_players) do
+        for _, player in pairs(connected_players) do
             if not (player.controller_type == defines.controllers.spectator) then
                 all_players_dead = false
             end
@@ -1320,7 +1321,7 @@ local function on_tick(event)
             end
         end
         if all_players_dead then
-            for _, player in pairs(game.connected_players) do
+            for _, player in pairs(connected_players) do
                 player.teleport({x = -20, y = 0}, "lobby")
                 player.set_controller{type = defines.controllers.god}
                 local character = player.create_character() and player.character
