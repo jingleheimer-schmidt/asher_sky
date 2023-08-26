@@ -340,13 +340,13 @@ local function activate_beam_chain(ability_data, player)
     }
     if not enemy_1 then return end
     create_laser_beam(surface, player_position, enemy_1, player)
-    local nearby_enemies_1 = get_enemies_in_radius(surface, enemy_1.position, radius / 3)
+    local nearby_enemies_1 = get_enemies_in_radius(surface, enemy_1.position, radius)
     for _, enemy_2 in pairs(nearby_enemies_1) do
         create_laser_beam(surface, enemy_1.position, enemy_2, player)
-        local nearby_enemies_2 = get_enemies_in_radius(surface, enemy_2.position, radius / 5)
-        for _, enemy_3 in pairs(nearby_enemies_2) do
-            create_laser_beam(surface, enemy_2.position, enemy_3, player)
-        end
+        -- local nearby_enemies_2 = get_enemies_in_radius(surface, enemy_2.position, radius / 5)
+        -- for _, enemy_3 in pairs(nearby_enemies_2) do
+        --     create_laser_beam(surface, enemy_2.position, enemy_3, player)
+        -- end
     end
 end
 
