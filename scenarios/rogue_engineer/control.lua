@@ -27,36 +27,12 @@ local update_statistics = statistics_util.update_statistics
 local initialize_statistics = statistics_util.initialize_statistics
 local new_attempt_stats_reset = statistics_util.new_attempt_stats_reset
 
----@param orientation float -- 0 to 1
----@param angle float -- 0 to 1, added to orientation
----@return float -- 0 to 1
-local function rotate_orientation(orientation, angle)
-    local new_orientation = orientation + angle
-    if new_orientation > 1 then
-        new_orientation = new_orientation - 1
-    elseif new_orientation < 0 then
-        new_orientation = new_orientation + 1
-    end
-    return new_orientation
-end
-
----@param center MapPosition
----@param radius number
----@param angle number
----@return MapPosition
-local function get_position_on_circumference(center, radius, angle)
-    local x = center.x + radius * math.cos(angle)
-    local y = center.y + radius * math.sin(angle)
-    return { x = x, y = y }
-end
-
----@param center MapPosition
----@param radius number
----@return MapPosition
-local function get_random_position_on_circumference(center, radius)
-    local angle = math.random() * 2 * math.pi
-    return get_position_on_circumference(center, radius, angle)
-end
+local general_util = require("general_util")
+local rotate_orientation = general_util.rotate_orientation
+local get_position_on_circumference = general_util.get_position_on_circumference
+local get_random_position_on_circumference = general_util.get_random_position_on_circumference
+local random_table_value = general_util.random_table_value
+local random_table_key = general_util.random_table_key
 
 local function on_init()
     global.player_data = {}
@@ -93,22 +69,6 @@ local function on_init()
         ability_3 = "rocket_launcher",
     }
     global.statistics = {}
-end
-
-local function random_table_value(table_param)
-    local keys = {}
-    for key, _ in pairs(table_param) do
-        table.insert(keys, key)
-    end
-    return table_param[keys[math.random(#keys)]]
-end
-
-local function random_table_key(table_param)
-    local keys = {}
-    for key, _ in pairs(table_param) do
-        table.insert(keys, key)
-    end
-    return keys[math.random(#keys)]
 end
 
 local function randomize_starting_abilities()
@@ -297,13 +257,6 @@ local function activate_rocket_launcher(ability_data, player)
         player = player,
     }
     ---@diagnostic enable: missing-fields
-end
-
----@param from MapPosition
----@param to MapPosition
----@return Vector
-local function offset_vector(from, to)
-    return { x = to.x - from.x, y = to.y - from.y }
 end
 
 ---@param surface LuaSurface
