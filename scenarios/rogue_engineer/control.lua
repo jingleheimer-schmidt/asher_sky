@@ -234,7 +234,7 @@ end
 ---@param player LuaPlayer
 local function activate_punch_damage(ability_data, player)
     local radius = ability_data.radius
-    local damage = ability_data.damage
+    local damage = ability_data.damage --[[@as float]]
     local position = player.position
     local surface = player.surface
     damage_enemies_in_radius(radius, damage, position, surface, player)
