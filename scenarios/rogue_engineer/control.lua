@@ -600,13 +600,14 @@ end
 
 local function create_kills_per_minute_counter_rendering(player)
     return rendering.draw_text {
-        text = "Kills per minute: 0",
+        text = "Kills per minute: [color=white]0[/color]",
         surface = player.surface,
         target = player.character,
         target_offset = { x = 0, y = 2 },
         color = { r = 1, g = 1, b = 1 },
         scale = 1.5,
         alignment = "center",
+        use_rich_text = true,
     }
 end
 
@@ -643,7 +644,15 @@ local function update_kills_per_minute_counter(player)
         kills_per_minute_counter.render_id = create_kills_per_minute_counter_rendering(player)
     end
     local kills_per_minute = math.min(kill_counter.kill_count, math.floor(kill_counter.kill_count / ((game.tick - start_tick) / 3600)))
-    rendering.set_text(kills_per_minute_counter.render_id, "Kills per minute: " .. kills_per_minute)
+    local previous_text = rendering.get_text(kills_per_minute_counter.render_id) or ""
+    local previous_kills_per_minute = tonumber(previous_text:match("%d+"))
+    local color = previous_text:match("%[color=(%w+)%]")
+    if kills_per_minute > previous_kills_per_minute then
+        color = "green"
+    elseif kills_per_minute < previous_kills_per_minute then
+        color = "red"
+    end
+    rendering.set_text(kills_per_minute_counter.render_id, "Kills per minute: [color=" .. color .. "]" .. kills_per_minute .. "[/color]")
 end
 
 ---@param surface LuaSurface
