@@ -880,6 +880,12 @@ local function on_entity_died(event)
             if level % 7 == 0 then
                 unlock_random_ability(player)
             end
+            global.remaining_lives = global.remaining_lives or {}
+            global.remaining_lives[player.index] = global.remaining_lives[player.index] or 1
+            if level % 33 == 0 then
+                global.remaining_lives[player.index] = global.remaining_lives[player.index] + 1
+                draw_upgrade_text({"", "Level up! ", global.remaining_lives[player.index] - 1, " lives remaining"}, player, { x = 0, y = 3 })
+            end
             if level % 8 == 0 then
                 upgrade_damage_bonuses(level)
             end
