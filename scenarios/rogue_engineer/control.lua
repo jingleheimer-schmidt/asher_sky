@@ -901,7 +901,7 @@ local function on_player_respawned(event)
     player.character_running_speed_modifier = 0.33
     player.character_maximum_following_robot_count_bonus = 500
     global.remaining_lives = global.remaining_lives or {}
-    global.remaining_lives[player_index] = global.remaining_lives[player_index] or 2
+    global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
     global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
     local lives = global.remaining_lives[player_index]
     if lives < 1 then
