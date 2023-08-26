@@ -2091,7 +2091,7 @@ local function on_tick(event)
             end
         end
         initialize_statistics()
-        if game.tick % (60 * 7) == 0 then
+        if game.tick % (60 * 25) == 0 then
             local enemies = lobby_surface.find_entities_filtered { type = "unit", force = "enemy", position = { x = 0, y = 0 }, radius = 100 }
             if #enemies == 0 then
                 local positions = {
