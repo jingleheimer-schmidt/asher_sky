@@ -57,6 +57,12 @@ local function offset_vector(from, to)
     return { x = to.x - from.x, y = to.y - from.y }
 end
 
+---@param direction defines.direction
+---@return number -- radians
+local function direction_to_angle(direction)
+    return (direction * 0.25) * 2 * math.pi
+end
+
 return {
     rotate_orientation = rotate_orientation,
     get_position_on_circumference = get_position_on_circumference,
@@ -64,4 +70,5 @@ return {
     random_table_value = random_table_value,
     random_table_key = random_table_key,
     offset_vector = offset_vector,
+    direction_to_angle = direction_to_angle
 }

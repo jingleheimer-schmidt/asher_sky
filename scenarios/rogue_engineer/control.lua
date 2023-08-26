@@ -38,6 +38,8 @@ local get_position_on_circumference = general_util.get_position_on_circumference
 local get_random_position_on_circumference = general_util.get_random_position_on_circumference
 local random_table_value = general_util.random_table_value
 local random_table_key = general_util.random_table_key
+local offset_vector = general_util.offset_vector
+local direction_to_angle = general_util.direction_to_angle
 
 local function on_init()
     global.player_data = {}
@@ -406,12 +408,6 @@ local function activate_landmine_deployer(ability_data, player)
         player = player,
     }
     ---@diagnostic enable: missing-fields
-end
-
----@param direction defines.direction
----@return number -- radians
-local function direction_to_angle(direction)
-    return (direction * 0.25) * 2 * math.pi
 end
 
 ---@param ability_data active_ability_data
