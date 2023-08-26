@@ -704,6 +704,10 @@ local function spawn_level_appropriate_enemy(player)
         enemy_name = "behemoth-worm-turret"
     end
     local radius = math.random(30, 50)
+    local arena_clock = (game.tick - global.arena_start_tick)
+    if arena_clock > (60 * 60 * 25) then
+        radius = math.random(5, 75)
+    end
     local position = get_random_position_on_circumference(player.position, radius)
     position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
     spawn_new_enemy(player.surface, position, enemy_name, player)
