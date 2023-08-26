@@ -563,7 +563,7 @@ local function unlock_named_ability(ability_name, player)
             upgrade_order = raw_data.upgrade_order,
         }
         local text = {"", "Ability unlocked! ", { "ability_locale." .. ability_name }, " is now level 1."}
-        draw_upgrade_text(text, player, { x = 0, y = -1 })
+        draw_upgrade_text(text, player, { x = 0, y = 3 })
         global.available_abilities[ability_name] = false
     end
 end
