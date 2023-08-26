@@ -8,7 +8,9 @@ local top_right_offset = constants.top_right_offset
 local bottom_right_offset = constants.bottom_right_offset
 local bottom_left_offset = constants.bottom_left_offset
 local top_left_offset = constants.top_left_offset
-local raw_abilities_data = constants.raw_abilities_data
+local raw_abilities_data = constants.ability_data
+local general_util = require("general_util")
+local random_table_key = general_util.random_table_key
 
 local function reset_lobby_tiles()
     local surface = game.surfaces.lobby
