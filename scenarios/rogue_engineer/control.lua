@@ -866,12 +866,14 @@ local function on_entity_died(event)
         player = cause.last_user --[[@as LuaPlayer]]
     end
     if player and player.character then
+        if not (player.surface.name == "arena") then return end
         local player_data = global.player_data[player.index]
         -- player_data.exp = player_data.exp + (entity.prototype.max_health / 15 or 1)
         player_data.exp = player_data.exp + 1
         if player_data.exp >= 3 * player_data.level then
             player_data.exp = 0
             player_data.level = player_data.level + 1
+            local level = player_data.level
             upgrade_random_ability(player)
             local shimmer_data = { radius = 2, level = 1, cooldown = 0, damage = 0 }
             draw_animation("shimmer", shimmer_data, player)
