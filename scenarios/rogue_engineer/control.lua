@@ -21,6 +21,9 @@ local reset_lobby_tiles = lobby_util.reset_lobby_tiles
 local create_lobby_text = lobby_util.create_lobby_text
 local update_lobby_text = lobby_util.update_lobby_text
 local initialize_lobby = lobby_util.initialize_lobby
+local set_ability = lobby_util.set_ability
+local set_difficulty = lobby_util.set_difficulty
+local set_starting_ability = lobby_util.set_starting_ability
 
 local statistics_util = require("statistics_util")
 local update_statistics = statistics_util.update_statistics
@@ -893,72 +896,6 @@ local function on_player_respawned(event)
         if character then
             character.destroy()
         end
-    end
-end
-
----@param ability_name string
----@param player LuaPlayer
-local function set_ability(ability_name, player)
-    global.player_data = global.player_data or {} --[[@type table<uint, player_data>]]
-    local raw_data = raw_abilities_data[ability_name]
-    global.player_data[player.index] = {
-        level = 0,
-        exp = 0,
-        abilities = {
-            [ability_name] = {
-                name = ability_name,
-                level = 1,
-                cooldown = math.ceil(raw_data.default_cooldown),
-                damage = raw_data.default_damage,
-                radius = raw_data.default_radius,
-                default_cooldown = raw_data.default_cooldown,
-                default_damage = raw_data.default_damage,
-                default_radius = raw_data.default_radius,
-                damage_multiplier = raw_data.damage_multiplier,
-                radius_multiplier = raw_data.radius_multiplier,
-                cooldown_multiplier = raw_data.cooldown_multiplier,
-                upgrade_order = raw_data.upgrade_order,
-            }
-        },
-    }
-    global.available_abilities = global.available_abilities or {}
-    global.available_abilities[ability_name] = false
-    for name, _ in pairs(global.available_abilities) do
-        if name ~= ability_name then
-            global.available_abilities[name] = true
-        end
-    end
-end
-
----@param ability_number string
----@param player LuaPlayer
-local function set_starting_ability(ability_number, player)
-    local character = player.character
-    if not character then return end
-    local ratio = character.get_health_ratio()
-    if ratio < 0.01 then
-        character.health = player.character.prototype.max_health
-        global.lobby_options.starting_ability = ability_number
-        local ability_name = global.default_abilities[ability_number]
-        set_ability(ability_name, player)
-        update_lobby_tiles()
-    else
-        character.health = character.health - character.prototype.max_health / 90
-    end
-end
-
----@param difficulty string
----@param player LuaPlayer
-local function set_difficulty(difficulty, player)
-    local character = player.character
-    if not character then return end
-    local ratio = character.get_health_ratio()
-    if ratio < 0.01 then
-        character.health = player.character.prototype.max_health
-        global.lobby_options.difficulty = difficulty
-        update_lobby_tiles()
-    else
-        character.health = character.health - character.prototype.max_health / 90
     end
 end
 

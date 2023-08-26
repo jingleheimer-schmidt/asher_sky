@@ -8,6 +8,7 @@ local top_right_offset = constants.top_right_offset
 local bottom_right_offset = constants.bottom_right_offset
 local bottom_left_offset = constants.bottom_left_offset
 local top_left_offset = constants.top_left_offset
+local raw_abilities_data = constants.raw_abilities_data
 
 local function reset_lobby_tiles()
     local surface = game.surfaces.lobby
@@ -307,10 +308,79 @@ local function initialize_lobby()
     end
 end
 
+---@param ability_name string
+---@param player LuaPlayer
+local function set_ability(ability_name, player)
+    global.player_data = global.player_data or {} --[[@type table<uint, player_data>]]
+    local raw_data = raw_abilities_data[ability_name]
+    global.player_data[player.index] = {
+        level = 0,
+        exp = 0,
+        abilities = {
+            [ability_name] = {
+                name = ability_name,
+                level = 1,
+                cooldown = math.ceil(raw_data.default_cooldown),
+                damage = raw_data.default_damage,
+                radius = raw_data.default_radius,
+                default_cooldown = raw_data.default_cooldown,
+                default_damage = raw_data.default_damage,
+                default_radius = raw_data.default_radius,
+                damage_multiplier = raw_data.damage_multiplier,
+                radius_multiplier = raw_data.radius_multiplier,
+                cooldown_multiplier = raw_data.cooldown_multiplier,
+                upgrade_order = raw_data.upgrade_order,
+            }
+        },
+    }
+    global.available_abilities = global.available_abilities or {}
+    global.available_abilities[ability_name] = false
+    for name, _ in pairs(global.available_abilities) do
+        if name ~= ability_name then
+            global.available_abilities[name] = true
+        end
+    end
+end
+
+---@param ability_number string
+---@param player LuaPlayer
+local function set_starting_ability(ability_number, player)
+    local character = player.character
+    if not character then return end
+    local ratio = character.get_health_ratio()
+    if ratio < 0.01 then
+        character.health = player.character.prototype.max_health
+        global.lobby_options.starting_ability = ability_number
+        local ability_name = global.default_abilities[ability_number]
+        set_ability(ability_name, player)
+        update_lobby_tiles()
+    else
+        character.health = character.health - character.prototype.max_health / 90
+    end
+end
+
+---@param difficulty string
+---@param player LuaPlayer
+local function set_difficulty(difficulty, player)
+    local character = player.character
+    if not character then return end
+    local ratio = character.get_health_ratio()
+    if ratio < 0.01 then
+        character.health = player.character.prototype.max_health
+        global.lobby_options.difficulty = difficulty
+        update_lobby_tiles()
+    else
+        character.health = character.health - character.prototype.max_health / 90
+    end
+end
+
 return {
     reset_lobby_tiles = reset_lobby_tiles,
     update_lobby_tiles = update_lobby_tiles,
     create_lobby_text = create_lobby_text,
     initialize_lobby = initialize_lobby,
     update_lobby_text = update_lobby_text,
+    set_ability = set_ability,
+    set_starting_ability = set_starting_ability,
+    set_difficulty = set_difficulty,
 }
