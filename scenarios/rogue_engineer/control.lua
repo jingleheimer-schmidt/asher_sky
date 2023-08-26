@@ -55,8 +55,9 @@ local function on_init()
         discharge_defender = true,
         destroyer = true,
         landmine = true,
-        poison_capsule = true,
+        -- poison_capsule = true,
         slowdown_capsule = true,
+        gun_turret = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -69,12 +70,14 @@ local function on_init()
         -- discharge_defender = true,
         destroyer = true,
         -- landmine = true,
-        poison_capsule = true,
+        -- poison_capsule = true,
+        -- slowdown_capsule = true,
+        -- gun_turret = true,
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
-        ability_2 = "slowdown_capsule",
-        ability_3 = "rocket_launcher",
+        ability_2 = "rocket_launcher",
+        ability_3 = "punch",
     }
     global.statistics = {}
 end
@@ -130,6 +133,37 @@ local function draw_pavement(animation_name, ability_data, player, position)
         end
     end
     surface.set_tiles(tiles)
+end
+
+---@param animation_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param position MapPosition?
+local function refill_turret_ammo(animation_name, ability_data, player, position)
+    local nearby_turrets = player.surface.find_entities_filtered{
+        position = position or player.position,
+        radius = ability_data.radius,
+        force = player.force,
+        type = "ammo-turret",
+    }
+    if not nearby_turrets then return end
+    for _, turret in pairs(nearby_turrets) do
+        local inventory = turret.get_inventory(defines.inventory.turret_ammo)
+        local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
+        local ammo_items = { name = ammo_name, count = math.max(25, ability_data.level * 5)}
+        if inventory and inventory.can_insert(ammo_items) then
+            inventory.insert(ammo_items)
+            local localised_name = {"item-name." .. ammo_name}
+            ---@diagnostic disable: missing-fields
+            turret.surface.create_entity{
+                name = "flying-text",
+                position = turret.position,
+                text = {"", "+", ammo_items.count, " ", localised_name},
+                color = {r = 1, g = 1, b = 1},
+            }
+            ---@diagnostic enable: missing-fields
+        end
+    end
 end
 
 ---@param name string
@@ -435,6 +469,47 @@ local function activate_slowdown_capsule_deployer(ability_data, player)
     ---@diagnostic enable: missing-fields
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_gun_turret_technician(ability_data, player)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local angle = direction_to_angle(player.character.direction)
+    local position = get_position_on_circumference(player.position, radius, angle)
+    local non_colliding_position = surface.find_non_colliding_position("gun-turret", position, radius, 0.25)
+    if non_colliding_position then
+    ---@diagnostic disable: missing-fields
+        local turret = surface.create_entity{
+            name = "gun-turret",
+            position = non_colliding_position,
+            force = player.force,
+            target = position,
+            source = player.character,
+            character = player.character,
+            player = player,
+            speed = 1/500,
+        }
+        ---@diagnostic enable: missing-fields
+        if turret then
+            local inventory = turret.get_inventory(defines.inventory.turret_ammo)
+            local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
+            local ammo_items = { name = ammo_name, count = math.max(25, ability_data.level * 5)}
+            if inventory and inventory.can_insert(ammo_items) then
+                inventory.insert(ammo_items)
+                local localised_name = {"", "item-name.", ammo_name}
+                ---@diagnostic disable: missing-fields
+                turret.surface.create_entity{
+                    name = "flying-text",
+                    position = turret.position,
+                    text = {"", "+", ammo_items.count, " ", localised_name},
+                    color = {r = 1, g = 1, b = 1},
+                }
+                ---@diagnostic enable: missing-fields
+            end
+        end
+    end
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -448,6 +523,7 @@ local damage_functions = {
     landmine = activate_landmine_deployer,
     poison_capsule = activate_poison_capsule_deployer,
     slowdown_capsule = activate_slowdown_capsule_deployer,
+    gun_turret = activate_gun_turret_technician,
 }
 
 local animation_functions = {
@@ -463,6 +539,7 @@ local animation_functions = {
     -- landmine = draw_animation,
     -- poison_capsule = draw_animation,
     -- slowdown_capsule = draw_animation,
+    gun_turret = refill_turret_ammo,
 }
 
 ---@param text string|LocalisedString
@@ -860,6 +937,7 @@ local function upgrade_damage_bonuses(level_threshold)
             ["energy-weapons-damage-"] = true,
             ["stronger-explosives-"] = true,
             ["refined-flammables-"] = true,
+            ["weapon-shooting-speed-"] = true,
         }
         local force = game.forces.player
         local max_tech_level = math.ceil(level_threshold / 5)
@@ -899,6 +977,9 @@ local function on_entity_died(event)
         player = cause.combat_robot_owner and cause.combat_robot_owner.player
     end
     if cause and cause_type == "land-mine" and cause.last_user then
+        player = cause.last_user --[[@as LuaPlayer]]
+    end
+    if cause and cause_type == "ammo-turret" and cause.last_user then
         player = cause.last_user --[[@as LuaPlayer]]
     end
     if player and player.character then
