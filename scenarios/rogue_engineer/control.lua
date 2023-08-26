@@ -650,7 +650,7 @@ local function update_kills_per_minute_counter(player)
         kills_per_minute_counter.render_id = create_kills_per_minute_counter_rendering(player)
     end
     local kills_per_minute = math.min(kill_counter.kill_count, math.floor(kill_counter.kill_count / ((game.tick - start_tick) / 3600)))
-    local previous_text = rendering.get_text(kills_per_minute_counter.render_id) or ""
+    local previous_text = rendering.get_text(kills_per_minute_counter.render_id) or "" --[[@as string]]
     local previous_kills_per_minute = tonumber(previous_text:match("%d+"))
     local color = previous_text:match("%[color=(%w+)%]")
     if kills_per_minute > previous_kills_per_minute then
@@ -798,12 +798,14 @@ local function on_entity_damaged(event)
     local damage = math.ceil(event.final_damage_amount)
     local flying_text = ((damage > 0) and ("-" .. damage)) or ("+" .. damage)
     local color = ((damage > 0 )and {r = 1, g = 0, b = 0}) or {r = 0, g = 1, b = 0}
+    ---@diagnostic disable: missing-fields
     surface.create_entity{
         name = "flying-text",
         position = entity.position,
         text = flying_text,
         color = color,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 script.on_event(defines.events.on_entity_damaged, on_entity_damaged)
@@ -923,7 +925,9 @@ local function on_player_respawned(event)
     if global.remaining_lives[player_index] < 1 then
         local character = player.character
         player.set_controller{type = defines.controllers.spectator}
-        character.destroy()
+        if character then
+            character.destroy()
+        end
     end
 end
 
