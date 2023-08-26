@@ -457,7 +457,7 @@ end
 
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
-local function activate_gun_turret_technician(ability_data, player)
+local function activate_gun_turret_deployer(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
     local angle = direction_to_angle(player.character.direction)
@@ -495,7 +495,7 @@ local damage_functions = {
     landmine = activate_landmine_deployer,
     poison_capsule = activate_poison_capsule_deployer,
     slowdown_capsule = activate_slowdown_capsule_deployer,
-    gun_turret = activate_gun_turret_technician,
+    gun_turret = activate_gun_turret_deployer,
 }
 
 local animation_functions = {
