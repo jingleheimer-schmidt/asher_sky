@@ -904,7 +904,9 @@ local function on_player_respawned(event)
     global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
     global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
     if global.remaining_lives[player_index] < 1 then
+        local character = player.character
         player.set_controller{type = defines.controllers.spectator}
+        character.destroy()
     end
 end
 
