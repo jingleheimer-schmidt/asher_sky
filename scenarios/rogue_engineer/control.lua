@@ -1043,20 +1043,6 @@ local function initialize_player_data(player)
     }
 end
 
----@class player_statistics_data
----@field kills uint
----@field deaths uint
----@field damage_dealt uint
----@field damage_taken uint
----@field damage_healed uint
----@field attempts uint
----@field victories uint
----@field top_kills_per_minute uint
-
----@class player_statistics
----@field total player_statistics_data
----@field last_attempt player_statistics_data
-
 local function create_arena_surface()
     local map_gen_settings = {
         terrain_segmentation = 3,
@@ -1123,18 +1109,6 @@ local function enter_arena()
                 player.teleport(position, "arena")
                 player.character_maximum_following_robot_count_bonus = 500
                 player.character_running_speed_modifier = 0.33
-                local player_stats = global.statistics[player.index] --[[@type player_statistics]]
-                if player_stats then
-                    player_stats.total.attempts = player_stats.total.attempts + 1
-                    player_stats.last_attempt.attempts = 1
-                    player_stats.last_attempt.kills = 0
-                    player_stats.last_attempt.deaths = 0
-                    player_stats.last_attempt.damage_dealt = 0
-                    player_stats.last_attempt.damage_taken = 0
-                    player_stats.last_attempt.damage_healed = 0
-                    player_stats.last_attempt.top_kills_per_minute = 0
-                    player_stats.last_attempt.victories = 0
-                end
             end
         end
     end
@@ -1336,22 +1310,3 @@ script.on_init(on_init)
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_entity_died, on_entity_died)
 script.on_event(defines.events.on_player_respawned, on_player_respawned)
-
----@class active_ability_data
----@field name string
----@field level number
----@field cooldown number
----@field damage number
----@field radius number
----@field default_cooldown number
----@field default_damage number
----@field default_radius number
----@field damage_multiplier number
----@field radius_multiplier number
----@field cooldown_multiplier number
----@field upgrade_order string[]
-
----@class player_data
----@field level uint
----@field exp uint
----@field abilities table<string, active_ability_data>
