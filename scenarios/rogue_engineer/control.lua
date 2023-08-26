@@ -760,6 +760,7 @@ local function on_player_died(event)
         game_finished = false,
     }
     local player = game.get_player(event.player_index)
+    if not player then return end
     local ticks = (player and (player.surface.name == "lobby") and (60 * 5)) or (60 * 8)
     player.ticks_to_respawn = ticks
 end
