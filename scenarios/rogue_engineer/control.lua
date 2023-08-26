@@ -791,7 +791,8 @@ local function on_entity_damaged(event)
     local surface = entity.surface
     if surface.name == "lobby" then
         if entity.type == "character" then
-            entity.health = entity.health + event.final_damage_amount
+            -- entity.health = entity.health + event.final_damage_amount
+            entity.damage( - event.final_damage_amount, entity.force, "impact")
         end
     end
     local damage = math.ceil(event.final_damage_amount)
