@@ -794,6 +794,15 @@ local function on_entity_damaged(event)
             entity.health = entity.health + event.final_damage_amount
         end
     end
+    local damage = math.ceil(event.final_damage_amount)
+    local flying_text = ((damage > 0) and ("-" .. damage)) or ("+" .. damage)
+    local color = ((damage > 0 )and {r = 1, g = 0, b = 0}) or {r = 0, g = 1, b = 0}
+    surface.create_entity{
+        name = "flying-text",
+        position = entity.position,
+        text = flying_text,
+        color = color,
+    }
 end
 
 script.on_event(defines.events.on_entity_damaged, on_entity_damaged)
