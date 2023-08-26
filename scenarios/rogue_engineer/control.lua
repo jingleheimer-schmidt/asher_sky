@@ -808,6 +808,38 @@ end
 
 script.on_event(defines.events.on_entity_damaged, on_entity_damaged)
 
+---@param level_threshold uint
+local function upgrade_damage_bonuses(level_threshold)
+    local all_players_meet_requirement = true
+    for _, player in pairs(game.connected_players) do
+        local player_data = global.player_data[player.index]
+        if player_data.level < level_threshold then
+            all_players_meet_requirement = false
+            break
+        end
+    end
+    if all_players_meet_requirement then
+        local technology_upgrades = {
+            ["physical-projectile-damage-"] = true,
+            ["energy-weapons-damage-"] = true,
+            ["stronger-explosives-"] = true,
+            ["refined-flammables-"] = true,
+        }
+        local force = game.forces.player
+        local max_tech_level = math.ceil(level_threshold / 5)
+        for i = 1, max_tech_level do
+            for name, _ in pairs(technology_upgrades) do
+                local tech_name = name .. math.min(i, 7)
+                local prerequisites = force.technologies[tech_name].prerequisites
+                for _, prerequisite in pairs(prerequisites) do
+                    force.technologies[prerequisite.name].researched = true
+                end
+                force.technologies[tech_name].researched = true
+            end
+        end
+    end
+end
+
 ---@param event EventData.on_entity_died
 local function on_entity_died(event)
     local entity = event.entity
@@ -845,6 +877,9 @@ local function on_entity_died(event)
             draw_animation("shimmer", shimmer_data, player)
             if player_data.level % 5 == 0 then
                 unlock_random_ability(player)
+            end
+            if level % 8 == 0 then
+                upgrade_damage_bonuses(level)
             end
         end
         update_kill_counter(player)
