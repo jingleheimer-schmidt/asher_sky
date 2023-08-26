@@ -25,6 +25,7 @@ local initialize_lobby = lobby_util.initialize_lobby
 local statistics_util = require("statistics_util")
 local update_statistics = statistics_util.update_statistics
 local initialize_statistics = statistics_util.initialize_statistics
+local new_attempt_stats_reset = statistics_util.new_attempt_stats_reset
 
 ---@param orientation float -- 0 to 1
 ---@param angle float -- 0 to 1, added to orientation
@@ -1109,6 +1110,7 @@ local function enter_arena()
                 player.teleport(position, "arena")
                 player.character_maximum_following_robot_count_bonus = 500
                 player.character_running_speed_modifier = 0.33
+                new_attempt_stats_reset(player.index)
             end
         end
     end

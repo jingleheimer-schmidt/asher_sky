@@ -598,7 +598,25 @@ local function initialize_statistics()
     end
 end
 
+---@param player_index uint
+local function new_attempt_stats_reset(player_index)
+    global.statistics = global.statistics or {}
+    local player_stats = global.statistics[player_index] --[[@type player_statistics]]
+    if player_stats then
+        player_stats.total.attempts = player_stats.total.attempts + 1
+        player_stats.last_attempt.attempts = 1
+        player_stats.last_attempt.kills = 0
+        player_stats.last_attempt.deaths = 0
+        player_stats.last_attempt.damage_dealt = 0
+        player_stats.last_attempt.damage_taken = 0
+        player_stats.last_attempt.damage_healed = 0
+        player_stats.last_attempt.top_kills_per_minute = 0
+        player_stats.last_attempt.victories = 0
+    end
+end
+
 return {
     update_statistics = update_statistics,
     initialize_statistics = initialize_statistics,
+    new_attempt_stats_reset = new_attempt_stats_reset,
 }
