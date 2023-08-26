@@ -2014,6 +2014,19 @@ local function on_tick(event)
                 spawn_new_enemy(lobby_surface, position, "small-biter")
             end
         end
+        if game.tick % (60 * 2) == 0 then
+            global.player_chat_colors = global.player_chat_colors or {}
+            for _, player in pairs(game.players) do
+                local current_color = player.chat_color
+                local previous_color = global.player_chat_colors[player.index]
+                if previous_color then
+                    if not (current_color.r == previous_color.r and current_color.g == previous_color.g and current_color.b == previous_color.b) then
+                        update_statistics()
+                    end
+                end
+                global.player_chat_colors[player.index] = current_color
+            end
+        end
     end
 
     -- arena mode --
