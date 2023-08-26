@@ -422,7 +422,7 @@ local ability_data = {
             "cooldown",
         },
     },
-    beam_chain = {
+    beam_blast = {
         filename = "60FPS_FA01_06_Shimmer.png",
         frame_count = 60,
         line_length = 5,

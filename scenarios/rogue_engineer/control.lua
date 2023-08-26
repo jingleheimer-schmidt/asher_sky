@@ -51,7 +51,7 @@ local function on_init()
         slash = true,
         rocket_launcher = true,
         pavement = true,
-        beam_chain = true,
+        beam_blast = true,
         discharge_defender = true,
         destroyer = true,
         landmine = true,
@@ -63,13 +63,13 @@ local function on_init()
         slash = true,
         rocket_launcher = true,
         -- pavement = true,
-        -- beam_chain = true,
+        beam_blast = true,
         -- discharge_defender = true,
         destroyer = true,
         -- landmine = true,
     }
     global.default_abilities = {
-        ability_1 = "beam_chain",
+        ability_1 = "beam_blast",
         ability_2 = "slash",
         ability_3 = "rocket_launcher",
     }
@@ -284,7 +284,7 @@ end
 
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
-local function activate_beam_chain(ability_data, player)
+local function activate_beam_blast(ability_data, player)
     local surface = player.surface
     local player_position = player.position
     local radius = ability_data.radius
@@ -373,7 +373,7 @@ local damage_functions = {
     slash = activate_slash_damage,
     rocket_launcher = activate_rocket_launcher,
     -- pavement = function() return end,
-    beam_chain = activate_beam_chain,
+    beam_blast = activate_beam_blast,
     discharge_defender = activate_discharge_defender,
     destroyer = activate_destroyer_capsule,
     landmine = activate_landmine_deployer,
@@ -386,7 +386,7 @@ local animation_functions = {
     slash = draw_animation,
     -- rocket_launcher = draw_animation,
     pavement = draw_pavement,
-    -- beam_chain = draw_animation,
+    -- beam_blast = draw_animation,
     -- discharge_defender = draw_animation,
     -- destroyer = draw_animation,
     -- landmine = draw_animation,
