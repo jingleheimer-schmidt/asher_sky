@@ -24,6 +24,7 @@ local initialize_lobby = lobby_util.initialize_lobby
 local set_ability = lobby_util.set_ability
 local set_difficulty = lobby_util.set_difficulty
 local set_starting_ability = lobby_util.set_starting_ability
+local randomize_starting_abilities = lobby_util.randomize_starting_abilities
 
 local statistics_util = require("statistics_util")
 local update_statistics = statistics_util.update_statistics
@@ -73,21 +74,6 @@ local function on_init()
         ability_3 = "rocket_launcher",
     }
     global.statistics = {}
-end
-
-local function randomize_starting_abilities()
-    -- local available_abilities = util.table.deepcopy(global.available_abilities)
-    local available_abilities = util.table.deepcopy(global.available_starting_abilities)
-    local default_abilities = global.default_abilities
-    local starting_ability = global.lobby_options.starting_ability
-    available_abilities[default_abilities[starting_ability]] = nil
-    for ability_number, ability_name in pairs(default_abilities) do
-        if not (ability_number == starting_ability) then
-            local random_ability = random_table_key(available_abilities)
-            global.default_abilities[ability_number] = random_ability
-            available_abilities[random_ability] = nil
-        end
-    end
 end
 
 ---@param animation_name string
