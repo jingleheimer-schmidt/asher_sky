@@ -430,10 +430,10 @@ local ability_data = {
         height = 192,
         target = "position",
         default_cooldown = 60 * 3.25,
-        default_radius = 15,
+        default_radius = 5,
         default_damage = 33,
         damage_multiplier = 1.5,
-        radius_multiplier = 2,
+        radius_multiplier = 3,
         cooldown_multiplier = 10,
         upgrade_order = {
             "cooldown",

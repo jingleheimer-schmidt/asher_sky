@@ -290,7 +290,7 @@ local function activate_beam_blast(ability_data, player)
     local radius = ability_data.radius
     local enemy_1 = surface.find_nearest_enemy{
         position = player_position,
-        max_distance = radius,
+        max_distance = radius * 3,
         force = player.force,
     }
     if not enemy_1 then return end
