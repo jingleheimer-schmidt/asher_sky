@@ -1286,6 +1286,19 @@ local function on_tick(event)
                 spawn_level_appropriate_enemy(player)
             end
         end
+        for _, player in pairs(game.connected_players) do
+            local position = player.position
+            global.previous_positions = global.previous_positions or {}
+            global.previous_positions[player.index] = global.previous_positions[player.index] or position
+            local previous_position = global.previous_positions[player.index]
+            if position.x == previous_position.x and position.y == previous_position.y then
+                local chance = 75/100
+                if math.random() < chance then
+                    spawn_level_appropriate_enemy(player)
+                end
+            end
+            global.previous_positions[player.index] = position
+        end
         local all_players_dead = true
         for _, player in pairs(game.connected_players) do
             if not (player.controller_type == defines.controllers.spectator) then
