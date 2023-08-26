@@ -1246,7 +1246,7 @@ local function on_tick(event)
         end
     end
 
-    -- arena mode --
+    -- lobby and arena --
 
     for _, player in pairs(connected_players) do
         if not player.character then break end
@@ -1273,6 +1273,8 @@ local function on_tick(event)
             global.healing_players[id] = nil
         end
     end
+
+    -- arena mode --
 
     if global.game_state == "arena" then
         local difficulties = {
