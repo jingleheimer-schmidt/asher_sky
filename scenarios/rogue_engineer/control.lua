@@ -690,55 +690,63 @@ local function spawn_level_appropriate_enemy(player)
     local level = global.arena_start_tick and math.floor((game.tick - global.arena_start_tick) / 60 / 60) or 0
     local enemy_name = "small-biter"
     local chance = 15 / 100
-    if level >= 2.5 then
-        if math.random() < chance - 1/100 then
-            enemy_name = "medium-biter"
-        end
-    end
-    if level >= 5 then
-        if math.random() < chance - 2/100 then
+    if level >= 2 then
+        if math.random() < (chance - 1/100) then
             enemy_name = "small-spitter"
         end
     end
-    if level >= 7.5 then
-        if math.random() < chance - 3/100 then
-            enemy_name = "big-biter"
+    if level >= 4 then
+        if math.random() < (chance - 2/100) then
+            enemy_name = "medium-biter"
         end
     end
-    if level >= 10 then
-        if math.random() < chance - 4/100 then
+    if level >= 6 then
+        if math.random() < (chance - 3/100) then
             enemy_name = "medium-spitter"
         end
     end
-    if level >= 12.5 then
-        if math.random() < chance - 5/100 then
-            enemy_name = "behemoth-biter"
+    if level >= 8 then
+        if math.random() < (chance - 4/100) then
+            enemy_name = "small-worm-turret"
         end
     end
-    if level >= 15 then
-        if math.random() < chance - 6/100 then
+    if level >= 10 then
+        if math.random() < (chance - 5/100) then
+            enemy_name = "big-biter"
+        end
+    end
+    if level >= 12 then
+        if math.random() < (chance - 6/100) then
             enemy_name = "big-spitter"
         end
     end
-    if level >= 17.5 then
-        if math.random() < chance - 7/100 then
-            enemy_name = "small-worm"
+    if level >= 14 then
+        if math.random() < (chance - 7/100) then
+            enemy_name = "medium-worm-turret"
         end
     end
-    if level >= 20 then
-        if math.random() < chance - 8/100 then
+    if level >=16 then
+        if math.random() < (chance - 8/100) then
+            enemy_name = "behemoth-biter"
+        end
+    end
+    if level >= 18 then
+        if math.random() < (chance - 9/100) then
             enemy_name = "behemoth-spitter"
         end
     end
-    if level >= 22.5 then
-        if math.random() < chance - 9/100 then
-            enemy_name = "medium-worm"
+    if level >= 20 then
+        if math.random() < (chance - 10/100) then
+            enemy_name = "big-worm-turret"
+        end
+    end
+    if level >= 22 then
+        if math.random() < (chance - 11/100) then
+            enemy_name = "behemoth-worm-turret"
         end
     end
     if level >= 25 then
-        if math.random() < chance - 10/100 then
-            enemy_name = "big-worm"
-        end
+        enemy_name = "behemoth-worm-turret"
     end
     local radius = math.random(30, 50)
     local position = get_random_position_on_circumference(player.position, radius)
