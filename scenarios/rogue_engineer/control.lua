@@ -2196,6 +2196,7 @@ local function on_tick(event)
             game.forces.player.reset()
             randomize_starting_abilities()
             update_lobby_text(game.surfaces.lobby)
+            update_statistics()
         end
     end
 end
