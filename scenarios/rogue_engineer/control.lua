@@ -729,6 +729,8 @@ local function on_player_died(event)
             player_stats.total.deaths = player_stats.total.deaths + 1
             player_stats.last_attempt.deaths = player_stats.last_attempt.deaths + 1
         end
+        global.remaining_lives = global.remaining_lives or {}
+        global.remaining_lives[player.index] = global.remaining_lives[player.index] or 1
         local text = {"", "Engineer down! ", global.remaining_lives[player.index] - 1, " lives remaining"}
 
         if global.arena_start_tick - game.tick >= 60 * 60 * 25 then
