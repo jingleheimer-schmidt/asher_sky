@@ -3,7 +3,8 @@ local debug_mode = false
 
 require("util")
 local constants = require("__asher_sky__/constants")
-local tile_tiers = constants.tile_tiers
+local tile_tiers_by_name = constants.tile_tiers_by_name
+local tile_tiers_by_order = constants.tile_tiers_by_order
 local difficulty_tile_names = constants.difficulty_tile_names
 local difficulty_offsets = constants.difficulty_offsets
 local ability_offsets = constants.ability_offsets
@@ -139,53 +140,24 @@ local function draw_pavement(animation_name, ability_data, player, position)
     local surface = player.surface
     local tile = surface.get_tile(position.x, position.y)
     local tile_name = tile.name
-    local tile_tier = tile_tiers[tile_name]
-    if not tile_tier then
-        local tiles = {
-            {name = "stone-path", position = {x = position.x, y = position.y}}
-        }
-        if ability_data.radius > 1 then
-            local radius = ability_data.radius - 1
-            for x = -radius, radius do
-                for y = -radius, radius do
-                    if x ~= 0 or y ~= 0 then
-                        table.insert(tiles, {name = "stone-path", position = {x = position.x + x, y = position.y + y}})
-                    end
+    local tile_tier = tile_tiers_by_name[tile_name]
+    tile_tier = math.min(ability_data.level, (tile_tier or 0))
+    local next_tile_name = tile_tiers_by_order[tile_tier + 1]
+    if not next_tile_name then return end
+    local tiles = {
+        {name = next_tile_name, position = {x = position.x, y = position.y}}
+    }
+    if ability_data.radius > 1 then
+        local radius = ability_data.radius - 1
+        for x = -radius, radius do
+            for y = -radius, radius do
+                if x ~= 0 or y ~= 0 then
+                    table.insert(tiles, {name = next_tile_name, position = {x = position.x + x, y = position.y + y}})
                 end
             end
         end
-        surface.set_tiles(tiles)
-    elseif tile_tier == 1 then
-        local tiles = {
-            {name = "concrete", position = {x = position.x, y = position.y}}
-        }
-        if ability_data.radius > 1 then
-            local radius = ability_data.radius - 1
-            for x = -radius, radius do
-                for y = -radius, radius do
-                    if x ~= 0 or y ~= 0 then
-                        table.insert(tiles, {name = "concrete", position = {x = position.x + x, y = position.y + y}})
-                    end
-                end
-            end
-        end
-        surface.set_tiles(tiles)
-    elseif tile_tier == 2 then
-        local tiles = {
-            {name = "refined-concrete", position = {x = position.x, y = position.y}}
-        }
-        if ability_data.radius > 1 then
-            local radius = ability_data.radius - 1
-            for x = -radius, radius do
-                for y = -radius, radius do
-                    if x ~= 0 or y ~= 0 then
-                        table.insert(tiles, {name = "refined-concrete", position = {x = position.x + x, y = position.y + y}})
-                    end
-                end
-            end
-        end
-        surface.set_tiles(tiles)
     end
+    surface.set_tiles(tiles)
 end
 
 ---@param name string

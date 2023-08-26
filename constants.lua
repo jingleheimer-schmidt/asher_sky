@@ -1,9 +1,25 @@
 
-local tile_tiers = {
+local tile_tiers_by_name = {
     ["stone-path"] = 1,
     ["concrete"] = 2,
     ["refined-concrete"] = 3,
+    ["red-refined-concrete"] = 4,
+    ["green-refined-concrete"] = 5,
+    ["blue-refined-concrete"] = 6,
+    ["orange-refined-concrete"] = 7,
+    ["yellow-refined-concrete"] = 8,
+    ["pink-refined-concrete"] = 9,
+    ["purple-refined-concrete"] = 10,
+    ["black-refined-concrete"] = 11,
+    ["brown-refined-concrete"] = 12,
+    ["cyan-refined-concrete"] = 13,
+    ["acid-refined-concrete"] = 14,
 }
+
+local tile_tiers_by_order = {}
+for tile_name, order in pairs(tile_tiers_by_name) do
+    table.insert(tile_tiers_by_order, order, tile_name)
+end
 
 local difficulty_offsets = {
     easy = { x = -7, y = -8 },
@@ -535,7 +551,8 @@ local ability_data = {
 
 return {
     ability_data = ability_data,
-    tile_tiers = tile_tiers,
+    tile_tiers_by_name = tile_tiers_by_name,
+    tile_tiers_by_order = tile_tiers_by_order,
     difficulty_offsets = difficulty_offsets,
     ability_offsets = ability_offsets,
     top_right_offset = top_right_offset,
