@@ -2193,6 +2193,7 @@ local function on_tick(event)
             global.kill_counters = nil
             global.remaining_lives = nil
             global.kills_per_minute_counters = nil
+            game.forces.player.reset()
             randomize_starting_abilities()
             update_lobby_text(game.surfaces.lobby)
         end
