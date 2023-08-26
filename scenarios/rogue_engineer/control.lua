@@ -55,6 +55,7 @@ local function on_init()
         discharge_defender = true,
         destroyer = true,
         landmine = true,
+        poison_capsule = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -67,10 +68,11 @@ local function on_init()
         -- discharge_defender = true,
         destroyer = true,
         -- landmine = true,
+        poison_capsule = true,
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
-        ability_2 = "slash",
+        ability_2 = "poison_capsule",
         ability_3 = "rocket_launcher",
     }
     global.statistics = {}
@@ -366,6 +368,51 @@ local function activate_landmine_deployer(ability_data, player)
     ---@diagnostic enable: missing-fields
 end
 
+---@param direction defines.direction
+---@return uint
+local function direction_to_angle(direction)
+    if direction == defines.direction.north then
+        return 0 * 180
+    elseif direction == defines.direction.northeast then
+        return 0.25 * 180
+    elseif direction == defines.direction.east then
+        return 0.5 * 180
+    elseif direction == defines.direction.southeast then
+        return 0.75 * 180
+    elseif direction == defines.direction.south then
+        return 1 * 180
+    elseif direction == defines.direction.southwest then
+        return 1.25 * 180
+    elseif direction == defines.direction.west then
+        return 1.5 * 180
+    elseif direction == defines.direction.northwest then
+        return 1.75 * 180
+    else
+        return 0 * 180
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_poison_capsule_deployer(ability_data, player)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local angle = direction_to_angle(player.character.direction) * 180 + 90
+    local position = get_position_on_circumference(player.position, radius, angle)
+    ---@diagnostic disable: missing-fields
+    surface.create_entity{
+        name = "poison-capsule",
+        position = position,
+        force = player.force,
+        target = position,
+        source = player.character,
+        character = player.character,
+        player = player,
+        speed = 1/50,
+    }
+    ---@diagnostic enable: missing-fields
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -377,6 +424,7 @@ local damage_functions = {
     discharge_defender = activate_discharge_defender,
     destroyer = activate_destroyer_capsule,
     landmine = activate_landmine_deployer,
+    poison_capsule = activate_poison_capsule_deployer,
 }
 
 local animation_functions = {
@@ -390,6 +438,7 @@ local animation_functions = {
     -- discharge_defender = draw_animation,
     -- destroyer = draw_animation,
     -- landmine = draw_animation,
+    -- poison_capsule = draw_animation,
 }
 
 ---@param text string|LocalisedString
