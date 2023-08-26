@@ -1316,6 +1316,121 @@ local function initialize_lobby(lobby_surface)
     end
 end
 
+local function update_statistics()
+    local players = game.players
+    local statistics = global.statistics --[[@type table<uint, player_statistics>]]
+    local render_ids = global.statistics_render_ids
+    local player_total_scores = {}
+    local player_last_scores = {}
+    for _, player in pairs(players) do
+        local player_index = player.index
+        local player_stats = statistics[player_index]
+        local total_score = (player_stats.total.kills / (player_stats.total.deaths + 1)) * (player_stats.total.victories + 1 / (player_stats.total.attempts + 1))
+        player_total_scores[player_index] = total_score
+        local last_score = (player_stats.last_attempt.kills / (player_stats.last_attempt.deaths + 1)) * (player_stats.last_attempt.victories + 1 / (player_stats.last_attempt.attempts + 1))
+        player_last_scores[player_index] = last_score
+    end
+    local sorted_total_scores = {}
+    local sorted_last_scores = {}
+    for player_index, score in pairs(player_total_scores) do
+        table.insert(sorted_total_scores, {player_index = player_index, score = score})
+    end
+    for player_index, score in pairs(player_last_scores) do
+        table.insert(sorted_last_scores, {player_index = player_index, score = score})
+    end
+    table.sort(sorted_total_scores, function(a, b) return a.score > b.score end)
+    table.sort(sorted_last_scores, function(a, b) return a.score > b.score end)
+    local player_1 = sorted_total_scores[1] and sorted_total_scores[1].player_index
+    local player_2 = sorted_total_scores[2] and sorted_total_scores[2].player_index
+    local player_3 = sorted_total_scores[3] and sorted_total_scores[3].player_index
+
+    local player_1_stats = statistics[player_1]
+    local player_2_stats = statistics[player_2]
+    local player_3_stats = statistics[player_3]
+
+    if player_1 then
+        for name, render_id in pairs(render_ids) do
+            if name:find("player_1") and name:find("title") then
+                if rendering.is_valid(render_id) then
+                    rendering.set_color(render_id, players[player_1].chat_color)
+                end
+            end
+        end
+        rendering.set_text(render_ids.player_1_name, players[player_1].name)
+        rendering.set_color(render_ids.player_1_name, players[player_1].chat_color)
+        rendering.set_text(render_ids.player_1_overall_score_total_value, sorted_total_scores[player_1] and math.ceil(sorted_total_scores[player_1].score))
+        rendering.set_text(render_ids.player_1_overall_score_last_value, player_last_scores[player_1] and math.ceil(player_last_scores[player_1]))
+        rendering.set_text(render_ids.player_1_total_kills_total_value, player_1_stats.total.kills)
+        rendering.set_text(render_ids.player_1_total_kills_last_value, player_1_stats.last_attempt.kills)
+        rendering.set_text(render_ids.player_1_total_deaths_total_value, player_1_stats.total.deaths)
+        rendering.set_text(render_ids.player_1_total_deaths_last_value, player_1_stats.last_attempt.deaths)
+        rendering.set_text(render_ids.player_1_top_kills_per_minute_total_value, player_1_stats.total.top_kills_per_minute)
+        rendering.set_text(render_ids.player_1_top_kills_per_minute_last_value, player_1_stats.last_attempt.top_kills_per_minute)
+        rendering.set_text(render_ids.player_1_arena_attempts_total_value, player_1_stats.total.attempts)
+        rendering.set_text(render_ids.player_1_arena_attempts_last_value, player_1_stats.last_attempt.attempts)
+        rendering.set_text(render_ids.player_1_arena_victories_total_value, player_1_stats.total.victories)
+        rendering.set_text(render_ids.player_1_arena_victories_last_value, player_1_stats.last_attempt.victories)
+    end
+    if player_2 then
+        for name, render_id in pairs(render_ids) do
+            if name:find("player_2") and name:find("title") then
+                if rendering.is_valid(render_id) then
+                    rendering.set_color(render_id, players[player_2].chat_color)
+                end
+            end
+        end
+        rendering.set_text(render_ids.player_2_name, players[player_2].name)
+        rendering.set_color(render_ids.player_2_name, players[player_2].chat_color)
+        rendering.set_text(render_ids.player_2_overall_score_total_value, sorted_total_scores[player_2] and math.ceil(sorted_total_scores[player_2].score))
+        rendering.set_text(render_ids.player_2_overall_score_last_value, player_last_scores[player_2] and math.ceil(player_last_scores[player_2]))
+        rendering.set_text(render_ids.player_2_total_kills_total_value, player_2_stats.total.kills)
+        rendering.set_text(render_ids.player_2_total_kills_last_value, player_2_stats.last_attempt.kills)
+        rendering.set_text(render_ids.player_2_total_deaths_total_value, player_2_stats.total.deaths)
+        rendering.set_text(render_ids.player_2_total_deaths_last_value, player_2_stats.last_attempt.deaths)
+        rendering.set_text(render_ids.player_2_top_kills_per_minute_total_value, player_2_stats.total.top_kills_per_minute)
+        rendering.set_text(render_ids.player_2_top_kills_per_minute_last_value, player_2_stats.last_attempt.top_kills_per_minute)
+        rendering.set_text(render_ids.player_2_arena_attempts_total_value, player_2_stats.total.attempts)
+        rendering.set_text(render_ids.player_2_arena_attempts_last_value, player_2_stats.last_attempt.attempts)
+        rendering.set_text(render_ids.player_2_arena_victories_total_value, player_2_stats.total.victories)
+        rendering.set_text(render_ids.player_2_arena_victories_last_value, player_2_stats.last_attempt.victories)
+    end
+    if player_3 then
+        for name, render_id in pairs(render_ids) do
+            if name:find("player_3") and name:find("title") then
+                if rendering.is_valid(render_id) then
+                    rendering.set_color(render_id, players[player_3].chat_color)
+                end
+            end
+        end
+        rendering.set_text(render_ids.player_3_name, players[player_3].name)
+        rendering.set_color(render_ids.player_3_name, players[player_3].chat_color)
+        rendering.set_text(render_ids.player_3_overall_score_total_value, sorted_total_scores[player_3] and math.ceil(sorted_total_scores[player_3].score))
+        rendering.set_text(render_ids.player_3_overall_score_last_value, player_last_scores[player_3] and math.ceil(player_last_scores[player_3]))
+        rendering.set_text(render_ids.player_3_total_kills_total_value, player_3_stats.total.kills)
+        rendering.set_text(render_ids.player_3_total_kills_last_value, player_3_stats.last_attempt.kills)
+        rendering.set_text(render_ids.player_3_total_deaths_total_value, player_3_stats.total.deaths)
+        rendering.set_text(render_ids.player_3_total_deaths_last_value, player_3_stats.last_attempt.deaths)
+        rendering.set_text(render_ids.player_3_top_kills_per_minute_total_value, player_3_stats.total.top_kills_per_minute)
+        rendering.set_text(render_ids.player_3_top_kills_per_minute_last_value, player_3_stats.last_attempt.top_kills_per_minute)
+        rendering.set_text(render_ids.player_3_arena_attempts_total_value, player_3_stats.total.attempts)
+        rendering.set_text(render_ids.player_3_arena_attempts_last_value, player_3_stats.last_attempt.attempts)
+        rendering.set_text(render_ids.player_3_arena_victories_total_value, player_3_stats.total.victories)
+        rendering.set_text(render_ids.player_3_arena_victories_last_value, player_3_stats.last_attempt.victories)
+    end
+end
+
+---@param event EventData.on_entity_color_changed
+local function on_entity_color_changed(event)
+    local entity = event.entity
+    if entity.type == "character" then
+        if entity.player then
+            update_statistics()
+        end
+    end
+end
+
+script.on_event(defines.events.on_entity_color_changed, on_entity_color_changed)
+
 local function initialize_statistics()
 
     -- idea: sort all the players by their "score", maybe some addition of their stats, and the populate predefined slots for rendering the statistics text with the top 3 or so players. since idk how to make line breaks, and i'll probably need to make a new rendering for each line of text.
@@ -1811,6 +1926,7 @@ local function initialize_statistics()
                 scale = 2,
             },
         }
+        update_statistics()
     end
 end
 
