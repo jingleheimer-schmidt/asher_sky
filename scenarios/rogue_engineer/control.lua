@@ -397,7 +397,7 @@ end
 local function activate_poison_capsule_deployer(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
-    local angle = direction_to_angle(player.character.direction) * 180 + 90
+    local angle = direction_to_angle(player.character.direction) + 180
     local position = get_position_on_circumference(player.position, radius, angle)
     ---@diagnostic disable: missing-fields
     surface.create_entity{
@@ -408,7 +408,7 @@ local function activate_poison_capsule_deployer(ability_data, player)
         source = player.character,
         character = player.character,
         player = player,
-        speed = 1/50,
+        speed = 1/500,
     }
     ---@diagnostic enable: missing-fields
 end
