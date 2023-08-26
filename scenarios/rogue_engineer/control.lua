@@ -771,6 +771,14 @@ local function on_player_died(event)
             player_stats.last_attempt.deaths = player_stats.last_attempt.deaths + 1
         end
         local text = {"", "Engineer down! ", global.remaining_lives[player.index] - 1, " lives remaining"}
+
+        if global.arena_start_tick - game.tick >= 60 * 60 * 25 then
+            text = {"", "Victory lap!"}
+            player_stats.total.victories = player_stats.total.victories + 1
+            player_stats.last_attempt.victories = player_stats.last_attempt.victories + 1
+            global.remaining_lives[player.index] = 0
+        end
+
         draw_upgrade_text(text, player, { x = 0, y = 3 })
     end
 end
