@@ -877,7 +877,7 @@ local function on_entity_died(event)
             upgrade_random_ability(player)
             local shimmer_data = { radius = 2, level = 1, cooldown = 0, damage = 0 }
             draw_animation("shimmer", shimmer_data, player)
-            if player_data.level % 5 == 0 then
+            if level % 7 == 0 then
                 unlock_random_ability(player)
             end
             if level % 8 == 0 then
