@@ -18,6 +18,9 @@ local raw_abilities_data = constants.ability_data
 local lobby_util = require("lobby_util")
 local update_lobby_tiles = lobby_util.update_lobby_tiles
 local reset_lobby_tiles = lobby_util.reset_lobby_tiles
+local create_lobby_text = lobby_util.create_lobby_text
+local update_lobby_text = lobby_util.update_lobby_text
+local initialize_lobby = lobby_util.initialize_lobby
 
 ---@param orientation float -- 0 to 1
 ---@param angle float -- 0 to 1, added to orientation
@@ -1130,139 +1133,6 @@ local function enter_arena()
                 end
             end
         end
-    end
-end
-
----@param lobby_surface LuaSurface
-local function create_lobby_text(lobby_surface)
-    global.lobby_text = {
-        start_level = {
-            top = rendering.draw_text{
-                text = "Enter",
-                surface = lobby_surface,
-                target = {x = 21, y = -2},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-            bottom = rendering.draw_text{
-                text = "Arena",
-                surface = lobby_surface,
-                target = {x = 21, y = 0},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            }
-        },
-        difficulties = {
-            easy = rendering.draw_text{
-                text = "Easy",
-                surface = lobby_surface,
-                target = {x = -7, y = -9},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-            normal = rendering.draw_text{
-                text = "Normal",
-                surface = lobby_surface,
-                target = {x = 0, y = -9},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-            hard = rendering.draw_text{
-                text = "Hard",
-                surface = lobby_surface,
-                target = {x = 7, y = -9},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-        },
-        starting_abilities = {
-            ability_1 = rendering.draw_text{
-                text = {"ability_locale." .. global.default_abilities.ability_1},
-                surface = lobby_surface,
-                target = {x = -7, y = 7},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-            ability_2 = rendering.draw_text{
-                text = {"ability_locale." .. global.default_abilities.ability_2},
-                surface = lobby_surface,
-                target = {x = 0, y = 7},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-            ability_3 = rendering.draw_text{
-                text = {"ability_locale." .. global.default_abilities.ability_3},
-                surface = lobby_surface,
-                target = {x = 7, y = 7},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                scale = 3,
-                draw_on_ground = true,
-            },
-        },
-        titles = {
-            difficulty = rendering.draw_text{
-                text = "Arena Difficulty",
-                surface = lobby_surface,
-                target = {x = 0, y = -14},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                vertical_alignment = "middle",
-                scale = 4,
-                draw_on_ground = true,
-            },
-            starting_ability = rendering.draw_text{
-                text = "Primary Ability",
-                surface = lobby_surface,
-                target = {x = 0, y = 14},
-                color = {r = 1, g = 1, b = 1},
-                alignment = "center",
-                vertical_alignment = "middle",
-                scale = 4,
-                draw_on_ground = true,
-            },
-        }
-    }
-end
-
----@param lobby_surface LuaSurface
-local function update_lobby_text(lobby_surface)
-    local options = global.lobby_options
-    local lobby_text = global.lobby_text
-    local starting_abilities = lobby_text.starting_abilities
-    for ability_number, render_id in pairs(starting_abilities) do
-        if rendering.is_valid(render_id) then
-            rendering.set_text(render_id, {"ability_locale." .. global.default_abilities[ability_number]})
-        end
-    end
-end
-
----@param lobby_surface LuaSurface
-local function initialize_lobby(lobby_surface)
-    if not global.lobby_text then
-        create_lobby_text(lobby_surface)
-    end
-    if not global.lobby_options then
-        lobby_surface.always_day = true
-        global.lobby_options = {
-            difficulty = "easy",
-            starting_ability = "ability_2",
-        }
-        update_lobby_tiles()
     end
 end
 
