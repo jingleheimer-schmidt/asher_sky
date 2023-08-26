@@ -122,14 +122,14 @@ local function draw_pavement(animation_name, ability_data, player, position)
     local next_tile_name = tile_tiers_by_order[normalized_tile_tier + 1]
     if not next_tile_name then return end
     local tiles = {
-        {name = next_tile_name, position = {x = position.x, y = position.y}}
+        { name = next_tile_name, position = { x = position.x, y = position.y } }
     }
     if ability_data.radius > 1 then
         local radius = ability_data.radius - 1
         for x = -radius, radius do
             for y = -radius, radius do
                 if x ~= 0 or y ~= 0 then
-                    table.insert(tiles, {name = next_tile_name, position = {x = position.x + x, y = position.y + y}})
+                    table.insert(tiles, { name = next_tile_name, position = { x = position.x + x, y = position.y + y } })
                 end
             end
         end
