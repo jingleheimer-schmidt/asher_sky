@@ -60,7 +60,9 @@ end
 ---@param direction defines.direction
 ---@return number -- radians
 local function direction_to_angle(direction)
-    return (direction * 0.25) * 2 * math.pi
+    return (direction * 0.125) * 2 * math.pi
+end
+
 ---@param direction defines.direction
 ---@return defines.direction
 local function flip_direction(direction)
