@@ -451,7 +451,7 @@ local function draw_upgrade_text(text, player, offset)
         text = text,
         surface = player.surface,
         target = position,
-        color = player.color,
+        color = player.chat_color,
         time_to_live = 60 * 10,
         scale = 3.5,
         -- draw_on_ground = true,
