@@ -61,6 +61,10 @@ end
 ---@return number -- radians
 local function direction_to_angle(direction)
     return (direction * 0.25) * 2 * math.pi
+---@param direction defines.direction
+---@return defines.direction
+local function flip_direction(direction)
+    return (direction + 4) % 8
 end
 
 return {
@@ -70,5 +74,6 @@ return {
     random_table_value = random_table_value,
     random_table_key = random_table_key,
     offset_vector = offset_vector,
-    direction_to_angle = direction_to_angle
+    direction_to_angle = direction_to_angle,
+    flip_direction = flip_direction
 }

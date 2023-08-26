@@ -40,6 +40,7 @@ local random_table_value = general_util.random_table_value
 local random_table_key = general_util.random_table_key
 local offset_vector = general_util.offset_vector
 local direction_to_angle = general_util.direction_to_angle
+local flip_direction = general_util.flip_direction
 
 local function on_init()
     global.player_data = {}
@@ -79,7 +80,7 @@ local function on_init()
     global.default_abilities = {
         ability_1 = "beam_blast",
         ability_2 = "rocket_launcher",
-        ability_3 = "punch",
+        ability_3 = "slowdown_capsule",
     }
     global.statistics = {}
 end
@@ -416,7 +417,7 @@ end
 local function activate_poison_capsule_deployer(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
-    local opposite_direction = math.abs(player.character.direction - 4)
+    local opposite_direction = flip_direction(player.character.direction)
     local angle = direction_to_angle(opposite_direction)
     local position = get_position_on_circumference(player.position, radius, angle)
     ---@diagnostic disable: missing-fields
