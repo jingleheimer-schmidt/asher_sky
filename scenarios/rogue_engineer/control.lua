@@ -2167,7 +2167,7 @@ local function on_tick(event)
                 all_players_dead = false
             end
             if not (player.controller_type == defines.controllers.character) then
-                local nearest_enemy = player.surface.find_nearest_enemy{position = player.position, max_distance = 500}
+                local nearest_enemy = player.surface.find_nearest_enemy{position = player.position, max_distance = 125}
                 if nearest_enemy then
                     ---@diagnostic disable: missing-fields
                     player.surface.create_entity{
