@@ -135,6 +135,24 @@ local function draw_pavement(animation_name, ability_data, player, position)
     surface.set_tiles(tiles)
 end
 
+local function refill_infividual_turret_ammo(turret, ability_data)
+    local inventory = turret.get_inventory(defines.inventory.turret_ammo)
+        local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
+        local ammo_items = { name = ammo_name, count = math.max(5, ability_data.level)}
+        if inventory and inventory.can_insert(ammo_items) then
+            inventory.insert(ammo_items)
+            local localised_name = {"item-name." .. ammo_name}
+            ---@diagnostic disable: missing-fields
+            turret.surface.create_entity{
+                name = "flying-text",
+                position = turret.position,
+                text = {"", "+", ammo_items.count, " ", localised_name},
+                color = {r = 1, g = 1, b = 1},
+            }
+            ---@diagnostic enable: missing-fields
+        end
+end
+
 ---@param animation_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
@@ -148,21 +166,7 @@ local function refill_turret_ammo(animation_name, ability_data, player, position
     }
     if not nearby_turrets then return end
     for _, turret in pairs(nearby_turrets) do
-        local inventory = turret.get_inventory(defines.inventory.turret_ammo)
-        local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
-        local ammo_items = { name = ammo_name, count = math.max(25, ability_data.level * 5)}
-        if inventory and inventory.can_insert(ammo_items) then
-            inventory.insert(ammo_items)
-            local localised_name = {"item-name." .. ammo_name}
-            ---@diagnostic disable: missing-fields
-            turret.surface.create_entity{
-                name = "flying-text",
-                position = turret.position,
-                text = {"", "+", ammo_items.count, " ", localised_name},
-                color = {r = 1, g = 1, b = 1},
-            }
-            ---@diagnostic enable: missing-fields
-        end
+        refill_infividual_turret_ammo(turret, ability_data)
     end
 end
 
@@ -491,21 +495,7 @@ local function activate_gun_turret_technician(ability_data, player)
         }
         ---@diagnostic enable: missing-fields
         if turret then
-            local inventory = turret.get_inventory(defines.inventory.turret_ammo)
-            local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
-            local ammo_items = { name = ammo_name, count = math.max(25, ability_data.level * 5)}
-            if inventory and inventory.can_insert(ammo_items) then
-                inventory.insert(ammo_items)
-                local localised_name = {"", "item-name.", ammo_name}
-                ---@diagnostic disable: missing-fields
-                turret.surface.create_entity{
-                    name = "flying-text",
-                    position = turret.position,
-                    text = {"", "+", ammo_items.count, " ", localised_name},
-                    color = {r = 1, g = 1, b = 1},
-                }
-                ---@diagnostic enable: missing-fields
-            end
+            refill_infividual_turret_ammo(turret, ability_data)
         end
     end
 end
