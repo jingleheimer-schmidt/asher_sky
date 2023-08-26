@@ -2150,11 +2150,11 @@ local function on_tick(event)
 
     if global.game_state == "arena" then
         local difficulties = {
-            easy = 2,
-            normal = 1,
-            hard = 0.5,
+            easy = 40,
+            normal = 25,
+            hard = 10,
         }
-        local balance = difficulties[global.lobby_options.difficulty] * 60
+        local balance = difficulties[global.lobby_options.difficulty]
         if game.tick % balance == 0 then
             for _, player in pairs(game.connected_players) do
                 update_kills_per_minute_counter(player)
