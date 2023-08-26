@@ -626,6 +626,12 @@ local function update_kill_counter(player)
         kill_counter.render_id = create_kill_counter_rendering(player)
     end
     rendering.set_text(kill_counter.render_id, "Kills: " .. kill_counter.kill_count)
+
+    local player_stats = global.statistics[player_index] --[[@type player_statistics]]
+    if player_stats then
+        player_stats.total.kills = player_stats.total.kills + 1
+        player_stats.last_attempt.kills = player_stats.last_attempt.kills + 1
+    end
 end
 
 local function update_kills_per_minute_counter(player)
@@ -653,6 +659,12 @@ local function update_kills_per_minute_counter(player)
         color = "red"
     end
     rendering.set_text(kills_per_minute_counter.render_id, "Kills per minute: [color=" .. color .. "]" .. kills_per_minute .. "[/color]")
+
+    local player_stats = global.statistics[player_index] --[[@type player_statistics]]
+    if player_stats then
+        player_stats.total.top_kills_per_minute = math.max(player_stats.total.top_kills_per_minute, kills_per_minute)
+        player_stats.last_attempt.top_kills_per_minute = math.max(player_stats.last_attempt.top_kills_per_minute, kills_per_minute)
+    end
 end
 
 ---@param surface LuaSurface
