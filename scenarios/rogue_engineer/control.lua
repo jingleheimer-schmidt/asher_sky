@@ -1082,19 +1082,25 @@ local function initialize_player_data(player)
     local ability_name = global.default_abilities[starting_ability]
     set_ability(ability_name, player)
     global.statistics[player.index] = global.statistics[player.index] or {
-        total = {
+        total = { --[[@type player_statistics_data]]
             kills = 0,
             deaths = 0,
             damage_dealt = 0,
             damage_taken = 0,
             damage_healed = 0,
+            attempts = 0,
+            victories = 0,
+            top_kills_per_minute = 0,
         },
-        last_attempt = {
+        last_attempt = { --[[@type player_statistics_data]]
             kills = 0,
             deaths = 0,
             damage_dealt = 0,
             damage_taken = 0,
             damage_healed = 0,
+            attempts = 0,
+            victories = 0,
+            top_kills_per_minute = 0,
         },
     }
 end
