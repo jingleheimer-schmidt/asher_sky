@@ -408,27 +408,9 @@ local function activate_landmine_deployer(ability_data, player)
 end
 
 ---@param direction defines.direction
----@return uint
+---@return number -- radians
 local function direction_to_angle(direction)
-    if direction == defines.direction.north then
-        return 0 * 180
-    elseif direction == defines.direction.northeast then
-        return 0.25 * 180
-    elseif direction == defines.direction.east then
-        return 0.5 * 180
-    elseif direction == defines.direction.southeast then
-        return 0.75 * 180
-    elseif direction == defines.direction.south then
-        return 1 * 180
-    elseif direction == defines.direction.southwest then
-        return 1.25 * 180
-    elseif direction == defines.direction.west then
-        return 1.5 * 180
-    elseif direction == defines.direction.northwest then
-        return 1.75 * 180
-    else
-        return 0 * 180
-    end
+    return (direction * 0.25) * 2 * math.pi
 end
 
 ---@param ability_data active_ability_data
