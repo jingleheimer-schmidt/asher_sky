@@ -520,7 +520,6 @@ local animation_functions = {
 ---@param player LuaPlayer
 ---@param offset Vector?
 local function draw_upgrade_text(text, player, offset)
-    -- local position = get_random_position_on_circumference(player.position, 5)
     local position = player.position
     if offset then
         position.x = position.x + offset.x
@@ -533,7 +532,6 @@ local function draw_upgrade_text(text, player, offset)
         color = player.chat_color,
         time_to_live = 60 * 10,
         scale = 3.5,
-        -- draw_on_ground = true,
         alignment = "center",
     })
 end
