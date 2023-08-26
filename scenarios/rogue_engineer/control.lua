@@ -858,7 +858,7 @@ local function on_entity_died(event)
     end
     local cause = event.cause
     local cause_type = cause and cause.type
-    local player = cause and cause_type == "character" and cause.player or nil
+    local player = cause and (cause_type == "character") and cause.player or nil
     if cause and cause_type == "combat-robot" then
         player = cause.combat_robot_owner and cause.combat_robot_owner.player
     end
