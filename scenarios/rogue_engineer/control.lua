@@ -1162,7 +1162,7 @@ local function on_tick(event)
     if global.game_state == "lobby" then
 
         local lobby_surface = game.surfaces.lobby
-        initialize_lobby(lobby_surface)
+        initialize_lobby()
         for _, player in pairs(game.connected_players) do
             local position = player.position
             if not (player.surface_index == lobby_surface.index) then
@@ -1326,7 +1326,7 @@ local function on_tick(event)
             global.kills_per_minute_counters = nil
             game.forces.player.reset()
             randomize_starting_abilities()
-            update_lobby_text(game.surfaces.lobby)
+            update_lobby_text()
             update_statistics()
         end
     end

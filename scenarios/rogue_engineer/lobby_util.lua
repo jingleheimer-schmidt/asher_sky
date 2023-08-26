@@ -176,8 +176,8 @@ local function update_lobby_tiles()
     surface.set_tiles(tiles)
 end
 
----@param lobby_surface LuaSurface
-local function create_lobby_text(lobby_surface)
+local function create_lobby_text()
+    local lobby_surface = game.surfaces.lobby
     global.lobby_text = {
         start_level = {
             top = rendering.draw_text{
@@ -282,9 +282,7 @@ local function create_lobby_text(lobby_surface)
     }
 end
 
----@param lobby_surface LuaSurface
-local function update_lobby_text(lobby_surface)
-    local options = global.lobby_options
+local function update_lobby_text()
     local lobby_text = global.lobby_text
     local starting_abilities = lobby_text.starting_abilities
     for ability_number, render_id in pairs(starting_abilities) do
@@ -294,10 +292,10 @@ local function update_lobby_text(lobby_surface)
     end
 end
 
----@param lobby_surface LuaSurface
-local function initialize_lobby(lobby_surface)
+local function initialize_lobby()
+    local lobby_surface = game.surfaces.lobby
     if not global.lobby_text then
-        create_lobby_text(lobby_surface)
+        create_lobby_text()
     end
     if not global.lobby_options then
         lobby_surface.always_day = true
