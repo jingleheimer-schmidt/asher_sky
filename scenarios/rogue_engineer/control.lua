@@ -1542,9 +1542,6 @@ script.on_event(defines.events.on_entity_color_changed, on_entity_color_changed)
 
 local function initialize_statistics()
 
-    -- idea: sort all the players by their "score", maybe some addition of their stats, and the populate predefined slots for rendering the statistics text with the top 3 or so players. since idk how to make line breaks, and i'll probably need to make a new rendering for each line of text.
-
-    local statistics = global.statistics
     local render_ids = global.statistics_render_ids
     local lobby_surface = game.surfaces.lobby
     local stat_title_x = -40
