@@ -28,12 +28,19 @@ local function rotate_orientation(orientation, angle)
     return new_orientation
 end
 
+---@param center MapPosition
+---@param radius number
+---@param angle number
+---@return MapPosition
 local function get_position_on_circumference(center, radius, angle)
     local x = center.x + radius * math.cos(angle)
     local y = center.y + radius * math.sin(angle)
     return { x = x, y = y }
 end
 
+---@param center MapPosition
+---@param radius number
+---@return MapPosition
 local function get_random_position_on_circumference(center, radius)
     local angle = math.random() * 2 * math.pi
     return get_position_on_circumference(center, radius, angle)
@@ -265,6 +272,7 @@ local function activate_rocket_launcher(ability_data, player)
         force = player.force,
     }
     if not enemy then return end
+    ---@diagnostic disable: missing-fields
     local rocket = surface.create_entity{
         name = "rocket",
         position = player.position,
@@ -276,6 +284,7 @@ local function activate_rocket_launcher(ability_data, player)
         max_range = ability_data.radius * 20,
         player = player,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 ---@param from MapPosition
@@ -288,9 +297,10 @@ end
 ---@param surface LuaSurface
 ---@param position MapPosition
 ---@param target MapPosition|LuaEntity
----@param player LuaPlayer?
+---@param player LuaPlayer
 local function create_laser_beam(surface, position, target, player)
     local beam_name = "laser-beam"
+    ---@diagnostic disable: missing-fields
     local beam = surface.create_entity{
         name = beam_name,
         position = position,
@@ -301,6 +311,7 @@ local function create_laser_beam(surface, position, target, player)
         max_range = 100,
         duration = 33,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 ---@param surface LuaSurface
@@ -343,6 +354,7 @@ end
 ---@param player LuaPlayer
 local function activate_discharge_defender(ability_data, player)
     local surface = player.surface
+    ---@diagnostic disable: missing-fields
     local discharge_defender = surface.create_entity{
         name = "discharge-defender",
         position = player.position,
@@ -355,12 +367,14 @@ local function activate_discharge_defender(ability_data, player)
         max_range = ability_data.radius * 20,
         player = player,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 local function activate_destroyer_capsule(ability_data, player)
     local surface = player.surface
+    ---@diagnostic disable: missing-fields
     local destroyer = surface.create_entity{
         name = "destroyer",
         position = player.position,
@@ -373,6 +387,7 @@ local function activate_destroyer_capsule(ability_data, player)
         max_range = ability_data.radius * 20,
         player = player,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 ---@param ability_data active_ability_data
@@ -381,15 +396,17 @@ local function activate_landmine_deployer(ability_data, player)
     local surface = player.surface
     local radius = math.random(0, ability_data.radius)
     local position = get_position_on_circumference(player.position, radius, math.random() * 2 * math.pi)
+    ---@diagnostic disable: missing-fields
     local landmine = surface.create_entity{
         name = "land-mine",
-        position = position,
+        position = non_colliding_position,
         force = player.force,
         target = player.character,
         source = player.character,
         character = player.character,
         player = player,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 local damage_functions = {
@@ -632,12 +649,14 @@ end
 ---@param name string
 ---@param player LuaPlayer?
 local function spawn_new_enemy(surface, position, name, player)
+    ---@diagnostic disable: missing-fields
     local enemy = surface.create_entity{
         name = name,
         position = position,
         force = game.forces.enemy,
         target = player and player.character or nil,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 ---@param player LuaPlayer
@@ -704,6 +723,7 @@ local function spawn_level_appropriate_enemy(player)
     spawn_new_enemy(player.surface, position, enemy_name, player)
 end
 
+---@param event EventData.on_player_died
 local function on_player_died(event)
     game.set_game_state {
         game_finished = false,
@@ -734,6 +754,7 @@ local function on_entity_died(event)
     local surface = entity.surface
     if not (surface.name == "arena") then return end
     if entity.type == "character" then
+        ---@diagnostic disable: missing-fields
         surface.create_entity{
             name = "atomic-rocket",
             position = entity.position,
@@ -741,6 +762,7 @@ local function on_entity_died(event)
             speed = 10,
             target = entity.position,
         }
+        ---@diagnostic enable: missing-fields
     end
     local cause = event.cause
     local cause_type = cause and cause.type
@@ -1053,6 +1075,20 @@ local function initialize_player_data(player)
         },
     }
 end
+
+---@class player_statistics_data
+---@field kills uint
+---@field deaths uint
+---@field damage_dealt uint
+---@field damage_taken uint
+---@field damage_healed uint
+---@field attempts uint
+---@field victories uint
+---@field top_kills_per_minute uint
+
+---@class player_statistics
+---@field total player_statistics_data
+---@field last_attempt player_statistics_data
 
 local function create_arena_surface()
     local map_gen_settings = {
@@ -1452,6 +1488,7 @@ local function on_tick(event)
             if not (player.controller_type == defines.controllers.character) then
                 local nearest_enemy = player.surface.find_nearest_enemy{position = player.position, max_distance = 500}
                 if nearest_enemy then
+                    ---@diagnostic disable: missing-fields
                     player.surface.create_entity{
                         name = "explosive-rocket",
                         position = player.position,
@@ -1459,6 +1496,7 @@ local function on_tick(event)
                         target = nearest_enemy,
                         speed = 1 / 60,
                     }
+                    ---@diagnostic enable: missing-fields
                 end
             end
         end
