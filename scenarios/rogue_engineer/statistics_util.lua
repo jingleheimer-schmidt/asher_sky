@@ -615,8 +615,35 @@ local function new_attempt_stats_reset(player_index)
     end
 end
 
+local function initialize_player_statistics(player_index)
+    global.statistics = global.statistics or {}
+    global.statistics[player_index] = global.statistics[player_index] or {
+        total = { --[[@type player_statistics_data]]
+            kills = 0,
+            deaths = 0,
+            damage_dealt = 0,
+            damage_taken = 0,
+            damage_healed = 0,
+            attempts = 0,
+            victories = 0,
+            top_kills_per_minute = 0,
+        },
+        last_attempt = { --[[@type player_statistics_data]]
+            kills = 0,
+            deaths = 0,
+            damage_dealt = 0,
+            damage_taken = 0,
+            damage_healed = 0,
+            attempts = 0,
+            victories = 0,
+            top_kills_per_minute = 0,
+        },
+    }
+end
+
 return {
     update_statistics = update_statistics,
     initialize_statistics = initialize_statistics,
     new_attempt_stats_reset = new_attempt_stats_reset,
+    initialize_player_statistics = initialize_player_statistics,
 }

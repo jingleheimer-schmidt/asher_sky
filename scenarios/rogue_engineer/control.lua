@@ -29,6 +29,7 @@ local statistics_util = require("statistics_util")
 local update_statistics = statistics_util.update_statistics
 local initialize_statistics = statistics_util.initialize_statistics
 local new_attempt_stats_reset = statistics_util.new_attempt_stats_reset
+local initialize_player_statistics = statistics_util.initialize_player_statistics
 
 local general_util = require("general_util")
 local rotate_orientation = general_util.rotate_orientation
@@ -910,28 +911,7 @@ local function initialize_player_data(player)
     local starting_ability = global.lobby_options.starting_ability
     local ability_name = global.default_abilities[starting_ability]
     set_ability(ability_name, player)
-    global.statistics[player.index] = global.statistics[player.index] or {
-        total = { --[[@type player_statistics_data]]
-            kills = 0,
-            deaths = 0,
-            damage_dealt = 0,
-            damage_taken = 0,
-            damage_healed = 0,
-            attempts = 0,
-            victories = 0,
-            top_kills_per_minute = 0,
-        },
-        last_attempt = { --[[@type player_statistics_data]]
-            kills = 0,
-            deaths = 0,
-            damage_dealt = 0,
-            damage_taken = 0,
-            damage_healed = 0,
-            attempts = 0,
-            victories = 0,
-            top_kills_per_minute = 0,
-        },
-    }
+    initialize_player_statistics(player.index)
 end
 
 local function create_arena_surface()
