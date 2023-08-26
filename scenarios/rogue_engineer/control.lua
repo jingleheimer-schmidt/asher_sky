@@ -763,6 +763,16 @@ local function on_player_died(event)
     if not player then return end
     local ticks = (player and (player.surface.name == "lobby") and (60 * 5)) or (60 * 8)
     player.ticks_to_respawn = ticks
+
+    if global.game_state == "arena" then
+        local player_stats = global.statistics[player.index] --[[@type player_statistics]]
+        if player_stats then
+            player_stats.total.deaths = player_stats.total.deaths + 1
+            player_stats.last_attempt.deaths = player_stats.last_attempt.deaths + 1
+        end
+        local text = {"", "Engineer down! ", global.remaining_lives[player.index] - 1, " lives remaining"}
+        draw_upgrade_text(text, player, { x = 0, y = 3 })
+    end
 end
 
 script.on_event(defines.events.on_player_died, on_player_died)
