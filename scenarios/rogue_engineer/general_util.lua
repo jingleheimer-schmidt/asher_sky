@@ -14,7 +14,7 @@ end
 
 ---@param center MapPosition
 ---@param radius number
----@param angle number
+---@param angle number -- radians
 ---@return MapPosition
 local function get_position_on_circumference(center, radius, angle)
     local x = center.x + radius * math.cos(angle)
