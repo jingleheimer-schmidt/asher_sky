@@ -391,7 +391,8 @@ end
 local function activate_landmine_deployer(ability_data, player)
     local surface = player.surface
     local radius = math.random(0, ability_data.radius)
-    local position = get_position_on_circumference(player.position, radius, math.random() * 2 * math.pi)
+    local random_angle = math.random() * 2 * math.pi
+    local position = get_position_on_circumference(player.position, radius, random_angle)
     local non_colliding_position = surface.find_non_colliding_position("land-mine", position, radius, 0.25)
     if not non_colliding_position then return end
     ---@diagnostic disable: missing-fields
