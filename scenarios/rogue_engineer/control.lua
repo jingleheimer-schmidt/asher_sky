@@ -464,7 +464,7 @@ end
 ---@param player LuaPlayer
 local function upgrade_damage(ability_name, ability_data, player)
     ability_data.damage = ability_data.damage * ability_data.damage_multiplier
-    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " damage is now ", ability_data.damage, "."}
+    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " damage is now ", ability_data.damage, " "}
     draw_upgrade_text(text, player)
 end
 
@@ -473,7 +473,7 @@ end
 ---@param player LuaPlayer
 local function upgrade_radius(ability_name, ability_data, player)
     ability_data.radius = ability_data.radius + ability_data.radius_multiplier
-    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " radius is now ", ability_data.radius, "."}
+    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " radius is now ", ability_data.radius, " "}
     draw_upgrade_text(text, player)
 end
 
@@ -482,7 +482,7 @@ end
 ---@param player LuaPlayer
 local function upgrade_cooldown(ability_name, ability_data, player)
     ability_data.cooldown = math.max(1, math.ceil(ability_data.cooldown - ability_data.cooldown_multiplier))
-    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " cooldown is now ", ability_data.cooldown, "."}
+    local text = {"", "Level up! ", { "ability_locale." .. ability_name }, " cooldown is now ", ability_data.cooldown, " "}
     draw_upgrade_text(text, player)
 end
 
