@@ -56,6 +56,7 @@ local function on_init()
         destroyer = true,
         landmine = true,
         poison_capsule = true,
+        slowdown_capsule = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -72,7 +73,7 @@ local function on_init()
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
-        ability_2 = "poison_capsule",
+        ability_2 = "slowdown_capsule",
         ability_3 = "rocket_launcher",
     }
     global.statistics = {}
@@ -413,6 +414,27 @@ local function activate_poison_capsule_deployer(ability_data, player)
     ---@diagnostic enable: missing-fields
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_slowdown_capsule_deployer(ability_data, player)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local angle = direction_to_angle(player.character.direction)
+    local position = get_position_on_circumference(player.position, radius, angle)
+    ---@diagnostic disable: missing-fields
+    surface.create_entity{
+        name = "slowdown-capsule",
+        position = position,
+        force = player.force,
+        target = position,
+        source = player.character,
+        character = player.character,
+        player = player,
+        speed = 1/500,
+    }
+    ---@diagnostic enable: missing-fields
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -425,6 +447,7 @@ local damage_functions = {
     destroyer = activate_destroyer_capsule,
     landmine = activate_landmine_deployer,
     poison_capsule = activate_poison_capsule_deployer,
+    slowdown_capsule = activate_slowdown_capsule_deployer,
 }
 
 local animation_functions = {
@@ -439,6 +462,7 @@ local animation_functions = {
     -- destroyer = draw_animation,
     -- landmine = draw_animation,
     -- poison_capsule = draw_animation,
+    -- slowdown_capsule = draw_animation,
 }
 
 ---@param text string|LocalisedString
