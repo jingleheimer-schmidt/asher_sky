@@ -162,6 +162,12 @@ local function refill_infividual_turret_ammo(turret, ability_data)
     end
 end
 
+---@param degrees number
+---@return number
+local function degrees_to_radians(degrees)
+    return degrees * (math.pi / 180)
+end
+
 ---@param animation_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
