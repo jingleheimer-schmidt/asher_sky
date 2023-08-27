@@ -209,10 +209,11 @@ local function draw_barrier(animation_name, ability_data, player, position)
     local angle = direction_to_angle(opposite_direction(player.character.direction))
     position = position or get_position_on_circumference(player.position, ability_data.radius, angle)
     local modified_ability_data = {
-        radius = 2,
+        radius = 2.5,
     }
-    for i = -3, 3 do
-        local offset_angle = angle + degrees_to_radians(i * 45)
+    local count =  math.floor(ability_data.radius / 5)
+    for i = -count, count do
+        local offset_angle = angle + degrees_to_radians(i * (73 / count))
         local offset_position = get_position_on_circumference(position, ability_data.radius, offset_angle)
         draw_animation(animation_name, modified_ability_data, player, offset_position)
         local final_tick = game.tick + math.ceil(raw_abilities_data.barrier.frame_count * 2/3)
