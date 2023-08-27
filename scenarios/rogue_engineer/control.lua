@@ -174,6 +174,20 @@ local function register_burn_zone(ability_name, position, player, final_tick)
     global.burn_zones[unique_id] = burn_zone
 end
 
+local function create_flamethrower_target(ability_name, position, player, final_tick)
+    local flamethrower_target = {
+        position = position,
+        player = player,
+        surface = player.surface,
+        final_tick = final_tick,
+    }
+    local unique_id = ability_name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
+    global.flamethrower_targets = global.flamethrower_targets or {}
+    global.flamethrower_targets[unique_id] = flamethrower_target
+    local burning_until = game.tick + 60 * 25
+    register_burn_zone(ability_name, position, player, burning_until)
+end
+
 ---@param degrees number
 ---@return number
 local function degrees_to_radians(degrees)
