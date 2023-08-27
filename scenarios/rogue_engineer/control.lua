@@ -1025,6 +1025,21 @@ local function get_damage_attribution(event)
             end
         end
     end
+    local damage_type = event.damage_type
+    if damage_type then
+        if damage_type.name == "fire" then
+            local position = event.entity.position
+            for id, zone in pairs(global.burn_zones) do
+                local distance_from_target = distance(position, zone.position)
+                if distance_from_target <= 2 then
+                    player = zone.player.valid and zone.player or nil
+                    break
+                end
+                if zone.final_tick < game.tick then
+                    global.burn_zones[id] = nil
+                end
+            end
+        end
     end
     return player
 end
