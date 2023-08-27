@@ -376,18 +376,18 @@ local function activate_rocket_launcher(ability_data, player)
     local position = player.position
     local force = player.force
     local radius = ability_data.radius
+    local character = player.character
     local enemy = find_nearest_enemy(position, radius, force, surface)
     if not enemy then return end
     ---@diagnostic disable: missing-fields
     local rocket = surface.create_entity{
         name = "rocket",
-        position = player.position,
-        direction = player.character.direction,
-        force = player.force,
+        position = position,
+        force = force,
         target = enemy,
-        source = player.character,
+        source = character,
         speed = 1/10,
-        max_range = ability_data.radius * 20,
+        max_range = radius * 20,
         player = player,
     }
     ---@diagnostic enable: missing-fields
