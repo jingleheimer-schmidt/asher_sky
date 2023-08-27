@@ -283,6 +283,17 @@ local function create_damage_zone(name, radius, damage_per_tick, player, positio
     global.damage_zones[unique_id] = damage_zone
 end
 
+---@param position MapPosition
+---@param radius integer
+---@param force ForceIdentification
+---@param surface LuaSurface
+local function find_nearest_enemy(position, radius, force, surface)
+    return surface.find_nearest_enemy{
+        position = position,
+        max_distance = radius,
+        force = force,
+    }
+end
 
 ---@param surface LuaSurface
 ---@param position MapPosition
@@ -362,11 +373,10 @@ end
 ---@param player LuaPlayer
 local function activate_rocket_launcher(ability_data, player)
     local surface = player.surface
-    local enemy = surface.find_nearest_enemy{
-        position = player.position,
-        max_distance = ability_data.radius,
-        force = player.force,
-    }
+    local position = player.position
+    local force = player.force
+    local radius = ability_data.radius
+    local enemy = find_nearest_enemy(position, radius, force, surface)
     if not enemy then return end
     ---@diagnostic disable: missing-fields
     local rocket = surface.create_entity{
@@ -409,11 +419,7 @@ local function activate_beam_blast(ability_data, player)
     local surface = player.surface
     local player_position = player.position
     local radius = ability_data.radius
-    local enemy_1 = surface.find_nearest_enemy{
-        position = player_position,
-        max_distance = radius * 3,
-        force = player.force,
-    }
+    local enemy_1 = find_nearest_enemy(player_position, radius * 3, player.force, surface)
     if not enemy_1 then return end
     local enemy_1_id = enemy_1.unit_number
     local damage = ability_data.damage
@@ -1538,7 +1544,7 @@ local function on_tick(event)
                 all_players_dead = false
             end
             if not (player.controller_type == defines.controllers.character) then
-                local nearest_enemy = player.surface.find_nearest_enemy{position = player.position, max_distance = 125}
+                local nearest_enemy = find_nearest_enemy(player.position, 125, player.force, player.surface)
                 if nearest_enemy then
                     ---@diagnostic disable: missing-fields
                     player.surface.create_entity{
