@@ -697,39 +697,6 @@ local function draw_upgrade_text(text, player, offset)
     })
 end
 
----@param ability_name string
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function upgrade_damage(ability_name, ability_data, player)
-    ability_data.damage = ability_data.damage * ability_data.damage_multiplier
-    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] damage increased to ", ability_data.damage}
-    draw_upgrade_text(text, player)
-end
-
----@param ability_name string
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function upgrade_radius(ability_name, ability_data, player)
-    ability_data.radius = ability_data.radius + ability_data.radius_multiplier
-    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] radius increased to ", ability_data.radius}
-    draw_upgrade_text(text, player)
-end
-
----@param ability_name string
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function upgrade_cooldown(ability_name, ability_data, player)
-    ability_data.cooldown = math.max(1, math.ceil(ability_data.cooldown - ability_data.cooldown_multiplier))
-    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] cooldown decreased to ", ability_data.cooldown}
-    draw_upgrade_text(text, player)
-end
-
-local ability_upgrade_functions = {
-    ["damage"] = upgrade_damage,
-    ["radius"] = upgrade_radius,
-    ["cooldown"] = upgrade_cooldown,
-}
-
 local function draw_animations(ability_name, ability_data, player)
     local animate = animation_functions and animation_functions[ability_name]
     if animate then
@@ -754,6 +721,42 @@ local function activate_ability(ability_name, ability_data, player)
     draw_animations(ability_name, ability_data, player)
     damage_enemies(ability_name, ability_data, player)
 end
+
+---@param ability_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_damage(ability_name, ability_data, player)
+    ability_data.damage = ability_data.damage * ability_data.damage_multiplier
+    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] damage increased to ", ability_data.damage}
+    draw_upgrade_text(text, player)
+    activate_ability(ability_name, ability_data, player)
+end
+
+---@param ability_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_radius(ability_name, ability_data, player)
+    ability_data.radius = ability_data.radius + ability_data.radius_multiplier
+    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] radius increased to ", ability_data.radius}
+    draw_upgrade_text(text, player)
+    activate_ability(ability_name, ability_data, player)
+end
+
+---@param ability_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_cooldown(ability_name, ability_data, player)
+    ability_data.cooldown = math.max(1, math.ceil(ability_data.cooldown - ability_data.cooldown_multiplier))
+    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] cooldown decreased to ", ability_data.cooldown}
+    draw_upgrade_text(text, player)
+    activate_ability(ability_name, ability_data, player)
+end
+
+local ability_upgrade_functions = {
+    ["damage"] = upgrade_damage,
+    ["radius"] = upgrade_radius,
+    ["cooldown"] = upgrade_cooldown,
+}
 
 ---@param player LuaPlayer
 local function upgrade_random_ability(player)
