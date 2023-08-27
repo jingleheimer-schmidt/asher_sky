@@ -61,6 +61,7 @@ local function on_init()
         -- poison_capsule = true,
         slowdown_capsule = true,
         gun_turret = true,
+        shotgun = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -76,11 +77,12 @@ local function on_init()
         -- poison_capsule = true,
         -- slowdown_capsule = true,
         -- gun_turret = true,
+        shotgun = true,
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
         ability_2 = "rocket_launcher",
-        ability_3 = "slowdown_capsule",
+        ability_3 = "shotgun",
     }
     global.statistics = {}
 end
@@ -494,6 +496,41 @@ local function activate_gun_turret_deployer(ability_data, player)
     end
 end
 
+---@param degrees number -- degrees (0-360)
+---@return number -- radians
+local function degrees_to_radians(degrees)
+    return degrees * (math.pi / 180)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_shotgun(ability_data, player)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local angle = direction_to_angle(player.character.direction)
+    angle = angle - degrees_to_radians(90) -- not super sure why we need to do this but whatever
+    for _ = 1, 2 do
+        for i = -10, 10 do
+            local offest_angle = angle + degrees_to_radians(i)
+            local target_position = get_position_on_circumference(player.position, radius, offest_angle)
+            local source_position = get_position_on_circumference(player.position, 2, angle)
+                ---@diagnostic disable: missing-fields
+            local bullet = surface.create_entity{
+                name = "shotgun-pellet",
+                position = source_position,
+                force = player.force,
+                target = target_position,
+                source = player.character,
+                character = player.character,
+                player = player,
+                speed = 1,
+                max_range = ability_data.radius * 2,
+            }
+            ---@diagnostic enable: missing-fields
+        end
+    end
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -508,6 +545,7 @@ local damage_functions = {
     poison_capsule = activate_poison_capsule_deployer,
     slowdown_capsule = activate_slowdown_capsule_deployer,
     gun_turret = activate_gun_turret_deployer,
+    shotgun = activate_shotgun,
 }
 
 local animation_functions = {
@@ -524,6 +562,7 @@ local animation_functions = {
     -- poison_capsule = draw_animation,
     -- slowdown_capsule = draw_animation,
     gun_turret = refill_and_repair_turret,
+    -- shotgun = draw_animation,
 }
 
 ---@param text string|LocalisedString
