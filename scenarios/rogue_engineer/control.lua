@@ -864,8 +864,6 @@ local function on_player_died(event)
     end
 end
 
-script.on_event(defines.events.on_player_died, on_player_died)
-
 ---@param event EventData.on_entity_damaged
 local function on_entity_damaged(event)
     local entity = event.entity
@@ -888,8 +886,6 @@ local function on_entity_damaged(event)
     }
     ---@diagnostic enable: missing-fields
 end
-
-script.on_event(defines.events.on_entity_damaged, on_entity_damaged)
 
 ---@param level_threshold uint
 local function upgrade_damage_bonuses(level_threshold)
@@ -1114,8 +1110,6 @@ local function on_entity_color_changed(event)
     end
 end
 
-script.on_event(defines.events.on_entity_color_changed, on_entity_color_changed)
-
 ---@param event EventData.on_tick
 local function on_tick(event)
 
@@ -1312,7 +1306,13 @@ local function on_tick(event)
     end
 end
 
+
+-- [[ event registration ]] -- 
+
 script.on_init(on_init)
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_entity_died, on_entity_died)
 script.on_event(defines.events.on_player_respawned, on_player_respawned)
+script.on_event(defines.events.on_player_died, on_player_died)
+script.on_event(defines.events.on_entity_damaged, on_entity_damaged)
+script.on_event(defines.events.on_entity_color_changed, on_entity_color_changed)
