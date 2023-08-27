@@ -142,6 +142,8 @@ local function draw_pavement(animation_name, ability_data, player, position)
     surface.set_tiles(tiles)
 end
 
+---@param turret LuaEntity
+---@param ability_data active_ability_data
 local function refill_infividual_turret_ammo(turret, ability_data)
     local inventory = turret.get_inventory(defines.inventory.turret_ammo)
     local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
