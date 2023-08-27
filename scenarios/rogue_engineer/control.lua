@@ -1260,6 +1260,9 @@ local function on_tick(event)
             local previous_position = global.previous_positions[player.index]
             if position.x == previous_position.x and position.y == previous_position.y then
                 local chance = 75/100
+                if global.arena_start_tick - game.tick <= 60 * 60 * 0.75 then
+                    chance = 5/100
+                end
                 if math.random() < chance then
                     spawn_level_appropriate_enemy(player)
                 end
