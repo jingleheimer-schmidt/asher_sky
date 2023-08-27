@@ -515,12 +515,6 @@ local function activate_gun_turret_deployer(ability_data, player)
     end
 end
 
----@param degrees number -- degrees (0-360)
----@return number -- radians
-local function degrees_to_radians(degrees)
-    return degrees * (math.pi / 180)
-end
-
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 local function activate_shotgun(ability_data, player)
