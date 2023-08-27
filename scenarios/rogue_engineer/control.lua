@@ -130,7 +130,7 @@ local function draw_pavement(animation_name, ability_data, player, position)
     local tile = surface.get_tile(position.x, position.y)
     local tile_name = tile.name
     local tile_tier = tile_tiers_by_name[tile_name] or 0
-    local normalized_tile_tier = math.min(math.max(tile_tier - 5, 0), tile_tier)
+    local normalized_tile_tier = math.min(math.max(ability_data.level - 5, 0), tile_tier)
     local next_tile_name = tile_tiers_by_order[normalized_tile_tier + 1]
     if not next_tile_name then return end
     local tiles = {
