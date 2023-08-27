@@ -400,7 +400,7 @@ local function get_enemies_in_radius(surface, position, radius)
         position = position,
         radius = radius,
         force = "enemy",
-        type = "unit",
+        type = {"unit", "turret", "unit-spawner"},
     }
 end
 
