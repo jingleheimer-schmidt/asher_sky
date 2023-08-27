@@ -614,8 +614,8 @@ local function upgrade_random_ability(player)
     local upgrade_type = ability_data.upgrade_order[ability_data.level]
     local upgrade = ability_upgrade_functions[upgrade_type]
     if upgrade then
-        upgrade(ability_name, ability_data, player)
         ability_data.level = ability_data.level + 1
+        upgrade(ability_name, ability_data, player)
     end
 end
 
