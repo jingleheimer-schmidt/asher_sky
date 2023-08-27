@@ -1118,7 +1118,7 @@ local function get_damage_attribution(event)
             local position = event.entity.position
             for id, zone in pairs(global.burn_zones) do
                 local distance_from_target = distance(position, zone.position)
-                if distance_from_target <= 2 then
+                if distance_from_target <= 4 then
                     player = zone.player.valid and zone.player or nil
                     break
                 end
