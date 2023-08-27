@@ -206,7 +206,7 @@ local function draw_barrier(animation_name, ability_data, player, position)
     local modified_ability_data = {
         radius = 2,
     }
-    for i = -1, 1 do
+    for i = -3, 3 do
         local offset_angle = angle + degrees_to_radians(i * 45)
         local offset_position = get_position_on_circumference(position, ability_data.radius, offset_angle)
         draw_animation(animation_name, modified_ability_data, player, offset_position)
