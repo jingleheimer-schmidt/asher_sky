@@ -282,6 +282,20 @@ local function create_damage_zone(name, radius, damage_per_tick, player, positio
     global.damage_zones[unique_id] = damage_zone
 end
 
+
+---@param surface LuaSurface
+---@param position MapPosition
+---@param radius integer
+---@return LuaEntity[]
+local function get_enemies_in_radius(surface, position, radius)
+    return surface.find_entities_filtered{
+        position = position,
+        radius = radius,
+        force = "enemy",
+        type = {"unit", "turret", "unit-spawner"},
+    }
+end
+
 ---@param radius integer
 ---@param damage float
 ---@param position MapPosition
@@ -389,19 +403,6 @@ local function create_laser_beam(surface, position, target, player)
         duration = 33,
     }
     ---@diagnostic enable: missing-fields
-end
-
----@param surface LuaSurface
----@param position MapPosition
----@param radius integer
----@return LuaEntity[]
-local function get_enemies_in_radius(surface, position, radius)
-    return surface.find_entities_filtered{
-        position = position,
-        radius = radius,
-        force = "enemy",
-        type = {"unit", "turret", "unit-spawner"},
-    }
 end
 
 ---@param ability_data active_ability_data
