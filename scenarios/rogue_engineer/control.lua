@@ -87,6 +87,8 @@ local function on_init()
         ability_3 = "barrier",
     }
     global.statistics = {}
+    global.flamethrower_targets = {}
+    global.burn_zones = {}
 end
 
 ---@param animation_name string
