@@ -173,9 +173,18 @@ end
 ---@param player LuaPlayer
 ---@param position MapPosition?
 local function draw_barrier(animation_name, ability_data, player, position)
-    local angle = direction_to_angle(player.character.direction)
+    local angle = direction_to_angle(opposite_direction(player.character.direction))
     position = position or get_position_on_circumference(player.position, ability_data.radius, angle)
-    draw_animation(animation_name, ability_data, player, position)
+    local modified_ability_data = {
+        radius = 2,
+    }
+    for i = -1, 1 do
+        local offset_angle = angle + degrees_to_radians(i * 45)
+        local offset_position = get_position_on_circumference(position, ability_data.radius, offset_angle)
+        draw_animation(animation_name, modified_ability_data, player, offset_position)
+        local final_tick = game.tick + math.ceil(raw_abilities_data.barrier.frame_count * 2/3)
+        create_flamethrower_target(animation_name, offset_position, player, final_tick)
+    end
 end
 
 ---@param animation_name string
