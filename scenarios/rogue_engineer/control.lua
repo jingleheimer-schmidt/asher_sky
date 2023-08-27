@@ -1322,6 +1322,17 @@ local function on_tick(event)
             global.healing_players[id] = nil
         end
     end
+    for id, flamethrower_target in pairs(global.flamethrower_targets) do
+        local player = flamethrower_target.player
+        local final_tick = flamethrower_target.final_tick
+        if player.character then
+            local position = flamethrower_target.position
+            activate_flamethrower(player, position)
+        end
+        if final_tick <= event.tick then
+            global.flamethrower_targets[id] = nil
+        end
+    end
 
     -- arena mode --
 
