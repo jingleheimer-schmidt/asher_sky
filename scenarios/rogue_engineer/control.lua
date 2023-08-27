@@ -224,7 +224,7 @@ end
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 ---@param position MapPosition?
-local function refill_and_repair_turret(animation_name, ability_data, player, position)
+local function refill_and_repair_turrets(animation_name, ability_data, player, position)
     local nearby_turrets = player.surface.find_entities_filtered{
         position = position or player.position,
         radius = ability_data.radius,
@@ -667,7 +667,7 @@ local animation_functions = {
     -- landmine = draw_animation,
     -- poison_capsule = draw_animation,
     -- slowdown_capsule = draw_animation,
-    gun_turret = refill_and_repair_turret,
+    gun_turret = refill_and_repair_turrets,
     -- shotgun = draw_animation,
     barrier = draw_barrier,
 }
