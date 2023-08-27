@@ -220,6 +220,28 @@ local function draw_barrier(animation_name, ability_data, player, position)
     end
 end
 
+---@param player LuaPlayer
+---@param target MapPosition|LuaEntity
+local function draw_highlight_line(player, target)
+    local target_offset = {0, 0}
+    if target.type and target.type == "combat-robot" then
+        target_offset = {0, -1}
+    end
+    rendering.draw_line{
+        color = player.chat_color,
+        width = 5,
+        gap_length = 0,
+        dash_length = 0,
+        from = player.character,
+        to = target,
+        to_offset = target_offset,
+        surface = player.surface,
+        time_to_live = 60 * 2,
+        draw_on_ground = true,
+    }
+end
+
+
 ---@param animation_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
@@ -235,6 +257,7 @@ local function refill_and_repair_turrets(animation_name, ability_data, player, p
     for _, turret in pairs(nearby_turrets) do
         refill_infividual_turret_ammo(turret, ability_data)
         turret.damage( -turret.prototype.max_health, player.force, "impact", player.character)
+        draw_highlight_line(player, turret)
     end
 end
 
