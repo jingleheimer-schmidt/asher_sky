@@ -304,14 +304,11 @@ end
 local function damage_enemies_in_radius(radius, damage, position, surface, player)
     local character = player.character
     if not character then return end
-    local enemies = surface.find_entities_filtered{
-        position = position,
-        radius = radius,
-        force = "enemy",
-        type = "unit",
-    }
+    local enemies = get_enemies_in_radius(surface, position, radius)
     for _, enemy in pairs(enemies) do
-        enemy.damage(damage, player.force, "impact", character)
+        if enemy.valid then
+            enemy.damage(damage, player.force, "impact", character)
+        end
     end
 end
 
