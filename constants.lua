@@ -306,11 +306,11 @@ local ability_data = {
         width = 192,
         height = 192,
         target = "position",
-        default_cooldown = 60 * 2, -- should be 4
-        default_radius = 5,
+        default_cooldown = 60 * 11,
+        default_radius = 10,
         default_damage = 10,
         damage_multiplier = 1.5,
-        radius_multiplier = 2,
+        radius_multiplier = 5,
         cooldown_multiplier = 25,
         upgrade_order = {
             "cooldown",
