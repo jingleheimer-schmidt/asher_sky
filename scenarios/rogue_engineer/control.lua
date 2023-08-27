@@ -568,23 +568,28 @@ local function activate_gun_turret_deployer(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
     local angle = direction_to_angle(player.character.direction)
-    local position = get_position_on_circumference(player.position, radius, angle)
-    local non_colliding_position = surface.find_non_colliding_position("gun-turret", position, radius, 0.25)
-    if non_colliding_position then
-    ---@diagnostic disable: missing-fields
-        local turret = surface.create_entity{
-            name = "gun-turret",
-            position = non_colliding_position,
-            force = player.force,
-            target = position,
-            source = player.character,
-            character = player.character,
-            player = player,
-            speed = 1/500,
-        }
-        ---@diagnostic enable: missing-fields
-        if turret then
-            refill_infividual_turret_ammo(turret, ability_data)
+    for i = 1, 2 do
+        local degrees = i == 1 and -15 or 15
+        local offset_angle = angle + degrees_to_radians(degrees)
+        local position = get_position_on_circumference(player.position, radius, offset_angle)
+        local non_colliding_position = surface.find_non_colliding_position("gun-turret", position, radius, 0.25)
+        if non_colliding_position then
+        ---@diagnostic disable: missing-fields
+            local turret = surface.create_entity{
+                name = "gun-turret",
+                position = non_colliding_position,
+                force = player.force,
+                target = position,
+                source = player.character,
+                character = player.character,
+                player = player,
+                speed = 1/500,
+            }
+            ---@diagnostic enable: missing-fields
+            if turret then
+                refill_infividual_turret_ammo(turret, ability_data)
+                draw_highlight_line(player, turret)
+            end
         end
     end
 end
