@@ -1012,7 +1012,7 @@ local function spawn_level_appropriate_enemy(player)
     if arena_minutes >= 15 then
         enemy_name = "behemoth-worm-turret"
     end
-    local radius = math.random(30, 50)
+    local radius = math.random(25, 50)
     local arena_clock = (game.tick - global.arena_start_tick)
     if arena_clock > global.game_length then
         radius = math.random(5, 75)
