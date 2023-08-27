@@ -1106,12 +1106,6 @@ end
 local function on_entity_damaged(event)
     local entity = event.entity
     local surface = entity.surface
-    if surface.name == "lobby" then
-        if entity.type == "character" then
-            -- entity.health = entity.health + event.final_damage_amount
-            entity.damage( - event.final_damage_amount, entity.force, "impact")
-        end
-    end
     local damage = math.ceil(event.final_damage_amount)
     local flying_text = ((damage > 0) and ("-" .. damage)) or ("+" .. damage)
     local color = ((damage > 0 )and {r = 1, g = 0, b = 0}) or {r = 0, g = 1, b = 0}
@@ -1123,6 +1117,22 @@ local function on_entity_damaged(event)
         color = color,
     }
     ---@diagnostic enable: missing-fields
+    if surface.name == "lobby" then
+        if entity.type == "character" then
+            -- entity.health = entity.health + event.final_damage_amount
+            entity.damage( - event.final_damage_amount, entity.force, "impact")
+        else
+            entity.die()
+        end
+    end
+    if surface.name == "arena" then
+        if entity.force == game.forces.player then
+            local player = get_damage_attribution(event)
+            if player then
+                entity.health = entity.prototype.max_health
+            end
+        end
+    end
 end
 
 ---@param level_threshold uint
