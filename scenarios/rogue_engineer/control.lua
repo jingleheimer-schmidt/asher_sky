@@ -498,7 +498,9 @@ local function activate_distractor_capsule(ability_data, player)
         player = player,
     }
     ---@diagnostic enable: missing-fields
-    draw_highlight_line(player, distractor)
+    if distractor then
+        draw_highlight_line(player, distractor)
+    end
 end
 
 ---@param ability_data active_ability_data
