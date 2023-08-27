@@ -455,6 +455,12 @@ local function activate_slowdown_capsule_deployer(ability_data, player)
         }
         ---@diagnostic enable: missing-fields
     end
+    if radius > 10 and (radius % 10 == 0) then
+        local secondary_ability_data = {
+            radius = radius / 2,
+        }
+        activate_slowdown_capsule_deployer(secondary_ability_data, player)
+    end
 end
 
 ---@param ability_data active_ability_data
