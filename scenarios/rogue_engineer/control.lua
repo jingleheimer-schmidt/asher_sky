@@ -508,7 +508,6 @@ local function activate_shotgun(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
     local angle = direction_to_angle(player.character.direction)
-    angle = angle - degrees_to_radians(90) -- not super sure why we need to do this but whatever
     for _ = 1, 2 do
         for i = -10, 10 do
             local offest_angle = angle + degrees_to_radians(i)
