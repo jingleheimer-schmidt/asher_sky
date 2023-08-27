@@ -543,8 +543,19 @@ local function activate_shotgun(ability_data, player)
     end
 end
 
+local function activate_flamethrower(player, target_position)
     local surface = player.surface
+    ---@diagnostic disable: missing-fields
+    local stream = surface.create_entity{
+        name = "handheld-flamethrower-fire-stream",
+        position = player.position,
+        force = player.force,
+        target = target_position,
+        source = player.character,
+        character = player.character,
+        player = player,
     }
+    ---@diagnostic enable: missing-fields
 end
 
 local damage_functions = {
@@ -562,6 +573,7 @@ local damage_functions = {
     slowdown_capsule = activate_slowdown_capsule_deployer,
     gun_turret = activate_gun_turret_deployer,
     shotgun = activate_shotgun,
+    -- barrier = function() return end,
 }
 
 local animation_functions = {
