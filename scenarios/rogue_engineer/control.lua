@@ -1049,6 +1049,59 @@ local function on_player_died(event)
     end
 end
 
+---@param position_1 MapPosition
+---@param position_2 MapPosition
+---@return number
+local function distance(position_1, position_2)
+    local x = position_1.x - position_2.x
+    local y = position_1.y - position_2.y
+    return math.sqrt(x * x + y * y)
+end
+
+---@param event EventData.on_entity_died|EventData.on_entity_damaged
+---@return LuaPlayer?
+local function get_damage_attribution(event)
+    local player = nil
+    local cause = event.cause
+    if cause then
+        local cause_type = cause.type
+        if cause_type == "character" then
+            if cause.player then
+                player = cause.player
+            end
+        elseif cause_type == "combat-robot" then
+            if cause.combat_robot_owner then
+                player = cause.combat_robot_owner.player
+            end
+        elseif cause_type == "land-mine" then
+            if cause.last_user then
+                player = cause.last_user --[[@as LuaPlayer]]
+            end
+        elseif cause_type == "ammo-turret" then
+            if cause.last_user then
+                player = cause.last_user --[[@as LuaPlayer]]
+            end
+        end
+    end
+    local damage_type = event.damage_type
+    if damage_type then
+        if damage_type.name == "fire" then
+            local position = event.entity.position
+            for id, zone in pairs(global.burn_zones) do
+                local distance_from_target = distance(position, zone.position)
+                if distance_from_target <= 4 then
+                    player = zone.player.valid and zone.player or nil
+                    break
+                end
+                if zone.final_tick < game.tick then
+                    global.burn_zones[id] = nil
+                end
+            end
+        end
+    end
+    return player
+end
+
 ---@param event EventData.on_entity_damaged
 local function on_entity_damaged(event)
     local entity = event.entity
@@ -1104,56 +1157,6 @@ local function upgrade_damage_bonuses(level_threshold)
                 force.technologies[tech_name].researched = true
             end
         end
-    end
-end
-
----@param position_1 MapPosition
----@param position_2 MapPosition
----@return number
-local function distance(position_1, position_2)
-    local x = position_1.x - position_2.x
-    local y = position_1.y - position_2.y
-    return math.sqrt(x * x + y * y)
-end
-
----@param event EventData.on_entity_died
----@return LuaPlayer?
-local function get_damage_attribution(event)
-    local player = nil
-    local cause = event.cause
-    if cause then
-        local cause_type = cause.type
-        if cause_type == "character" then
-            if cause.player then
-                player = cause.player
-            end
-        elseif cause_type == "combat-robot" then
-            if cause.combat_robot_owner then
-                player = cause.combat_robot_owner.player
-            end
-        elseif cause_type == "land-mine" then
-            if cause.last_user then
-                player = cause.last_user --[[@as LuaPlayer]]
-            end
-        elseif cause_type == "ammo-turret" then
-            if cause.last_user then
-                player = cause.last_user --[[@as LuaPlayer]]
-            end
-        end
-    end
-    local damage_type = event.damage_type
-    if damage_type then
-        if damage_type.name == "fire" then
-            local position = event.entity.position
-            for id, zone in pairs(global.burn_zones) do
-                local distance_from_target = distance(position, zone.position)
-                if distance_from_target <= 4 then
-                    player = zone.player.valid and zone.player or nil
-                    break
-                end
-                if zone.final_tick < game.tick then
-                    global.burn_zones[id] = nil
-                end
         for i = 1, max_tech_level / 5 do
             local tech_name = "follower-robot-count-" .. i
             local technology = force.technologies[tech_name]
@@ -1165,7 +1168,6 @@ local function get_damage_attribution(event)
             force.technologies[tech_name].researched = true
         end
     end
-    return player
 end
 
 ---@param event EventData.on_entity_died
