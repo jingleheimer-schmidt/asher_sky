@@ -1003,17 +1003,28 @@ end
 ---@param event EventData.on_entity_died
 ---@return LuaPlayer?
 local function get_damage_attribution(event)
+    local player = nil
     local cause = event.cause
-    local cause_type = cause and cause.type
-    local player = cause and (cause_type == "character") and cause.player or nil
-    if cause and cause_type == "combat-robot" then
-        player = cause.combat_robot_owner and cause.combat_robot_owner.player
+    if cause then
+        local cause_type = cause.type
+        if cause_type == "character" then
+            if cause.player then
+                player = cause.player
+            end
+        elseif cause_type == "combat-robot" then
+            if cause.combat_robot_owner then
+                player = cause.combat_robot_owner.player
+            end
+        elseif cause_type == "land-mine" then
+            if cause.last_user then
+                player = cause.last_user --[[@as LuaPlayer]]
+            end
+        elseif cause_type == "ammo-turret" then
+            if cause.last_user then
+                player = cause.last_user --[[@as LuaPlayer]]
+            end
+        end
     end
-    if cause and cause_type == "land-mine" and cause.last_user then
-        player = cause.last_user --[[@as LuaPlayer]]
-    end
-    if cause and cause_type == "ammo-turret" and cause.last_user then
-        player = cause.last_user --[[@as LuaPlayer]]
     end
     return player
 end
