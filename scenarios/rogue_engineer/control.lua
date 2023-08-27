@@ -57,6 +57,8 @@ local function on_init()
         beam_blast = true,
         discharge_defender = true,
         destroyer = true,
+        distractor = true,
+        defender = true,
         landmine = true,
         -- poison_capsule = true,
         slowdown_capsule = true,
@@ -74,6 +76,8 @@ local function on_init()
         beam_blast = true,
         -- discharge_defender = true,
         destroyer = true,
+        distractor = true,
+        defender = true,
         -- landmine = true,
         -- poison_capsule = true,
         -- slowdown_capsule = true,
@@ -82,9 +86,9 @@ local function on_init()
         barrier = true,
     }
     global.default_abilities = {
-        ability_1 = "beam_blast",
-        ability_2 = "rocket_launcher",
-        ability_3 = "barrier",
+        ability_1 = "destroyer",
+        ability_2 = "distractor",
+        ability_3 = "defender",
     }
     global.statistics = {}
     global.flamethrower_targets = {}
@@ -445,6 +449,47 @@ end
 
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
+local function activate_distractor_capsule(ability_data, player)
+    local surface = player.surface
+    ---@diagnostic disable: missing-fields
+    local distractor = surface.create_entity{
+        name = "distractor",
+        position = player.position,
+        direction = player.character.direction,
+        force = player.force,
+        -- target = enemy,
+        target = player.character,
+        source = player.character,
+        speed = 1/10,
+        max_range = ability_data.radius * 20,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+    draw_highlight_line(player, distractor)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_defender_capsule(ability_data, player)
+    local surface = player.surface
+    ---@diagnostic disable: missing-fields
+    local defender = surface.create_entity{
+        name = "defender",
+        position = player.position,
+        direction = player.character.direction,
+        force = player.force,
+        -- target = enemy,
+        target = player.character,
+        source = player.character,
+        speed = 1/10,
+        max_range = ability_data.radius * 20,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
 local function activate_landmine_deployer(ability_data, player)
     local surface = player.surface
     local radius = math.random(0, ability_data.radius)
@@ -596,6 +641,8 @@ local damage_functions = {
     beam_blast = activate_beam_blast,
     discharge_defender = activate_discharge_defender,
     destroyer = activate_destroyer_capsule,
+    distractor = activate_distractor_capsule,
+    defender = activate_defender_capsule,
     landmine = activate_landmine_deployer,
     poison_capsule = activate_poison_capsule_deployer,
     slowdown_capsule = activate_slowdown_capsule_deployer,
@@ -614,6 +661,8 @@ local animation_functions = {
     -- beam_blast = draw_animation,
     -- discharge_defender = draw_animation,
     -- destroyer = draw_animation,
+    -- distractor = draw_animation,
+    -- defender = draw_animation,
     -- landmine = draw_animation,
     -- poison_capsule = draw_animation,
     -- slowdown_capsule = draw_animation,
