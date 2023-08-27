@@ -12,6 +12,11 @@ local function rotate_orientation(orientation, angle)
     return new_orientation
 end
 
+---@param degrees number
+local function normalize_degrees(degrees)
+    return (degrees + 360) % 360
+end
+
 ---@param center MapPosition
 ---@param radius number
 ---@param angle number -- radians
@@ -71,6 +76,7 @@ end
 
 return {
     rotate_orientation = rotate_orientation,
+    normalize_degrees = normalize_degrees,
     get_position_on_circumference = get_position_on_circumference,
     get_random_position_on_circumference = get_random_position_on_circumference,
     random_table_value = random_table_value,
