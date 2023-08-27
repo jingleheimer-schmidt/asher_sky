@@ -1088,7 +1088,7 @@ local function upgrade_damage_bonuses(level_threshold)
             ["energy-weapons-damage-"] = true,
             ["stronger-explosives-"] = true,
             ["refined-flammables-"] = true,
-            ["weapon-shooting-speed-"] = true,
+            -- ["weapon-shooting-speed-"] = true,
         }
         local force = game.forces.player
         local max_tech_level = math.ceil(level_threshold / 5)
@@ -1154,7 +1154,15 @@ local function get_damage_attribution(event)
                 if zone.final_tick < game.tick then
                     global.burn_zones[id] = nil
                 end
+        for i = 1, max_tech_level / 5 do
+            local tech_name = "follower-robot-count-" .. i
+            local technology = force.technologies[tech_name]
+            if not technology then break end
+            local prerequisites = technology.prerequisites
+            for _, prerequisite in pairs(prerequisites) do
+                force.technologies[prerequisite.name].researched = true
             end
+            force.technologies[tech_name].researched = true
         end
     end
     return player
