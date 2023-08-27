@@ -228,16 +228,6 @@ local function damage_enemies_in_radius(radius, damage, position, surface, playe
     for _, enemy in pairs(enemies) do
         enemy.damage(damage, player.force, "impact", character)
     end
-    if debug_mode then
-        rendering.draw_circle{
-            target = position,
-            surface = surface,
-            radius = radius,
-            color = {r = 1, g = 0, b = 0},
-            filled = false,
-            time_to_live = 2,
-        }
-    end
 end
 
 local aoe_damage_modifier = 20
