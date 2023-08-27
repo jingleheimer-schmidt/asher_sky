@@ -1001,6 +1001,24 @@ local function upgrade_damage_bonuses(level_threshold)
 end
 
 ---@param event EventData.on_entity_died
+---@return LuaPlayer?
+local function get_damage_attribution(event)
+    local cause = event.cause
+    local cause_type = cause and cause.type
+    local player = cause and (cause_type == "character") and cause.player or nil
+    if cause and cause_type == "combat-robot" then
+        player = cause.combat_robot_owner and cause.combat_robot_owner.player
+    end
+    if cause and cause_type == "land-mine" and cause.last_user then
+        player = cause.last_user --[[@as LuaPlayer]]
+    end
+    if cause and cause_type == "ammo-turret" and cause.last_user then
+        player = cause.last_user --[[@as LuaPlayer]]
+    end
+    return player
+end
+
+---@param event EventData.on_entity_died
 local function on_entity_died(event)
     local entity = event.entity
     local surface = entity.surface
@@ -1016,18 +1034,7 @@ local function on_entity_died(event)
         }
         ---@diagnostic enable: missing-fields
     end
-    local cause = event.cause
-    local cause_type = cause and cause.type
-    local player = cause and (cause_type == "character") and cause.player or nil
-    if cause and cause_type == "combat-robot" then
-        player = cause.combat_robot_owner and cause.combat_robot_owner.player
-    end
-    if cause and cause_type == "land-mine" and cause.last_user then
-        player = cause.last_user --[[@as LuaPlayer]]
-    end
-    if cause and cause_type == "ammo-turret" and cause.last_user then
-        player = cause.last_user --[[@as LuaPlayer]]
-    end
+    local player = get_damage_attribution(event)
     if player and player.character then
         if not (player.surface.name == "arena") then return end
         local player_data = global.player_data[player.index]
