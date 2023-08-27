@@ -448,6 +448,7 @@ local ability_data = {
         radius_multiplier = 3,
         cooldown_multiplier = 10,
         upgrade_order = {
+            "radius",
             "cooldown",
             "cooldown",
             "cooldown",
