@@ -1458,7 +1458,7 @@ local function on_tick(event)
     for id, healing_player in pairs(global.healing_players) do
         local player = healing_player.player
         if player.character then
-            player.character.damage(healing_player.damage, player.force, "impact", player.character)
+            player.character.damage(healing_player.damage, "enemy", "impact")
         end
         if healing_player.final_tick <= event.tick then
             global.healing_players[id] = nil
