@@ -162,6 +162,18 @@ local function refill_infividual_turret_ammo(turret, ability_data)
     end
 end
 
+local function register_burn_zone(ability_name, position, player, final_tick)
+    local burn_zone = {
+        position = position,
+        player = player,
+        surface = player.surface,
+        final_tick = final_tick,
+    }
+    local unique_id = "burn-zone-" .. "-" .. ability_name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
+    global.burn_zones = global.burn_zones or {}
+    global.burn_zones[unique_id] = burn_zone
+end
+
 ---@param degrees number
 ---@return number
 local function degrees_to_radians(degrees)
