@@ -1000,6 +1000,15 @@ local function upgrade_damage_bonuses(level_threshold)
     end
 end
 
+---@param position_1 MapPosition
+---@param position_2 MapPosition
+---@return number
+local function distance(position_1, position_2)
+    local x = position_1.x - position_2.x
+    local y = position_1.y - position_2.y
+    return math.sqrt(x * x + y * y)
+end
+
 ---@param event EventData.on_entity_died
 ---@return LuaPlayer?
 local function get_damage_attribution(event)
