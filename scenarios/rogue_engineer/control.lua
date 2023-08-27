@@ -191,7 +191,7 @@ local function create_flamethrower_target(ability_name, position, player, final_
     local unique_id = ability_name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
     global.flamethrower_targets = global.flamethrower_targets or {}
     global.flamethrower_targets[unique_id] = flamethrower_target
-    local burning_until = game.tick + 60 * 25
+    local burning_until = game.tick + 60 * 45
     register_burn_zone(ability_name, position, player, burning_until)
 end
 
