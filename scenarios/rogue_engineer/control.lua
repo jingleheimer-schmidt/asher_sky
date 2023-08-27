@@ -1086,7 +1086,7 @@ local function enter_arena()
                 force = "enemy",
             }
             for _, enemy in pairs(enemies) do
-                enemy.die()
+                enemy.destroy()
             end
             for _, player in pairs(players) do
                 local position = game.get_surface("arena").find_non_colliding_position("character", {x = 0, y = 0}, 100, 1)
