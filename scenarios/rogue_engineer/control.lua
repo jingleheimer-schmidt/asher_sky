@@ -423,10 +423,14 @@ local function activate_beam_blast(ability_data, player)
     for _, enemy_2 in pairs(nearby_enemies_1) do
         if enemy_2.unit_number ~= enemy_1_id then
             create_laser_beam(surface, enemy_1.position, enemy_2, player)
-            enemy_2.damage(damage, player.force, "laser", player.character)
+            if enemy_2.valid then
+                enemy_2.damage(damage, player.force, "laser", player.character)
+            end
         end
     end
-    enemy_1.damage(damage, player.force, "laser", player.character)
+    if enemy_1.valid then
+        enemy_1.damage(damage, player.force, "laser", player.character)
+    end
 end
 
 ---@param ability_data active_ability_data
