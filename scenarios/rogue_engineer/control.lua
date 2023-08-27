@@ -62,6 +62,7 @@ local function on_init()
         slowdown_capsule = true,
         gun_turret = true,
         shotgun = true,
+        barrier = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -78,11 +79,12 @@ local function on_init()
         -- slowdown_capsule = true,
         -- gun_turret = true,
         shotgun = true,
+        barrier = true,
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
         ability_2 = "rocket_launcher",
-        ability_3 = "shotgun",
+        ability_3 = "barrier",
     }
     global.statistics = {}
 end
@@ -156,6 +158,16 @@ local function refill_infividual_turret_ammo(turret, ability_data)
         }
         ---@diagnostic enable: missing-fields
     end
+end
+
+---@param animation_name string
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param position MapPosition?
+local function draw_barrier(animation_name, ability_data, player, position)
+    local angle = direction_to_angle(player.character.direction)
+    position = position or get_position_on_circumference(player.position, ability_data.radius, angle)
+    draw_animation(animation_name, ability_data, player, position)
 end
 
 ---@param animation_name string
@@ -530,6 +542,30 @@ local function activate_shotgun(ability_data, player)
     end
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_barrier_damage(ability_data, player)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local position = player.position
+    local damage = ability_data.damage
+    -- local damage_per_tick = damage / aoe_damage_modifier
+    -- local final_tick = game.tick + (raw_abilities_data.barrier.frame_count * 1.25)
+    -- create_damage_zone("barrier", radius, damage_per_tick, player, position, surface, final_tick)
+    local angle = direction_to_angle(player.character.direction)
+    local target_position = get_position_on_circumference(position, radius, angle)
+    rendering.draw_line{
+        color = {r = 1, g = 0, b = 0},
+        width = 1,
+        gap_length = 0,
+        dash_length = 1,
+        from = position,
+        to = target_position,
+        surface = surface,
+        time_to_live = 60,
+    }
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -545,6 +581,7 @@ local damage_functions = {
     slowdown_capsule = activate_slowdown_capsule_deployer,
     gun_turret = activate_gun_turret_deployer,
     shotgun = activate_shotgun,
+    barrier = activate_barrier_damage,
 }
 
 local animation_functions = {
@@ -562,6 +599,7 @@ local animation_functions = {
     -- slowdown_capsule = draw_animation,
     gun_turret = refill_and_repair_turret,
     -- shotgun = draw_animation,
+    barrier = draw_barrier,
 }
 
 ---@param text string|LocalisedString
