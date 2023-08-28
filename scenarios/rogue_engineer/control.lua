@@ -1686,12 +1686,6 @@ local function on_tick(event)
             normal = 25,
             hard = 10,
         }
-        local balance = difficulties[global.lobby_options.difficulty]
-        if game.tick % balance == 0 then
-            for _, player in pairs(connected_players) do
-                spawn_level_appropriate_enemy(player)
-            end
-        end
         for _, player in pairs(connected_players) do
             local character = valid_player_character(player)
             if character then
@@ -1699,6 +1693,10 @@ local function on_tick(event)
                 update_kpm_counter_rendering(player_index, character)
                 update_arena_clock_rendering(player_index, character)
                 update_lives_remaining_rendering(player_index, character)
+                local balance = difficulties[global.lobby_options.difficulty]
+                if game.tick % balance == 0 then
+                    spawn_level_appropriate_enemy(player)
+                end
             end
         end
         for _, player in pairs(connected_players) do
