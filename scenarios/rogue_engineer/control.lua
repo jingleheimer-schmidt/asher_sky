@@ -1020,7 +1020,7 @@ local function update_kills_per_minute_counter(player)
     local character = valid_player_character(player)
     if not character then return end
     local player_index = player.index
-    local kill_counter = global.kill_counters and global.kill_counters[player_index]
+    local kill_counter = global.kill_counter_render_ids and global.kill_counter_render_ids[player_index]
     if not kill_counter then return end
     local start_tick = global.arena_start_tick
     if not start_tick then return end
@@ -1753,7 +1753,7 @@ local function on_tick(event)
             end
             global.game_state = "lobby"
             global.arena_start_tick = nil
-            global.kill_counters = nil
+            global.kill_counter_render_ids = nil
             global.remaining_lives = nil
             global.kills_per_minute_counters = nil
             game.forces.player.reset()
