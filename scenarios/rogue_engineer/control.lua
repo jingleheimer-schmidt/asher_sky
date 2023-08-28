@@ -934,9 +934,10 @@ local function unlock_random_ability(player)
     unlock_named_ability(ability_name, player)
 end
 
----@param player LuaPlayer
+---@param player LuaPlayer?
 ---@return LuaEntity?
 local function valid_player_character(player)
+    if not player then return end
     if not player.valid then return end
     if not player.character then return end
     if not player.character.valid then return end
