@@ -785,6 +785,18 @@ local function draw_upgrade_text(text, player, offset)
     draw_text(text, surface, position, color, time_to_live, scale, alignment)
 end
 
+---@param text string|LocalisedString
+---@param player LuaPlayer
+local function draw_announcement_text(text, player)
+    local position = player.position
+    local surface = player.surface
+    local color = player.chat_color
+    local time_to_live = 60 * 15
+    local scale = 5
+    local alignment = "center"
+    draw_text(text, surface, position, color, time_to_live, scale, alignment)
+end
+
 local function draw_animations(ability_name, ability_data, player)
     local animate = animation_functions and animation_functions[ability_name]
     if animate then
