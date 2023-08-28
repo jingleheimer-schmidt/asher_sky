@@ -1387,7 +1387,7 @@ local function on_entity_died(event)
                 global.remaining_lives[player_index] = global.remaining_lives[player_index] + 1
                 draw_upgrade_text({"", "Level up! ", global.remaining_lives[player_index] - 1, " lives remaining"}, player, { x = 0, y = 3 })
             end
-            if level % 8 == 0 then
+            if level % 2 == 0 then
                 upgrade_damage_bonuses(level)
             end
         end
