@@ -799,7 +799,7 @@ local function upgrade_damage(ability_name, ability_data, player)
     ability_data.damage = ability_data.damage * ability_data.damage_multiplier
     local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] damage increased to ", ability_data.damage}
     draw_upgrade_text(text, player)
-    activate_ability(ability_name, ability_data, player)
+    -- activate_ability(ability_name, ability_data, player)
 end
 
 ---@param ability_name string
@@ -809,7 +809,7 @@ local function upgrade_radius(ability_name, ability_data, player)
     ability_data.radius = ability_data.radius + ability_data.radius_multiplier
     local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] radius increased to ", ability_data.radius}
     draw_upgrade_text(text, player)
-    activate_ability(ability_name, ability_data, player)
+    -- activate_ability(ability_name, ability_data, player)
 end
 
 ---@param ability_name string
@@ -819,7 +819,7 @@ local function upgrade_cooldown(ability_name, ability_data, player)
     ability_data.cooldown = math.max(1, math.ceil(ability_data.cooldown - ability_data.cooldown_multiplier))
     local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] cooldown decreased to ", ability_data.cooldown}
     draw_upgrade_text(text, player)
-    activate_ability(ability_name, ability_data, player)
+    -- activate_ability(ability_name, ability_data, player)
 end
 
 local ability_upgrade_functions = {
