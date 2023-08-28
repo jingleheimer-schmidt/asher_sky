@@ -1116,14 +1116,6 @@ local function on_player_died(event)
         global.remaining_lives = global.remaining_lives or {}
         global.remaining_lives[player.index] = global.remaining_lives[player.index] or 1
         local text = {"", "Engineer down! ", global.remaining_lives[player.index] - 1, " lives remaining"}
-
-        if global.arena_start_tick - game.tick >= global.game_length then
-            text = {"", "Victory lap!"}
-            player_stats.total.victories = player_stats.total.victories + 1
-            player_stats.last_attempt.victories = player_stats.last_attempt.victories + 1
-            global.remaining_lives[player.index] = 0
-        end
-
         draw_upgrade_text(text, player, { x = 0, y = 3 })
     end
 end
@@ -1614,6 +1606,20 @@ local function on_tick(event)
                 end
             end
             global.previous_positions[player.index] = position
+        end
+        local arena_start_tick = global.arena_start_tick
+        local difficulty = global.lobby_options.difficulty
+        local game_duration = global.game_duration[difficulty]
+        local arena_duration = game.tick - arena_start_tick
+        if arena_duration == game_duration then
+            for _, player in pairs(connected_players) do
+                local text = {"", "Victory lap!"}
+                draw_announcement_text(text, player)
+                local player_stats = global.statistics[player.index] --[[@type player_statistics]]
+                player_stats.total.victories = player_stats.total.victories + 1
+                player_stats.last_attempt.victories = player_stats.last_attempt.victories + 1
+                global.remaining_lives[player.index] = 0
+            end
         end
         local all_players_dead = true
         for _, player in pairs(connected_players) do
