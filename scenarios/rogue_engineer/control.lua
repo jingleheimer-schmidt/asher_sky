@@ -1688,6 +1688,11 @@ local function on_tick(event)
             end
         end
         for _, player in pairs(connected_players) do
+            update_kills_per_minute_counter(player)
+            update_time_remaining_counter(player)
+            update_lives_remaining_counter(player)
+        end
+        for _, player in pairs(connected_players) do
             local position = player.position
             global.previous_positions = global.previous_positions or {}
             global.previous_positions[player.index] = global.previous_positions[player.index] or position
