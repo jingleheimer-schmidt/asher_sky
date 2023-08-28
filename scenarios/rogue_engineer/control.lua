@@ -42,6 +42,7 @@ local offset_vector = general_util.offset_vector
 local direction_to_angle = general_util.direction_to_angle
 local opposite_direction = general_util.opposite_direction
 local normalize_degrees = general_util.normalize_degrees
+local format_time = general_util.format_time
 
 local function on_init()
     global.player_data = {}

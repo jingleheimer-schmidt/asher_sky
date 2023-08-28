@@ -75,6 +75,15 @@ local function opposite_direction(direction)
     return (direction + 4) % 8
 end
 
+---@param ticks number
+---@return LocalisedString
+local function format_time(ticks)
+    local seconds = ticks / 60
+    local minutes = math.floor(seconds / 60)
+    seconds = seconds - minutes * 60
+    return string.format("%d:%02d", minutes, seconds)
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -84,5 +93,6 @@ return {
     random_table_key = random_table_key,
     offset_vector = offset_vector,
     direction_to_angle = direction_to_angle,
-    opposite_direction = opposite_direction
+    opposite_direction = opposite_direction,
+    format_time = format_time,
 }
