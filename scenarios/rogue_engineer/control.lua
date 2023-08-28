@@ -1621,6 +1621,11 @@ local function on_tick(event)
                 global.remaining_lives[player.index] = 0
             end
         end
+        if arena_duration > game_duration then
+            for _, player in pairs(connected_players) do
+                spawn_level_appropriate_enemy(player)
+            end
+        end
         local all_players_dead = true
         for _, player in pairs(connected_players) do
             if not (player.controller_type == defines.controllers.spectator) then
