@@ -984,6 +984,20 @@ local function create_arena_clock_rendering(character)
     return render_id
 end
 
+---@param character LuaEntity
+---@return uint64
+local function create_lives_remaining_rendering(character)
+    local text = {"", {"counter_locale.lives_remaining"}, ": ", "0"}
+    local surface = character.surface
+    local color = { r = 1, g = 1, b = 1 }
+    local time_to_live = nil
+    local scale = 1.5
+    local offset = { x = 0, y = 4 }
+    local use_rich_text = true
+    local render_id = draw_text(text, surface, character, color, time_to_live, scale, offset, use_rich_text)
+    return render_id
+end
+
 ---@param player LuaPlayer
 local function update_kill_counter(player)
     local character = valid_player_character(player)
@@ -1034,6 +1048,24 @@ local function update_kills_per_minute_counter(player)
         player_stats.total.top_kills_per_minute = math.max(player_stats.total.top_kills_per_minute, kills_per_minute)
         player_stats.last_attempt.top_kills_per_minute = math.max(player_stats.last_attempt.top_kills_per_minute, kills_per_minute)
     end
+end
+
+---@param player LuaPlayer
+local function update_lives_remaining_counter(player)
+    local character = valid_player_character(player)
+    if not character then return end
+    local player_index = player.index
+    global.lives_remaining_counters = global.lives_remaining_counters or {}
+    global.lives_remaining_counters[player_index] = global.lives_remaining_counters[player_index] or {
+        render_id = create_lives_remaining_rendering(character),
+    }
+    local lives_remaining_counter = global.lives_remaining_counters[player_index]
+    if not rendering.is_valid(lives_remaining_counter.render_id) then
+        lives_remaining_counter.render_id = create_lives_remaining_rendering(character)
+    end
+    local lives_remaining = global.remaining_lives and global.remaining_lives[player_index] or 0
+    local text = {"", {"counter_locale.lives_remaining"}, ": ", lives_remaining - 1}
+    rendering.set_text(lives_remaining_counter.render_id, text)
 end
 
 ---@param surface LuaSurface
