@@ -1042,7 +1042,7 @@ end
 
 ---@param player_index uint
 ---@param character LuaEntity
-local function update_kills_per_minute_counter(player_index, character)
+local function update_kpm_counter_rendering(player_index, character)
     global.kpm_counter_render_ids = global.kpm_counter_render_ids or {} --[[@type table<uint, uint64>]]
     global.kpm_counter_render_ids[player_index] = global.kpm_counter_render_ids[player_index] or create_kpm_counter_rendering(character)
     local render_id = global.kpm_counter_render_ids[player_index]
@@ -1061,7 +1061,7 @@ end
 
 ---@param player_index uint
 ---@param character LuaEntity
-local function update_time_remaining_counter(player_index, character)
+local function update_arena_clock_rendering(player_index, character)
     local start_tick = global.arena_start_tick
     if not start_tick then return end
     local game_duration = global.game_duration[global.lobby_options.difficulty]
@@ -1081,7 +1081,7 @@ end
 
 ---@param player_index uint
 ---@param character LuaEntity
-local function update_lives_remaining_counter(player_index, character)
+local function update_lives_remaining_rendering(player_index, character)
     global.lives_remaining_counters = global.lives_remaining_counters or {}
     global.lives_remaining_counters[player_index] = global.lives_remaining_counters[player_index] or {
         render_id = create_lives_remaining_rendering(character),
@@ -1696,9 +1696,9 @@ local function on_tick(event)
             local character = valid_player_character(player)
             if character then
                 local player_index = player.index
-                update_kills_per_minute_counter(player_index, character)
-                update_time_remaining_counter(player_index, character)
-                update_lives_remaining_counter(player_index, character)
+                update_kpm_counter_rendering(player_index, character)
+                update_arena_clock_rendering(player_index, character)
+                update_lives_remaining_rendering(player_index, character)
             end
         end
         for _, player in pairs(connected_players) do
