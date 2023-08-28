@@ -282,7 +282,7 @@ end
 ---@param position MapPosition
 ---@param surface LuaSurface
 ---@param final_tick uint
-local function create_damage_zone(name, radius, damage_per_tick, player, position, surface, final_tick)
+local function register_damage_zone(name, radius, damage_per_tick, player, position, surface, final_tick)
     local damage_zone = {
         radius = radius,
         damage_per_tick = damage_per_tick,
@@ -353,7 +353,7 @@ local function activate_burst_damage(ability_data, player)
     local radius = ability_data.radius
     local damage_per_tick = ability_data.damage / aoe_damage_modifier
     local final_tick = game.tick + (raw_abilities_data.burst.frame_count * 1.25)
-    create_damage_zone("burst", radius, damage_per_tick, player, position, surface, final_tick)
+    register_damage_zone("burst", radius, damage_per_tick, player, position, surface, final_tick)
 end
 
 ---@param ability_data active_ability_data
@@ -366,7 +366,7 @@ local function activate_punch_damage(ability_data, player)
     damage_enemies_in_radius(radius, damage, position, surface, player)
     local damage_per_tick = damage / aoe_damage_modifier
     local final_tick = game.tick + (raw_abilities_data.punch.frame_count * 0.75)
-    create_damage_zone("punch", radius, damage_per_tick, player, position, surface, final_tick)
+    register_damage_zone("punch", radius, damage_per_tick, player, position, surface, final_tick)
 end
 
 ---@param ability_data active_ability_data
