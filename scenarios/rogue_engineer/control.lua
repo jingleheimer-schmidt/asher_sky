@@ -1020,27 +1020,25 @@ local function update_kills_per_minute_counter(player)
     local character = valid_player_character(player)
     if not character then return end
     local player_index = player.index
-    local kill_counter = global.kill_counter_render_ids and global.kill_counter_render_ids[player_index]
-    if not kill_counter then return end
+    local statistics = global.statistics[player_index]
+    local kill_count = statistics and statistics.last_attempt.kills or 0
     local start_tick = global.arena_start_tick
     if not start_tick then return end
-    global.kills_per_minute_counters = global.kills_per_minute_counters or {}
-    global.kills_per_minute_counters[player_index] = global.kills_per_minute_counters[player_index] or {
-        render_id = create_kills_per_minute_counter_rendering(character),
-    }
-    local kills_per_minute_counter = global.kills_per_minute_counters[player_index]
-    if not rendering.is_valid(kills_per_minute_counter.render_id) then
-        kills_per_minute_counter.render_id = create_kills_per_minute_counter_rendering(character)
+    global.kpm_counter_render_ids = global.kpm_counter_render_ids or {} --[[@type table<uint, uint64>]]
+    global.kpm_counter_render_ids[player_index] = global.kpm_counter_render_ids[player_index] or create_kills_per_minute_counter_rendering(character)
+    local render_id = global.kpm_counter_render_ids[player_index]
+    if not rendering.is_valid(render_id) then
+        render_id = create_kills_per_minute_counter_rendering(character)
     end
-    local kills_per_minute = math.min(kill_counter.kill_count, math.floor(kill_counter.kill_count / ((game.tick - start_tick) / 3600)))
-    local last_text = rendering.get_text(kills_per_minute_counter.render_id) --[[@as LocalisedString]]
+    local kills_per_minute = math.min(kill_count, math.floor(kill_count / ((game.tick - start_tick) / 3600)))
+    local last_text = rendering.get_text(render_id) --[[@as LocalisedString]]
     local last_color = last_text and last_text[4] or "white"
     local last_kpm = last_text and tonumber(last_text[6]) or 0
     local color = kills_per_minute > last_kpm and "green" or kills_per_minute < last_kpm and "red" or last_color
     local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", color, "]", kills_per_minute, "[/color]"}
-    rendering.set_text(kills_per_minute_counter.render_id, text)
+    rendering.set_text(render_id, text)
 
-    local player_stats = global.statistics[player_index] --[[@type player_statistics]]
+    local player_stats = global.statistics[player_index]
     if player_stats then
         player_stats.total.top_kills_per_minute = math.max(player_stats.total.top_kills_per_minute, kills_per_minute)
         player_stats.last_attempt.top_kills_per_minute = math.max(player_stats.last_attempt.top_kills_per_minute, kills_per_minute)
@@ -1755,7 +1753,7 @@ local function on_tick(event)
             global.arena_start_tick = nil
             global.kill_counter_render_ids = nil
             global.remaining_lives = nil
-            global.kills_per_minute_counters = nil
+            global.kpm_counter_render_ids = nil
             game.forces.player.reset()
             randomize_starting_abilities()
             update_lobby_text()
