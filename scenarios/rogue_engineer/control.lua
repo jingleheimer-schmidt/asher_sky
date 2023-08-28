@@ -600,6 +600,8 @@ local function activate_poison_capsule_deployer(ability_data, player)
         speed = 1/500,
     }
     ---@diagnostic enable: missing-fields
+    local final_tick = game.tick + 60 * 45
+    register_poison_zone(ability_data.name, position, player, final_tick)
 end
 
 ---@param ability_data active_ability_data
