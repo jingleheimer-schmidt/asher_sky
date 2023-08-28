@@ -934,17 +934,19 @@ local function unlock_random_ability(player)
 end
 
 ---@param player LuaPlayer
----@return uint64
+---@return uint64?
 local function create_kill_counter_rendering(player)
-    return rendering.draw_text {
-        text = {"", {"counter_locale.kills"}, ": ", "0"},
-        surface = player.surface,
-        target = player.character,
-        target_offset = { x = 0, y = 1 },
-        color = { r = 1, g = 1, b = 1 },
-        scale = 1.5,
-        alignment = "center",
-    }
+    if not player.valid then return end
+    local character = player.character
+    if not character then return end
+    local text = {"", {"counter_locale.kills"}, ": ", "0"}
+    local surface = player.surface
+    local color = { r = 1, g = 1, b = 1 }
+    local time_to_live = nil
+    local scale = 1.5
+    local offset = { x = 0, y = 1 }
+    local render_id = draw_text(text, surface, character, color, time_to_live, scale, offset)
+    return render_id
 end
 
 local function create_kills_per_minute_counter_rendering(player)
