@@ -1059,6 +1059,7 @@ local function update_kills_per_minute_counter(player)
     local color = kills_per_minute > last_kpm and "green" or kills_per_minute < last_kpm and "red" or last_color
     local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", color, "]", kills_per_minute, "[/color]"}
     rendering.set_text(render_id, text)
+    update_kpm_statistics(player_index, kills_per_minute)
 end
 
 ---@param player LuaPlayer
