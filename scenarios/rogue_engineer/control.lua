@@ -1094,8 +1094,8 @@ local function spawn_level_appropriate_enemy(player)
     end
     local radius = math.random(25, 50)
     local arena_clock = (game.tick - global.arena_start_tick)
-        radius = math.random(5, 75)
     if arena_clock > global.game_duration[global.lobby_options.difficulty] then
+        radius = math.random(15, 150)
     end
     local position = get_random_position_on_circumference(player.position, radius)
     position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
