@@ -1398,7 +1398,7 @@ local function on_entity_died(event)
                 upgrade_damage_bonuses(level)
             end
         end
-        update_kill_counter(player)
+        update_kill_counter(player_index, character)
         -- local enemy_name = entity.name
         -- local radius = math.random(25, 55)
         -- local position = get_random_position_on_circumference(player.position, radius)
