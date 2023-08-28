@@ -1192,7 +1192,7 @@ local function on_entity_damaged(event)
         if entity.force == game.forces.player then
             local player = get_damage_attribution(event)
             if player then
-                entity.health = entity.prototype.max_health
+                entity.health = entity.health + event.final_damage_amount * 0.75
             end
         end
     end
