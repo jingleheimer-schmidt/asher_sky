@@ -748,6 +748,27 @@ local animation_functions = {
 }
 
 ---@param text string|LocalisedString
+---@param surface LuaSurface
+---@param target MapPosition|LuaEntity
+---@param color Color
+---@param time_to_live uint
+---@param scale float
+---@param alignment string
+---@return uint64
+local function draw_text(text, surface, target, color, time_to_live, scale, alignment)
+    local render_id = rendering.draw_text{
+        text = text,
+        surface = surface,
+        target = target,
+        color = color,
+        time_to_live = time_to_live,
+        scale = scale,
+        alignment = alignment,
+    }
+    return render_id
+end
+
+---@param text string|LocalisedString
 ---@param player LuaPlayer
 ---@param offset Vector?
 local function draw_upgrade_text(text, player, offset)
