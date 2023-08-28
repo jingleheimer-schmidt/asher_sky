@@ -792,7 +792,7 @@ local function draw_upgrade_text(text, player, offset)
         position.x = position.x + offset.x
         position.y = position.y + offset.y
     end
-    draw_text(text, surface, position, color, time_to_live, scale)
+    draw_text(text, surface, position, color, time_to_live, scale, offset)
 end
 
 ---@param text string|LocalisedString
