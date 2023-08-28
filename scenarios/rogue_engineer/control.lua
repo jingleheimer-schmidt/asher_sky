@@ -1000,7 +1000,7 @@ end
 
 ---@param player_index uint
 ---@param character LuaEntity
-local function update_kill_counter(player_index, character)
+local function update_kill_counter_rendering(player_index, character)
     global.kill_counter_render_ids = global.kill_counter_render_ids or {} --[[@type table<uint, uint64>]]
     global.kill_counter_render_ids[player_index] = global.kill_counter_render_ids[player_index] or create_kill_counter_rendering(character)
     local render_id = global.kill_counter_render_ids[player_index]
@@ -1398,7 +1398,7 @@ local function on_entity_died(event)
                 upgrade_damage_bonuses(level)
             end
         end
-        update_kill_counter(player_index, character)
+        update_kill_counter_rendering(player_index, character)
         -- local enemy_name = entity.name
         -- local radius = math.random(25, 55)
         -- local position = get_random_position_on_circumference(player.position, radius)
