@@ -1322,7 +1322,6 @@ local function on_player_respawned(event)
     local player = game.get_player(player_index)
     if not player then return end
     player.character_running_speed_modifier = 0.33
-    player.character_maximum_following_robot_count_bonus = 500
     global.remaining_lives = global.remaining_lives or {}
     global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
     global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
@@ -1413,7 +1412,6 @@ local function enter_arena()
                 local position = game.get_surface("arena").find_non_colliding_position("character", {x = 0, y = 0}, 100, 1)
                 position = position or {x = player.index * 2, y = 0}
                 player.teleport(position, "arena")
-                player.character_maximum_following_robot_count_bonus = 500
                 player.character_running_speed_modifier = 0.33
                 new_attempt_stats_reset(player.index)
             end
