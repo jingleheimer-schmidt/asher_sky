@@ -998,11 +998,9 @@ local function create_lives_remaining_rendering(character)
     return render_id
 end
 
----@param player LuaPlayer
-local function update_kill_counter(player)
-    local character = valid_player_character(player)
-    if not character then return end
-    local player_index = player.index
+---@param player_index uint
+---@param character LuaEntity
+local function update_kill_counter(player_index, character)
     global.kill_counter_render_ids = global.kill_counter_render_ids or {} --[[@type table<uint, uint64>]]
     global.kill_counter_render_ids[player_index] = global.kill_counter_render_ids[player_index] or create_kill_counter_rendering(character)
     local render_id = global.kill_counter_render_ids[player_index]
@@ -1041,11 +1039,9 @@ local function calculate_kills_per_minute(player_index)
     return kills_per_minute
 end
 
----@param player LuaPlayer
-local function update_kills_per_minute_counter(player)
-    local character = valid_player_character(player)
-    if not character then return end
-    local player_index = player.index
+---@param player_index uint
+---@param character LuaEntity
+local function update_kills_per_minute_counter(player_index, character)
     global.kpm_counter_render_ids = global.kpm_counter_render_ids or {} --[[@type table<uint, uint64>]]
     global.kpm_counter_render_ids[player_index] = global.kpm_counter_render_ids[player_index] or create_kpm_counter_rendering(character)
     local render_id = global.kpm_counter_render_ids[player_index]
@@ -1062,11 +1058,9 @@ local function update_kills_per_minute_counter(player)
     update_kpm_statistics(player_index, kills_per_minute)
 end
 
----@param player LuaPlayer
-local function update_time_remaining_counter(player)
-    local character = valid_player_character(player)
-    if not character then return end
-    local player_index = player.index
+---@param player_index uint
+---@param character LuaEntity
+local function update_time_remaining_counter(player_index, character)
     local start_tick = global.arena_start_tick
     if not start_tick then return end
     local game_duration = global.game_duration[global.lobby_options.difficulty]
@@ -1084,11 +1078,9 @@ local function update_time_remaining_counter(player)
     rendering.set_text(time_remaining_counter.render_id, text)
 end
 
----@param player LuaPlayer
-local function update_lives_remaining_counter(player)
-    local character = valid_player_character(player)
-    if not character then return end
-    local player_index = player.index
+---@param player_index uint
+---@param character LuaEntity
+local function update_lives_remaining_counter(player_index, character)
     global.lives_remaining_counters = global.lives_remaining_counters or {}
     global.lives_remaining_counters[player_index] = global.lives_remaining_counters[player_index] or {
         render_id = create_lives_remaining_rendering(character),
@@ -1695,14 +1687,17 @@ local function on_tick(event)
         local balance = difficulties[global.lobby_options.difficulty]
         if game.tick % balance == 0 then
             for _, player in pairs(connected_players) do
-                update_kills_per_minute_counter(player)
                 spawn_level_appropriate_enemy(player)
             end
         end
         for _, player in pairs(connected_players) do
-            update_kills_per_minute_counter(player)
-            update_time_remaining_counter(player)
-            update_lives_remaining_counter(player)
+            local character = valid_player_character(player)
+            if character then
+                local player_index = player.index
+                update_kills_per_minute_counter(player_index, character)
+                update_time_remaining_counter(player_index, character)
+                update_lives_remaining_counter(player_index, character)
+            end
         end
         for _, player in pairs(connected_players) do
             local position = player.position
