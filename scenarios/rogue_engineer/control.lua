@@ -981,6 +981,7 @@ local function create_arena_clock_rendering(character)
     local offset = { x = 0, y = 3 }
     local use_rich_text = true
     local render_id = draw_text(text, surface, character, color, time_to_live, scale, offset, use_rich_text)
+    return render_id
 end
 
 ---@param player LuaPlayer
