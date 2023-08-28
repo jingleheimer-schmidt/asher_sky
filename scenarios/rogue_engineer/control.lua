@@ -1003,19 +1003,16 @@ local function update_kill_counter(player)
     local character = valid_player_character(player)
     if not character then return end
     local player_index = player.index
-    global.kill_counters = global.kill_counters or {}
-    global.kill_counters[player_index] = global.kill_counters[player_index] or {
-        render_id = create_kill_counter_rendering(character),
-        kill_count = 0,
-    }
-    local kill_counter = global.kill_counters[player_index]
-    kill_counter.kill_count = kill_counter.kill_count + 1
-    if not rendering.is_valid(kill_counter.render_id) then
-        kill_counter.render_id = create_kill_counter_rendering(character)
+    global.kill_counter_render_ids = global.kill_counter_render_ids or {} --[[@type table<uint, uint64>]]
+    global.kill_counter_render_ids[player_index] = global.kill_counter_render_ids[player_index] or create_kill_counter_rendering(character)
+    local render_id = global.kill_counter_render_ids[player_index]
+    local statistics = global.statistics[player_index]
+    local kill_count = statistics and statistics.last_attempt.kills or 0
+    if not rendering.is_valid(render_id) then
+        render_id = create_kill_counter_rendering(character)
     end
-    local text = {"", {"counter_locale.kills"}, ": ", kill_counter.kill_count}
-    rendering.set_text(kill_counter.render_id, text)
-    end
+    local text = {"", {"counter_locale.kills"}, ": ", kill_count}
+    rendering.set_text(render_id, text)
 end
 
 ---@param player LuaPlayer
