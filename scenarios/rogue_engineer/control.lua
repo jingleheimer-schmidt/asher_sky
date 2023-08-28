@@ -156,7 +156,7 @@ end
 local function refill_infividual_turret_ammo(turret, ability_data)
     local inventory = turret.get_inventory(defines.inventory.turret_ammo)
     local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
-    local ammo_items = { name = ammo_name, count = math.max(5, ability_data.level)}
+    local ammo_items = { name = ammo_name, count = math.max(2, ability_data.level / 2)}
     if inventory and inventory.can_insert(ammo_items) then
         inventory.insert(ammo_items)
         local localised_name = {"item-name." .. ammo_name}
