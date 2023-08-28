@@ -1135,7 +1135,8 @@ local function get_damage_attribution(event)
     end
     local damage_type = event.damage_type
     if damage_type then
-        if damage_type.name == "fire" then
+        local damage_type_name = damage_type.name
+        if damage_type_name == "fire" then
             local position = event.entity.position
             for id, zone in pairs(global.burn_zones) do
                 local distance_from_target = distance(position, zone.position)
