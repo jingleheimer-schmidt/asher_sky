@@ -945,8 +945,7 @@ end
 ---@param player LuaPlayer
 ---@return uint64?
 local function create_kill_counter_rendering(player)
-    if not player.valid then return end
-    local character = player.character
+    local character = valid_player_character(player)
     if not character then return end
     local text = {"", {"counter_locale.kills"}, ": ", "0"}
     local surface = player.surface
@@ -961,8 +960,7 @@ end
 ---@param player LuaPlayer
 ---@return uint64?
 local function create_kills_per_minute_counter_rendering(player)
-    if not player.valid then return end
-    local character = player.character
+    local character = valid_player_character(player)
     if not character then return end
     local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"}
     local surface = player.surface
@@ -978,8 +976,7 @@ end
 ---@param player LuaPlayer
 ---@return uint64?
 local function create_arena_clock_rendering(player)
-    if not player.valid then return end
-    local character = player.character
+    local character = valid_player_character(player)
     if not character then return end
     local text = {"", {"counter_locale.time_remaining"}, ": ", "0"}
     local surface = player.surface
@@ -993,7 +990,8 @@ end
 
 ---@param player LuaPlayer
 local function update_kill_counter(player)
-    if not player.character then return end
+    local character = valid_player_character(player)
+    if not character then return end
     local player_index = player.index
     global.kill_counters = global.kill_counters or {}
     global.kill_counters[player_index] = global.kill_counters[player_index] or {
@@ -1017,7 +1015,8 @@ end
 
 ---@param player LuaPlayer
 local function update_kills_per_minute_counter(player)
-    if not player.character then return end
+    local character = valid_player_character(player)
+    if not character then return end
     local player_index = player.index
     local kill_counter = global.kill_counters and global.kill_counters[player_index]
     if not kill_counter then return end
