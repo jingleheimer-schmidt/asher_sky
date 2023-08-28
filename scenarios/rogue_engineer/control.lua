@@ -1016,6 +1016,18 @@ local function update_kill_counter(player)
 end
 
 ---@param player_index uint
+---@param kills_per_minute uint
+local function update_kpm_statistics(player_index, kills_per_minute)
+    local player_stats = global.statistics[player_index]
+    if player_stats then
+        local total_stats = player_stats.total
+        local last_attempt_stats = player_stats.last_attempt
+        total_stats.top_kills_per_minute = math.max(total_stats.top_kills_per_minute, kills_per_minute)
+        last_attempt_stats.top_kills_per_minute = math.max(last_attempt_stats.top_kills_per_minute, kills_per_minute)
+    end
+end
+
+---@param player_index uint
 ---@return uint
 local function calculate_kills_per_minute(player_index)
     local player_stats = global.statistics[player_index]
@@ -1047,12 +1059,6 @@ local function update_kills_per_minute_counter(player)
     local color = kills_per_minute > last_kpm and "green" or kills_per_minute < last_kpm and "red" or last_color
     local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", color, "]", kills_per_minute, "[/color]"}
     rendering.set_text(render_id, text)
-
-    local player_stats = global.statistics[player_index]
-    if player_stats then
-        player_stats.total.top_kills_per_minute = math.max(player_stats.total.top_kills_per_minute, kills_per_minute)
-        player_stats.last_attempt.top_kills_per_minute = math.max(player_stats.last_attempt.top_kills_per_minute, kills_per_minute)
-    end
 end
 
 ---@param player LuaPlayer
