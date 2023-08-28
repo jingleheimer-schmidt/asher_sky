@@ -999,11 +999,6 @@ local function update_kill_counter(player)
     end
     local text = {"", {"counter_locale.kills"}, ": ", kill_counter.kill_count}
     rendering.set_text(kill_counter.render_id, text)
-
-    local player_stats = global.statistics[player_index] --[[@type player_statistics]]
-    if player_stats then
-        player_stats.total.kills = player_stats.total.kills + 1
-        player_stats.last_attempt.kills = player_stats.last_attempt.kills + 1
     end
 end
 
@@ -1315,6 +1310,12 @@ local function on_entity_died(event)
     if player and player.character then
         if not (player.surface.name == "arena") then return end
         local player_data = global.player_data[player.index]
+        local player_index = player.index
+        local player_stats = global.statistics[player_index] --[[@type player_statistics]]
+        if player_stats then
+            player_stats.total.kills = player_stats.total.kills + 1
+            player_stats.last_attempt.kills = player_stats.last_attempt.kills + 1
+        end
         -- player_data.exp = player_data.exp + (entity.prototype.max_health / 15 or 1)
         player_data.exp = player_data.exp + 1
         if player_data.exp >= 3 * player_data.level then
