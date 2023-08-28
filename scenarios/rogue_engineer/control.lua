@@ -752,15 +752,17 @@ local animation_functions = {
     barrier = draw_barrier,
 }
 
----@param text string|LocalisedString
+---@param text LocalisedString
 ---@param surface LuaSurface
 ---@param target MapPosition|LuaEntity
 ---@param color Color
----@param time_to_live uint
----@param scale float
----@param alignment string
+---@param scale double?
+---@param time_to_live uint?
+---@param target_offset Vector?
+---@param use_rich_text boolean?
+---@param draw_on_ground boolean?
 ---@return uint64
-local function draw_text(text, surface, target, color, time_to_live, scale, alignment)
+local function draw_text(text, surface, target, color, time_to_live, scale, target_offset, use_rich_text, draw_on_ground)
     local render_id = rendering.draw_text{
         text = text,
         surface = surface,
@@ -768,7 +770,10 @@ local function draw_text(text, surface, target, color, time_to_live, scale, alig
         color = color,
         time_to_live = time_to_live,
         scale = scale,
-        alignment = alignment,
+        alignment = "center",
+        target_offset = target_offset,
+        use_rich_text = use_rich_text,
+        draw_on_ground = draw_on_ground,
     }
     return render_id
 end
@@ -782,12 +787,11 @@ local function draw_upgrade_text(text, player, offset)
     local color = player.chat_color
     local time_to_live = 60 * 8
     local scale = 3.5
-    local alignment = "center"
     if offset then
         position.x = position.x + offset.x
         position.y = position.y + offset.y
     end
-    draw_text(text, surface, position, color, time_to_live, scale, alignment)
+    draw_text(text, surface, position, color, time_to_live, scale)
 end
 
 ---@param text string|LocalisedString
@@ -798,8 +802,7 @@ local function draw_announcement_text(text, player)
     local color = player.chat_color
     local time_to_live = 60 * 15
     local scale = 5
-    local alignment = "center"
-    draw_text(text, surface, position, color, time_to_live, scale, alignment)
+    draw_text(text, surface, position, color, time_to_live, scale)
 end
 
 local function draw_animations(ability_name, ability_data, player)
