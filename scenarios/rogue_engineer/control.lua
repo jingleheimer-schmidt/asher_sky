@@ -441,6 +441,7 @@ local function activate_beam_blast(ability_data, player)
     local enemy_1 = find_nearest_enemy(player_position, radius * 3, player.force, surface)
     if not enemy_1 then return end
     local enemy_1_id = enemy_1.unit_number
+    local enemy_1_position = enemy_1.position
     local damage = ability_data.damage
     local damage_bonus = game.forces.player.get_turret_attack_modifier("laser-turret")
     damage = damage + (damage * damage_bonus) --[[@as float]]
@@ -448,7 +449,7 @@ local function activate_beam_blast(ability_data, player)
     local nearby_enemies_1 = get_enemies_in_radius(surface, enemy_1.position, radius / 2)
     for _, enemy_2 in pairs(nearby_enemies_1) do
         if enemy_2.unit_number ~= enemy_1_id then
-            create_laser_beam(surface, enemy_1.position, enemy_2, player)
+            create_laser_beam(surface, enemy_1_position, enemy_2, player)
             if enemy_2.valid then
                 enemy_2.damage(damage, player.force, "laser", player.character)
             end
