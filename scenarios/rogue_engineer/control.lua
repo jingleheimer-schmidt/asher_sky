@@ -1365,13 +1365,13 @@ local function on_entity_died(event)
     local player = get_damage_attribution(event)
     if player and player.character then
         if not (player.surface.name == "arena") then return end
-        local player_data = global.player_data[player.index]
         local player_index = player.index
         local player_stats = global.statistics[player_index] --[[@type player_statistics]]
         if player_stats then
             player_stats.total.kills = player_stats.total.kills + 1
             player_stats.last_attempt.kills = player_stats.last_attempt.kills + 1
         end
+        local player_data = global.player_data[player_index]
         -- player_data.exp = player_data.exp + (entity.prototype.max_health / 15 or 1)
         player_data.exp = player_data.exp + 1
         if player_data.exp >= 3 * player_data.level then
@@ -1385,10 +1385,10 @@ local function on_entity_died(event)
                 unlock_random_ability(player)
             end
             global.remaining_lives = global.remaining_lives or {}
-            global.remaining_lives[player.index] = global.remaining_lives[player.index] or 1
+            global.remaining_lives[player_index] = global.remaining_lives[player_index] or 1
             if level % 33 == 0 then
-                global.remaining_lives[player.index] = global.remaining_lives[player.index] + 1
-                draw_upgrade_text({"", "Level up! ", global.remaining_lives[player.index] - 1, " lives remaining"}, player, { x = 0, y = 3 })
+                global.remaining_lives[player_index] = global.remaining_lives[player_index] + 1
+                draw_upgrade_text({"", "Level up! ", global.remaining_lives[player_index] - 1, " lives remaining"}, player, { x = 0, y = 3 })
             end
             if level % 8 == 0 then
                 upgrade_damage_bonuses(level)
