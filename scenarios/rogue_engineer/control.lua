@@ -1006,6 +1006,7 @@ local function update_kill_counter(player)
     end
 end
 
+---@param player LuaPlayer
 local function update_kills_per_minute_counter(player)
     if not player.character then return end
     local player_index = player.index
