@@ -1555,15 +1555,21 @@ local function on_tick(event)
         end
     end
     for id, damage_zone in pairs(global.damage_zones) do
-        damage_enemies_in_radius(damage_zone.radius, damage_zone.damage_per_tick, damage_zone.position, damage_zone.surface, damage_zone.player)
+        local player = damage_zone.player
+        if player.valid then
+            damage_enemies_in_radius(damage_zone.radius, damage_zone.damage_per_tick, damage_zone.position, damage_zone.surface, player)
+        end
         if damage_zone.final_tick <= event.tick then
             global.damage_zones[id] = nil
         end
     end
     for id, healing_player in pairs(global.healing_players) do
         local player = healing_player.player
-        if player.character then
-            player.character.damage(healing_player.damage, "enemy", "impact")
+        if player.valid then
+            local character = player.character
+            if character then
+                character.damage(healing_player.damage, "enemy", "impact")
+            end
         end
         if healing_player.final_tick <= event.tick then
             global.healing_players[id] = nil
@@ -1571,12 +1577,12 @@ local function on_tick(event)
     end
     for id, flamethrower_target in pairs(global.flamethrower_targets) do
         local player = flamethrower_target.player
-        local final_tick = flamethrower_target.final_tick
-        if player.character then
-            local position = flamethrower_target.position
-            activate_flamethrower(player, position)
+        if player.valid then
+            if player.character then
+                activate_flamethrower(player, flamethrower_target.position)
+            end
         end
-        if final_tick <= event.tick then
+        if flamethrower_target.final_tick <= event.tick then
             global.flamethrower_targets[id] = nil
         end
     end
