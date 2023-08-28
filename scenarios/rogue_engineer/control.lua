@@ -958,7 +958,7 @@ end
 
 ---@param character LuaEntity
 ---@return uint64
-local function create_kills_per_minute_counter_rendering(character)
+local function create_kpm_counter_rendering(character)
     local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"}
     local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
@@ -1025,10 +1025,10 @@ local function update_kills_per_minute_counter(player)
     local start_tick = global.arena_start_tick
     if not start_tick then return end
     global.kpm_counter_render_ids = global.kpm_counter_render_ids or {} --[[@type table<uint, uint64>]]
-    global.kpm_counter_render_ids[player_index] = global.kpm_counter_render_ids[player_index] or create_kills_per_minute_counter_rendering(character)
+    global.kpm_counter_render_ids[player_index] = global.kpm_counter_render_ids[player_index] or create_kpm_counter_rendering(character)
     local render_id = global.kpm_counter_render_ids[player_index]
     if not rendering.is_valid(render_id) then
-        render_id = create_kills_per_minute_counter_rendering(character)
+        render_id = create_kpm_counter_rendering(character)
     end
     local kills_per_minute = math.min(kill_count, math.floor(kill_count / ((game.tick - start_tick) / 3600)))
     local last_text = rendering.get_text(render_id) --[[@as LocalisedString]]
