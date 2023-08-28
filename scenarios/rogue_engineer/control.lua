@@ -942,13 +942,11 @@ local function valid_player_character(player)
     return player.character
 end
 
----@param player LuaPlayer
----@return uint64?
-local function create_kill_counter_rendering(player)
-    local character = valid_player_character(player)
-    if not character then return end
+---@param character LuaEntity
+---@return uint64
+local function create_kill_counter_rendering(character)
     local text = {"", {"counter_locale.kills"}, ": ", "0"}
-    local surface = player.surface
+    local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
     local scale = 1.5
@@ -957,13 +955,11 @@ local function create_kill_counter_rendering(player)
     return render_id
 end
 
----@param player LuaPlayer
----@return uint64?
-local function create_kills_per_minute_counter_rendering(player)
-    local character = valid_player_character(player)
-    if not character then return end
+---@param character LuaEntity
+---@return uint64
+local function create_kills_per_minute_counter_rendering(character)
     local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"}
-    local surface = player.surface
+    local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
     local scale = 1.5
@@ -973,13 +969,11 @@ local function create_kills_per_minute_counter_rendering(player)
     return render_id
 end
 
----@param player LuaPlayer
----@return uint64?
-local function create_arena_clock_rendering(player)
-    local character = valid_player_character(player)
-    if not character then return end
+---@param character LuaEntity
+---@return uint64
+local function create_arena_clock_rendering(character)
     local text = {"", {"counter_locale.time_remaining"}, ": ", "0"}
-    local surface = player.surface
+    local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
     local scale = 1.5
@@ -995,13 +989,13 @@ local function update_kill_counter(player)
     local player_index = player.index
     global.kill_counters = global.kill_counters or {}
     global.kill_counters[player_index] = global.kill_counters[player_index] or {
-        render_id = create_kill_counter_rendering(player),
+        render_id = create_kill_counter_rendering(character),
         kill_count = 0,
     }
     local kill_counter = global.kill_counters[player_index]
     kill_counter.kill_count = kill_counter.kill_count + 1
     if not rendering.is_valid(kill_counter.render_id) then
-        kill_counter.render_id = create_kill_counter_rendering(player)
+        kill_counter.render_id = create_kill_counter_rendering(character)
     end
     local text = {"", {"counter_locale.kills"}, ": ", kill_counter.kill_count}
     rendering.set_text(kill_counter.render_id, text)
@@ -1024,11 +1018,11 @@ local function update_kills_per_minute_counter(player)
     if not start_tick then return end
     global.kills_per_minute_counters = global.kills_per_minute_counters or {}
     global.kills_per_minute_counters[player_index] = global.kills_per_minute_counters[player_index] or {
-        render_id = create_kills_per_minute_counter_rendering(player),
+        render_id = create_kills_per_minute_counter_rendering(character),
     }
     local kills_per_minute_counter = global.kills_per_minute_counters[player_index]
     if not rendering.is_valid(kills_per_minute_counter.render_id) then
-        kills_per_minute_counter.render_id = create_kills_per_minute_counter_rendering(player)
+        kills_per_minute_counter.render_id = create_kills_per_minute_counter_rendering(character)
     end
     local kills_per_minute = math.min(kill_counter.kill_count, math.floor(kill_counter.kill_count / ((game.tick - start_tick) / 3600)))
     local last_text = rendering.get_text(kills_per_minute_counter.render_id) --[[@as LocalisedString]]
