@@ -1051,6 +1051,28 @@ local function update_kills_per_minute_counter(player)
 end
 
 ---@param player LuaPlayer
+local function update_time_remaining_counter(player)
+    local character = valid_player_character(player)
+    if not character then return end
+    local player_index = player.index
+    local start_tick = global.arena_start_tick
+    if not start_tick then return end
+    local game_duration = global.game_duration[global.lobby_options.difficulty]
+    if not game_duration then return end
+    global.time_remaining_counters = global.time_remaining_counters or {}
+    global.time_remaining_counters[player_index] = global.time_remaining_counters[player_index] or {
+        render_id = create_arena_clock_rendering(character),
+    }
+    local time_remaining_counter = global.time_remaining_counters[player_index]
+    if not rendering.is_valid(time_remaining_counter.render_id) then
+        time_remaining_counter.render_id = create_arena_clock_rendering(character)
+    end
+    local time_remaining = game_duration - (game.tick - start_tick)
+    local text = {"", {"counter_locale.time_remaining"}, ": ", format_time(time_remaining)}
+    rendering.set_text(time_remaining_counter.render_id, text)
+end
+
+---@param player LuaPlayer
 local function update_lives_remaining_counter(player)
     local character = valid_player_character(player)
     if not character then return end
