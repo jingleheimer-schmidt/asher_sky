@@ -244,6 +244,16 @@ local function draw_highlight_line(player, target)
     }
 end
 
+---@param entities LuaEntity[]
+---@return LuaEntity[]
+local function filter_valid_entities(entities)
+    for id, entity in pairs(entities) do
+        if not entity.valid then
+            entities[id] = nil
+        end
+    end
+    return entities
+end
 
 ---@param animation_name string
 ---@param ability_data active_ability_data
@@ -257,6 +267,7 @@ local function refill_and_repair_turrets(animation_name, ability_data, player, p
         type = "ammo-turret",
     }
     if not nearby_turrets then return end
+    nearby_turrets = filter_valid_entities(nearby_turrets)
     for _, turret in pairs(nearby_turrets) do
         refill_infividual_turret_ammo(turret, ability_data)
         turret.damage( -turret.prototype.max_health, player.force, "impact", player.character)
@@ -289,12 +300,16 @@ end
 ---@param radius integer
 ---@param force ForceIdentification
 ---@param surface LuaSurface
+---@return LuaEntity?
 local function find_nearest_enemy(position, radius, force, surface)
-    return surface.find_nearest_enemy{
+    local enemy = surface.find_nearest_enemy{
         position = position,
         max_distance = radius,
         force = force,
     }
+    if enemy and enemy.valid then
+        return enemy
+    end
 end
 
 ---@param surface LuaSurface
@@ -302,12 +317,14 @@ end
 ---@param radius integer
 ---@return LuaEntity[]
 local function get_enemies_in_radius(surface, position, radius)
-    return surface.find_entities_filtered{
+    local enemies = surface.find_entities_filtered{
         position = position,
         radius = radius,
         force = "enemy",
         type = {"unit", "turret", "unit-spawner"},
     }
+    enemies = filter_valid_entities(enemies)
+    return enemies
 end
 
 ---@param radius integer
