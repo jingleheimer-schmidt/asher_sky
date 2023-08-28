@@ -949,17 +949,23 @@ local function create_kill_counter_rendering(player)
     return render_id
 end
 
+---@param player LuaPlayer
+---@return uint64?
 local function create_kills_per_minute_counter_rendering(player)
-    return rendering.draw_text {
-        text = {"", {"counter_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"},
-        surface = player.surface,
-        target = player.character,
-        target_offset = { x = 0, y = 2 },
-        color = { r = 1, g = 1, b = 1 },
-        scale = 1.5,
-        alignment = "center",
-        use_rich_text = true,
-    }
+    if not player.valid then return end
+    local character = player.character
+    if not character then return end
+    local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"}
+    local surface = player.surface
+    local color = { r = 1, g = 1, b = 1 }
+    local time_to_live = nil
+    local scale = 1.5
+    local offset = { x = 0, y = 2 }
+    local use_rich_text = true
+    local render_id = draw_text(text, surface, character, color, time_to_live, scale, offset, use_rich_text)
+    return render_id
+end
+
 end
 
 ---@param player LuaPlayer
