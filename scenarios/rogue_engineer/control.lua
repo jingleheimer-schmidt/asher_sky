@@ -773,19 +773,16 @@ end
 ---@param offset Vector?
 local function draw_upgrade_text(text, player, offset)
     local position = player.position
+    local surface = player.surface
+    local color = player.chat_color
+    local time_to_live = 60 * 8
+    local scale = 3.5
+    local alignment = "center"
     if offset then
         position.x = position.x + offset.x
         position.y = position.y + offset.y
     end
-    rendering.draw_text({
-        text = text,
-        surface = player.surface,
-        target = position,
-        color = player.chat_color,
-        time_to_live = 60 * 10,
-        scale = 3.5,
-        alignment = "center",
-    })
+    draw_text(text, surface, position, color, time_to_live, scale, alignment)
 end
 
 local function draw_animations(ability_name, ability_data, player)
