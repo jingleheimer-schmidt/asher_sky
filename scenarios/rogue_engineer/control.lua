@@ -1368,7 +1368,8 @@ local function on_entity_died(event)
         ---@diagnostic enable: missing-fields
     end
     local player = get_damage_attribution(event)
-    if player and player.character then
+    local character = valid_player_character(player)
+    if player and character then
         if not (player.surface.name == "arena") then return end
         local player_index = player.index
         local player_stats = global.statistics[player_index] --[[@type player_statistics]]
