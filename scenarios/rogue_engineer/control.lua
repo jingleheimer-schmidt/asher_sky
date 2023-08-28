@@ -934,6 +934,15 @@ local function unlock_random_ability(player)
 end
 
 ---@param player LuaPlayer
+---@return LuaEntity?
+local function valid_player_character(player)
+    if not player.valid then return end
+    if not player.character then return end
+    if not player.character.valid then return end
+    return player.character
+end
+
+---@param player LuaPlayer
 ---@return uint64?
 local function create_kill_counter_rendering(player)
     if not player.valid then return end
