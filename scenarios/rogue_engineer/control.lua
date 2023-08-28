@@ -96,6 +96,11 @@ local function on_init()
     global.burn_zones = {}
     global.poison_zones = {}
     global.game_length = 60 * 60 * 15
+    global.game_duration = {
+        easy = 60 * 60 * 7,
+        normal = 60 * 60 * 11,
+        hard = 60 * 60 * 15,
+    }
 end
 
 ---@param animation_name string
@@ -1089,8 +1094,8 @@ local function spawn_level_appropriate_enemy(player)
     end
     local radius = math.random(25, 50)
     local arena_clock = (game.tick - global.arena_start_tick)
-    if arena_clock > global.game_length then
         radius = math.random(5, 75)
+    if arena_clock > global.game_duration[global.lobby_options.difficulty] then
     end
     local position = get_random_position_on_circumference(player.position, radius)
     position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
