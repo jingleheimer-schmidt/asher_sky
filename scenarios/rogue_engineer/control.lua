@@ -61,7 +61,7 @@ local function on_init()
         distractor = true,
         defender = true,
         landmine = true,
-        -- poison_capsule = true,
+        poison_capsule = true,
         slowdown_capsule = true,
         gun_turret = true,
         shotgun = true,
@@ -88,12 +88,13 @@ local function on_init()
     }
     global.default_abilities = {
         ability_1 = "destroyer",
-        ability_2 = "distractor",
+        ability_2 = "poison_capsule",
         ability_3 = "defender",
     }
     global.statistics = {}
     global.flamethrower_targets = {}
     global.burn_zones = {}
+    global.poison_zones = {}
     global.game_length = 60 * 60 * 15
 end
 
@@ -546,13 +547,28 @@ local function activate_landmine_deployer(ability_data, player)
     ---@diagnostic enable: missing-fields
 end
 
+---@param ability_name string
+---@param position MapPosition
+---@param player LuaPlayer
+---@param final_tick uint
+local function register_poison_zone(ability_name, position, player, final_tick)
+    local poison_zone = {
+        position = position,
+        player = player,
+        surface = player.surface,
+        final_tick = final_tick,
+    }
+    local unique_id = "poison-zone-" .. "-" .. ability_name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
+    global.poison_zones = global.poison_zones or {}
+    global.poison_zones[unique_id] = poison_zone
+end
+
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 local function activate_poison_capsule_deployer(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
-    local opposite_direction = opposite_direction(player.character.direction)
-    local angle = direction_to_angle(opposite_direction)
+    local angle = direction_to_angle(opposite_direction(player.character.direction))
     local position = get_position_on_circumference(player.position, radius, angle)
     ---@diagnostic disable: missing-fields
     surface.create_entity{
@@ -1109,6 +1125,18 @@ local function get_damage_attribution(event)
                 end
                 if zone.final_tick < game.tick then
                     global.burn_zones[id] = nil
+                end
+            end
+        elseif damage_type_name == "poison" then
+            local position = event.entity.position
+            for id, zone in pairs(global.poison_zones) do
+                local distance_from_target = distance(position, zone.position)
+                if distance_from_target <= 15 then
+                    player = zone.player.valid and zone.player or nil
+                    break
+                end
+                if zone.final_tick < game.tick then
+                    global.poison_zones[id] = nil
                 end
             end
         end
