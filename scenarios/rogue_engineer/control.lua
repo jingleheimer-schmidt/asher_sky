@@ -966,6 +966,20 @@ local function create_kills_per_minute_counter_rendering(player)
     return render_id
 end
 
+---@param player LuaPlayer
+---@return uint64?
+local function create_arena_clock_rendering(player)
+    if not player.valid then return end
+    local character = player.character
+    if not character then return end
+    local text = {"", {"counter_locale.time_remaining"}, ": ", "0"}
+    local surface = player.surface
+    local color = { r = 1, g = 1, b = 1 }
+    local time_to_live = nil
+    local scale = 1.5
+    local offset = { x = 0, y = 3 }
+    local use_rich_text = true
+    local render_id = draw_text(text, surface, character, color, time_to_live, scale, offset, use_rich_text)
 end
 
 ---@param player LuaPlayer
