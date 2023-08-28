@@ -1209,17 +1209,26 @@ local function upgrade_damage_bonuses(level_threshold)
         end
     end
     if all_players_meet_requirement then
-        local technology_upgrades = {
+        local tier_1_technology_upgrades = {
             ["physical-projectile-damage-"] = true,
             ["energy-weapons-damage-"] = true,
             ["stronger-explosives-"] = true,
             ["refined-flammables-"] = true,
             -- ["weapon-shooting-speed-"] = true,
+            -- ["robot-follower-count"] = true,
+        }
+        local tier_2_technology_upgrades = {
+            -- ["physical-projectile-damage-"] = true,
+            -- ["energy-weapons-damage-"] = true,
+            -- ["stronger-explosives-"] = true,
+            -- ["refined-flammables-"] = true,
+            ["weapon-shooting-speed-"] = true,
+            ["follower-robot-count-"] = true,
         }
         local force = game.forces.player
         local max_tech_level = math.ceil(level_threshold / 5)
         for i = 1, max_tech_level do
-            for name, _ in pairs(technology_upgrades) do
+            for name, _ in pairs(tier_1_technology_upgrades) do
                 local tech_name = name .. math.min(i, 7)
                 local technology = force.technologies[tech_name]
                 if not technology then break end
@@ -1230,15 +1239,17 @@ local function upgrade_damage_bonuses(level_threshold)
                 force.technologies[tech_name].researched = true
             end
         end
-        for i = 1, max_tech_level / 5 do
-            local tech_name = "follower-robot-count-" .. i
-            local technology = force.technologies[tech_name]
-            if not technology then break end
-            local prerequisites = technology.prerequisites
-            for _, prerequisite in pairs(prerequisites) do
-                force.technologies[prerequisite.name].researched = true
+        for i = 1, max_tech_level / 2 do
+            for name, _ in pairs(tier_2_technology_upgrades) do
+                local tech_name = name .. math.min(i, 7)
+                local technology = force.technologies[tech_name]
+                if not technology then break end
+                local prerequisites = technology.prerequisites
+                for _, prerequisite in pairs(prerequisites) do
+                    force.technologies[prerequisite.name].researched = true
+                end
+                force.technologies[tech_name].researched = true
             end
-            force.technologies[tech_name].researched = true
         end
     end
 end
