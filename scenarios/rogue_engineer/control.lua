@@ -1015,22 +1015,32 @@ local function update_kill_counter(player)
     rendering.set_text(render_id, text)
 end
 
+---@param player_index uint
+---@return uint
+local function calculate_kills_per_minute(player_index)
+    local player_stats = global.statistics[player_index]
+    local kills_per_minute = 0
+    if player_stats then
+        local last_attempt_stats = player_stats.last_attempt
+        local kill_count = last_attempt_stats.kills or 0
+        local start_tick = global.arena_start_tick or 0
+        kills_per_minute = math.min(kill_count, math.floor(kill_count / ((game.tick - start_tick) / 3600)))
+    end
+    return kills_per_minute
+end
+
 ---@param player LuaPlayer
 local function update_kills_per_minute_counter(player)
     local character = valid_player_character(player)
     if not character then return end
     local player_index = player.index
-    local statistics = global.statistics[player_index]
-    local kill_count = statistics and statistics.last_attempt.kills or 0
-    local start_tick = global.arena_start_tick
-    if not start_tick then return end
     global.kpm_counter_render_ids = global.kpm_counter_render_ids or {} --[[@type table<uint, uint64>]]
     global.kpm_counter_render_ids[player_index] = global.kpm_counter_render_ids[player_index] or create_kpm_counter_rendering(character)
     local render_id = global.kpm_counter_render_ids[player_index]
     if not rendering.is_valid(render_id) then
         render_id = create_kpm_counter_rendering(character)
     end
-    local kills_per_minute = math.min(kill_count, math.floor(kill_count / ((game.tick - start_tick) / 3600)))
+    local kills_per_minute = calculate_kills_per_minute(player_index)
     local last_text = rendering.get_text(render_id) --[[@as LocalisedString]]
     local last_color = last_text and last_text[4] or "white"
     local last_kpm = last_text and tonumber(last_text[6]) or 0
