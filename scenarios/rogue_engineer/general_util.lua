@@ -115,6 +115,15 @@ local function arena_ticks_elapsed()
     return time_elapsed
 end
 
+---@param position_1 MapPosition
+---@param position_2 MapPosition
+---@return number
+local function distance(position_1, position_2)
+    local x = position_1.x - position_2.x
+    local y = position_1.y - position_2.y
+    return math.sqrt(x * x + y * y)
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -130,4 +139,5 @@ return {
     degrees_to_radians = degrees_to_radians,
     arena_ticks_remaining = arena_ticks_remaining,
     arena_ticks_elapsed = arena_ticks_elapsed,
+    distance = distance,
 }

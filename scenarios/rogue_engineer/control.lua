@@ -49,6 +49,7 @@ local valid_player_character = general_util.valid_player_character
 local degrees_to_radians = general_util.degrees_to_radians
 local arena_ticks_remaining = general_util.arena_ticks_remaining
 local arena_ticks_elapsed = general_util.arena_ticks_elapsed
+local distance = general_util.distance
 
 local gooey_util = require("gooey_util")
 local create_arena_gui = gooey_util.create_arena_gui
@@ -1211,15 +1212,6 @@ local function on_player_died(event)
         local text = { "", { "message_locale.engineer_down" }, "! ", global.remaining_lives[player.index], " ", { "message_locale.lives_remaining" } }
         draw_upgrade_text(text, player, { x = 0, y = 3 })
     end
-end
-
----@param position_1 MapPosition
----@param position_2 MapPosition
----@return number
-local function distance(position_1, position_2)
-    local x = position_1.x - position_2.x
-    local y = position_1.y - position_2.y
-    return math.sqrt(x * x + y * y)
 end
 
 ---@param event EventData.on_entity_died|EventData.on_entity_damaged
