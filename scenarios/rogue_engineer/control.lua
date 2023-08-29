@@ -47,6 +47,7 @@ local format_time = general_util.format_time
 local valid_player_character = general_util.valid_player_character
 local degrees_to_radians = general_util.degrees_to_radians
 local arena_time_remaining = general_util.arena_time_remaining
+local arena_time_elapsed = general_util.arena_time_elapsed
 
 local gooey_util = require("gooey_util")
 local create_arena_gui = gooey_util.create_arena_gui
@@ -1129,6 +1130,7 @@ local function spawn_level_appropriate_enemy(player)
     if not (player.controller_type == defines.controllers.character) then return end
     -- local player_data = global.player_data[player.index]
     -- local level = player_data.level
+    local time_elapsed = arena_time_elapsed()
     local arena_minutes = global.arena_start_tick and math.floor((game.tick - global.arena_start_tick) / 60 / 60) or 0
     local enemy_name = "small-biter"
     local chance = 15 / 100

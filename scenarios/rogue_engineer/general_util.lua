@@ -110,6 +110,13 @@ local function arena_time_remaining()
     return time_remaining
 end
 
+---@return uint
+local function arena_time_elapsed()
+    local start_tick = global.arena_start_tick or 0
+    local time_elapsed = game.tick - start_tick
+    return time_elapsed
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -124,4 +131,5 @@ return {
     valid_player_character = valid_player_character,
     degrees_to_radians = degrees_to_radians,
     arena_time_remaining = arena_time_remaining,
+    arena_time_elapsed = arena_time_elapsed,
 }
