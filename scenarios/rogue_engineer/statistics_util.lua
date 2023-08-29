@@ -111,7 +111,7 @@ local function initialize_statistics()
     if not render_ids then
         global.statistics_render_ids = {
             title = rendering.draw_text{
-                text = "Statistics",
+                text = { "statistics_locale.statistics" },
                 surface = lobby_surface,
                 target = {x = stat_title_x + 7.5, y = stat_title_y - 4},
                 color = {r = 1, g = 1, b = 1},
@@ -119,7 +119,7 @@ local function initialize_statistics()
                 scale = 4,
             },
             title_total = rendering.draw_text{
-                text = "Total",
+                text = { "statistics_locale.total" },
                 surface = lobby_surface,
                 target = {x = stat_title_x + 10, y = stat_title_y + 23},
                 color = {r = 1, g = 1, b = 1},
@@ -127,7 +127,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             title_last = rendering.draw_text{
-                text = "Last",
+                text = { "statistics_locale.last" },
                 surface = lobby_surface,
                 target = {x = stat_title_x + 15, y = stat_title_y + 23},
                 color = {r = 1, g = 1, b = 1},
@@ -135,7 +135,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_1_name = rendering.draw_text{
-                text = "Player 1",
+                text = { "statistics_locale.player_1" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y - 0},
                 color = {r = 1, g = 1, b = 1},
@@ -144,7 +144,7 @@ local function initialize_statistics()
                 scale = 4,
             },
             player_1_overall_score_title = rendering.draw_text{
-                text = "Overall Score:",
+                text = { "statistics_locale.overall_score" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 1},
                 color = {r = 1, g = 1, b = 1},
@@ -168,7 +168,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_1_total_kills_title = rendering.draw_text{
-                text = "Arena Kills:",
+                text = { "statistics_locale.arena_kills" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 2},
                 color = {r = 1, g = 1, b = 1},
@@ -192,7 +192,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_1_total_deaths_title = rendering.draw_text{
-                text = "Arena Deaths:",
+                text = { "statistics_locale.arena_deaths" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 3},
                 color = {r = 1, g = 1, b = 1},
@@ -216,7 +216,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_1_top_kills_per_minute_title = rendering.draw_text{
-                text = "Top Kills/Minute:",
+                text = { "statistics_locale.top_kills_per_minute" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 4},
                 color = {r = 1, g = 1, b = 1},
@@ -240,7 +240,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_1_arena_attempts_title = rendering.draw_text{
-                text = "Arena Attempts:",
+                text = { "statistics_locale.arena_attempts" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 5},
                 color = {r = 1, g = 1, b = 1},
@@ -264,7 +264,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_1_arena_victories_title = rendering.draw_text{
-                text = "Arena Victories:",
+                text = { "statistics_locale.arena_victories" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 6},
                 color = {r = 1, g = 1, b = 1},
@@ -288,7 +288,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_2_name = rendering.draw_text{
-                text = "Player 2",
+                text = { "statistics_locale.player_2" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 8},
                 color = {r = 1, g = 1, b = 1},
@@ -297,7 +297,7 @@ local function initialize_statistics()
                 scale = 4,
             },
             player_2_overall_score_title = rendering.draw_text{
-                text = "Overall Score:",
+                text = { "statistics_locale.overall_score" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 9},
                 color = {r = 1, g = 1, b = 1},
@@ -321,7 +321,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_2_total_kills_title = rendering.draw_text{
-                text = "Arena Kills:",
+                text = { "statistics_locale.arena_kills" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 10},
                 color = {r = 1, g = 1, b = 1},
@@ -345,7 +345,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_2_total_deaths_title = rendering.draw_text{
-                text = "Arena Deaths:",
+                text = { "statistics_locale.arena_deaths" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 11},
                 color = {r = 1, g = 1, b = 1},
@@ -369,7 +369,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_2_top_kills_per_minute_title = rendering.draw_text{
-                text = "Top Kills/Minute:",
+                text = { "statistics_locale.top_kills_per_minute" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 12},
                 color = {r = 1, g = 1, b = 1},
@@ -393,7 +393,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_2_arena_attempts_title = rendering.draw_text{
-                text = "Arena Attempts:",
+                text = { "statistics_locale.arena_attempts" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 13},
                 color = {r = 1, g = 1, b = 1},
@@ -417,7 +417,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_2_arena_victories_title = rendering.draw_text{
-                text = "Arena Victories:",
+                text = { "statistics_locale.arena_victories" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 14},
                 color = {r = 1, g = 1, b = 1},
@@ -441,7 +441,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_3_name = rendering.draw_text{
-                text = "Player 3",
+                text = { "statistics_locale.player_3" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 16},
                 color = {r = 1, g = 1, b = 1},
@@ -450,7 +450,7 @@ local function initialize_statistics()
                 scale = 4,
             },
             player_3_overall_score_title = rendering.draw_text{
-                text = "Overall Score:",
+                text = { "statistics_locale.overall_score" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 17},
                 color = {r = 1, g = 1, b = 1},
@@ -474,7 +474,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_3_total_kills_title = rendering.draw_text{
-                text = "Arena Kills:",
+                text = { "statistics_locale.arena_kills"},
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 18},
                 color = {r = 1, g = 1, b = 1},
@@ -498,7 +498,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_3_total_deaths_title = rendering.draw_text{
-                text = "Arena Deaths:",
+                text = { "statistics_locale.arena_deaths" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 19},
                 color = {r = 1, g = 1, b = 1},
@@ -522,7 +522,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_3_top_kills_per_minute_title = rendering.draw_text{
-                text = "Top Kills/Minute:",
+                text = { "statistics_locale.top_kills_per_minute" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 20},
                 color = {r = 1, g = 1, b = 1},
@@ -546,7 +546,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_3_arena_attempts_title = rendering.draw_text{
-                text = "Arena Attempts:",
+                text = { "statistics_locale.arena_attempts" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 21},
                 color = {r = 1, g = 1, b = 1},
@@ -570,7 +570,7 @@ local function initialize_statistics()
                 scale = 2,
             },
             player_3_arena_victories_title = rendering.draw_text{
-                text = "Arena Victories:",
+                text = { "statistics_locale.arena_victories" },
                 surface = lobby_surface,
                 target = {x = stat_title_x, y = stat_title_y + 22},
                 color = {r = 1, g = 1, b = 1},
