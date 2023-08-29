@@ -46,6 +46,7 @@ local normalize_degrees = general_util.normalize_degrees
 local format_time = general_util.format_time
 local valid_player_character = general_util.valid_player_character
 local degrees_to_radians = general_util.degrees_to_radians
+local arena_time_remaining = general_util.arena_time_remaining
 
 local gooey_util = require("gooey_util")
 local create_arena_gui = gooey_util.create_arena_gui

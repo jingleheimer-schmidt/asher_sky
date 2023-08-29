@@ -100,6 +100,16 @@ local function degrees_to_radians(degrees)
     return degrees * (math.pi / 180)
 end
 
+---@return uint?
+local function arena_time_remaining()
+    local start_tick = global.arena_start_tick
+    if not start_tick then return end
+    local game_duration = global.game_duration[global.lobby_options.difficulty]
+    if not game_duration then return end
+    local time_remaining = math.max(0, game_duration - (game.tick - start_tick))
+    return time_remaining
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -113,4 +123,5 @@ return {
     format_time = format_time,
     valid_player_character = valid_player_character,
     degrees_to_radians = degrees_to_radians,
+    arena_time_remaining = arena_time_remaining,
 }
