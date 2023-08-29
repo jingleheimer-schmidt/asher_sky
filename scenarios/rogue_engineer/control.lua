@@ -90,13 +90,14 @@ local function on_init()
     }
     global.default_abilities = {
         ability_1 = "destroyer",
-        ability_2 = "poison_capsule",
+        ability_2 = "beam_blast",
         ability_3 = "defender",
     }
     global.statistics = {}
     global.flamethrower_targets = {}
     global.burn_zones = {}
     global.poison_zones = {}
+    global.laser_beam_targets = {}
     global.game_length = 60 * 60 * 15
     global.game_duration = {
         easy = 60 * 60 * 7,
@@ -418,19 +419,38 @@ local function activate_rocket_launcher(ability_data, player)
     ---@diagnostic enable: missing-fields
 end
 
+---@param ability_data active_ability_data
+---@param target LuaEntity
+---@param player LuaPlayer
+---@param final_tick uint
+local function register_laser_beam_target(ability_data, target, player, final_tick, primary_target)
+    local laser_beam_target = {
+        ability_data = ability_data,
+        target = target,
+        player = player,
+        surface = player.surface,
+        final_tick = final_tick,
+        primary_target = primary_target,
+    }
+    local unique_id = ability_data.name .. "-" .. player.index .. "-" .. game.tick .. "-" .. target.unit_number
+    global.laser_beam_targets = global.laser_beam_targets or {}
+    global.laser_beam_targets[unique_id] = laser_beam_target
+end
+
 ---@param surface LuaSurface
 ---@param position MapPosition
+---@param source MapPosition|LuaEntity
 ---@param target MapPosition|LuaEntity
----@param player LuaPlayer
-local function create_laser_beam(surface, position, target, player)
-    local beam_name = "laser-beam"
+---@param force ForceIdentification
+local function create_laser_beam(surface, position, source, target, force)
+    local beam_name = "no-damage-laser-beam"
     ---@diagnostic disable: missing-fields
     local beam = surface.create_entity{
         name = beam_name,
         position = position,
-        force = player.force,
+        force = force,
         target = target,
-        source = player.character,
+        source = source,
         speed = 1/10,
         max_range = 100,
         duration = 33,
@@ -441,28 +461,29 @@ end
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 local function activate_beam_blast(ability_data, player)
+    local character = valid_player_character(player)
+    if not character then return end
     local surface = player.surface
     local player_position = player.position
+    local player_force = player.force
     local radius = ability_data.radius
-    local enemy_1 = find_nearest_enemy(player_position, radius * 3, player.force, surface)
-    if not enemy_1 then return end
-    local enemy_1_id = enemy_1.unit_number
-    local enemy_1_position = enemy_1.position
-    local damage = ability_data.damage
-    local damage_bonus = game.forces.player.get_turret_attack_modifier("laser-turret")
-    damage = damage + (damage * damage_bonus) --[[@as float]]
-    create_laser_beam(surface, player_position, enemy_1, player)
-    local nearby_enemies_1 = get_enemies_in_radius(surface, enemy_1.position, radius / 2)
-    for _, enemy_2 in pairs(nearby_enemies_1) do
-        if enemy_2.unit_number ~= enemy_1_id then
-            create_laser_beam(surface, enemy_1_position, enemy_2, player)
-            if enemy_2.valid then
-                enemy_2.damage(damage, player.force, "laser", player.character)
+    local primary_target = find_nearest_enemy(player_position, radius * 2, player.force, surface)
+    if not primary_target then return end
+    local primary_target_id = primary_target.unit_number
+    local primary_target_position = primary_target.position
+    local nearby_enemies = get_enemies_in_radius(surface, primary_target.position, radius / 1.5)
+    -- local base_damage = ability_data.damage
+    -- local damage_bonus = player_force.get_turret_attack_modifier("laser-turret")
+    -- local final_damage = base_damage + ((base_damage + #nearby_enemies) * damage_bonus) --[[@as float]]
+    create_laser_beam(surface, player_position, character, primary_target, player_force)
+    register_laser_beam_target(ability_data, primary_target, player, game.tick + 33, primary_target)
+    for _, secondary_target in pairs(nearby_enemies) do
+        if secondary_target.valid then
+            if secondary_target.unit_number ~= primary_target_id then
+                create_laser_beam(surface, primary_target_position, primary_target, secondary_target, player_force)
+                register_laser_beam_target(ability_data, secondary_target, player, game.tick + 33, primary_target)
             end
         end
-    end
-    if enemy_1.valid then
-        enemy_1.damage(damage, player.force, "laser", player.character)
     end
 end
 
@@ -1666,6 +1687,24 @@ local function on_tick(event)
         end
         if flamethrower_target.final_tick <= event.tick then
             global.flamethrower_targets[id] = nil
+        end
+    end
+    for id, laser_beam_target in pairs(global.laser_beam_targets) do
+        local player = laser_beam_target.player
+        local character = valid_player_character(player)
+        if character then
+            local target = laser_beam_target.target --[[@as LuaEntity]]
+            if target.valid then
+                local ability_data = laser_beam_target.ability_data --[[@type active_ability_data]]
+                local damage = ability_data.damage / aoe_damage_modifier --[[@as float]]
+                target.damage(damage, player.force, "laser", character)
+            end
+        end
+        local primary_target = laser_beam_target.primary_target --[[@as LuaEntity]]
+        if not primary_target.valid then
+            global.laser_beam_targets[id] = nil
+        elseif laser_beam_target.final_tick <= event.tick then
+            global.laser_beam_targets[id] = nil
         end
     end
 

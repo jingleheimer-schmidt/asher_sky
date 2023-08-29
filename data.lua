@@ -26,3 +26,8 @@ discharge_defender.attack_parameters = table.deepcopy(data.raw["active-defense-e
 discharge_defender.attack_parameters.cooldown = 55
 discharge_defender.time_to_live = 120
 data:extend{discharge_defender}
+
+local no_damage_laser_beam = table.deepcopy(data.raw["beam"]["laser-beam"])
+no_damage_laser_beam.name = "no-damage-laser-beam"
+no_damage_laser_beam.action = nil
+data:extend{no_damage_laser_beam}
