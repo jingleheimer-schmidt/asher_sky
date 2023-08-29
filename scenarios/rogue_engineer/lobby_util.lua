@@ -184,7 +184,7 @@ local function create_lobby_text()
     global.lobby_text = {
         start_level = {
             top = rendering.draw_text{
-                text = "Enter",
+                text = { "lobby_text_locale.enter" },
                 surface = lobby_surface,
                 target = {x = 21, y = -2},
                 color = {r = 1, g = 1, b = 1},
@@ -193,7 +193,7 @@ local function create_lobby_text()
                 draw_on_ground = true,
             },
             bottom = rendering.draw_text{
-                text = "Arena",
+                text = { "lobby_text_locale.arena" },
                 surface = lobby_surface,
                 target = {x = 21, y = 0},
                 color = {r = 1, g = 1, b = 1},
@@ -204,7 +204,7 @@ local function create_lobby_text()
         },
         difficulties = {
             easy = rendering.draw_text{
-                text = "Easy",
+                text = { "difficulty_locale.easy" },
                 surface = lobby_surface,
                 target = {x = -7, y = -9},
                 color = {r = 1, g = 1, b = 1},
@@ -213,7 +213,7 @@ local function create_lobby_text()
                 draw_on_ground = true,
             },
             normal = rendering.draw_text{
-                text = "Normal",
+                text = { "difficulty_locale.normal" },
                 surface = lobby_surface,
                 target = {x = 0, y = -9},
                 color = {r = 1, g = 1, b = 1},
@@ -222,7 +222,7 @@ local function create_lobby_text()
                 draw_on_ground = true,
             },
             hard = rendering.draw_text{
-                text = "Hard",
+                text = { "difficulty_locale.hard" },
                 surface = lobby_surface,
                 target = {x = 7, y = -9},
                 color = {r = 1, g = 1, b = 1},
@@ -233,7 +233,7 @@ local function create_lobby_text()
         },
         starting_abilities = {
             ability_1 = rendering.draw_text{
-                text = {"ability_locale." .. global.default_abilities.ability_1},
+                text = { "ability_name.".. global.default_abilities.ability_1 },
                 surface = lobby_surface,
                 target = {x = -7, y = 7},
                 color = {r = 1, g = 1, b = 1},
@@ -242,7 +242,7 @@ local function create_lobby_text()
                 draw_on_ground = true,
             },
             ability_2 = rendering.draw_text{
-                text = {"ability_locale." .. global.default_abilities.ability_2},
+                text = { "ability_name." .. global.default_abilities.ability_2 },
                 surface = lobby_surface,
                 target = {x = 0, y = 7},
                 color = {r = 1, g = 1, b = 1},
@@ -251,7 +251,7 @@ local function create_lobby_text()
                 draw_on_ground = true,
             },
             ability_3 = rendering.draw_text{
-                text = {"ability_locale." .. global.default_abilities.ability_3},
+                text = { "ability_name." .. global.default_abilities.ability_3 },
                 surface = lobby_surface,
                 target = {x = 7, y = 7},
                 color = {r = 1, g = 1, b = 1},
@@ -262,7 +262,7 @@ local function create_lobby_text()
         },
         titles = {
             difficulty = rendering.draw_text{
-                text = "Arena Difficulty",
+                text = { "lobby_text_locale.arena_difficulty" },
                 surface = lobby_surface,
                 target = {x = 0, y = -14},
                 color = {r = 1, g = 1, b = 1},
@@ -272,7 +272,7 @@ local function create_lobby_text()
                 draw_on_ground = true,
             },
             starting_ability = rendering.draw_text{
-                text = "Primary Ability",
+                text = { "lobby_text_locale.primary_ability" },
                 surface = lobby_surface,
                 target = {x = 0, y = 14},
                 color = {r = 1, g = 1, b = 1},
@@ -290,7 +290,7 @@ local function update_lobby_text()
     local starting_abilities = lobby_text.starting_abilities
     for ability_number, render_id in pairs(starting_abilities) do
         if rendering.is_valid(render_id) then
-            rendering.set_text(render_id, {"ability_locale." .. global.default_abilities[ability_number]})
+            rendering.set_text(render_id, { "ability_name." .. global.default_abilities[ability_number] })
         end
     end
 end
