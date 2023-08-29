@@ -394,6 +394,8 @@ local function activate_cure_damage(ability_data, player)
     }
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
 local function activate_slash_damage(ability_data, player)
     local radius = ability_data.radius
     local damage = ability_data.damage
