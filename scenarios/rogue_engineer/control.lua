@@ -1757,13 +1757,22 @@ local function on_tick(event)
         local game_duration = global.game_duration[difficulty]
         local arena_duration = game.tick - arena_start_tick
         if arena_duration == game_duration then
+            local someone_is_alive = false
             for _, player in pairs(connected_players) do
-                local player_stats = global.statistics[player.index] --[[@type player_statistics]]
-                player_stats.total.victories = player_stats.total.victories + 1
-                player_stats.last_attempt.victories = player_stats.last_attempt.victories + 1
-                global.remaining_lives[player.index] = 0
+                local character = valid_player_character(player)
+                if character then
                     local text = {"", {"message_locale.victory_lap"}, "!"}
                     draw_announcement_text(text, player)
+                    someone_is_alive = true
+                end
+            end
+            if someone_is_alive then
+                for _, player in pairs(connected_players) do
+                    local player_stats = global.statistics[player.index] --[[@type player_statistics]]
+                    player_stats.total.victories = player_stats.total.victories + 1
+                    player_stats.last_attempt.victories = player_stats.last_attempt.victories + 1
+                    global.remaining_lives[player.index] = 0
+                end
             end
         end
         if arena_duration > game_duration then
