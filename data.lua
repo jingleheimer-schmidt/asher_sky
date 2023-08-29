@@ -31,3 +31,20 @@ local no_damage_laser_beam = table.deepcopy(data.raw["beam"]["laser-beam"])
 no_damage_laser_beam.name = "no-damage-laser-beam"
 no_damage_laser_beam.action = nil
 data:extend{no_damage_laser_beam}
+
+local font_size = 25
+
+local arena_gui_font_default = table.deepcopy(data.raw["font"]["default"])
+arena_gui_font_default.name = "arena-gui-default"
+arena_gui_font_default.size = font_size
+data:extend{arena_gui_font_default}
+
+local arena_gui_font_default_semibold = table.deepcopy(data.raw["font"]["default-semibold"])
+arena_gui_font_default_semibold.name = "arena-gui-default-semibold"
+arena_gui_font_default_semibold.size = font_size
+data:extend{arena_gui_font_default_semibold}
+
+local arena_gui_font_default_bold = table.deepcopy(data.raw["font"]["default-bold"])
+arena_gui_font_default_bold.name = "arena-gui-default-bold"
+arena_gui_font_default_bold.size = font_size
+data:extend{arena_gui_font_default_bold}

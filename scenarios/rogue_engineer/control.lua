@@ -31,6 +31,7 @@ local update_statistics = statistics_util.update_statistics
 local initialize_statistics = statistics_util.initialize_statistics
 local new_attempt_stats_reset = statistics_util.new_attempt_stats_reset
 local initialize_player_statistics = statistics_util.initialize_player_statistics
+local calculate_kills_per_minute = statistics_util.calculate_kills_per_minute
 
 local general_util = require("general_util")
 local rotate_orientation = general_util.rotate_orientation
@@ -44,6 +45,17 @@ local opposite_direction = general_util.opposite_direction
 local normalize_degrees = general_util.normalize_degrees
 local format_time = general_util.format_time
 local valid_player_character = general_util.valid_player_character
+
+local gooey_util = require("gooey_util")
+local create_arena_gui = gooey_util.create_arena_gui
+local update_arena_gui_kills = gooey_util.update_arena_gui_kills
+local update_arena_gui_time_remaining = gooey_util.update_arena_gui_time_remaining
+local update_arena_gui_lives_remaining = gooey_util.update_arena_gui_lives_remaining
+local update_arena_gui_kills_per_minute = gooey_util.update_arena_gui_kills_per_minute
+local update_arena_gui = gooey_util.update_arena_gui
+local destroy_arena_gui = gooey_util.destroy_arena_gui
+local add_arena_gui_ability_info = gooey_util.add_arena_gui_ability_info
+local update_arena_gui_ability_info = gooey_util.update_arena_gui_ability_info
 
 local function on_init()
     global.player_data = {}
@@ -915,6 +927,7 @@ local function upgrade_random_ability(player)
     if upgrade then
         ability_data.level = ability_data.level + 1
         upgrade(ability_name, ability_data, player)
+        update_arena_gui_ability_info(player, ability_data)
     end
 end
 
@@ -940,6 +953,7 @@ local function unlock_named_ability(ability_name, player)
         }
         local text = {"", { "ability_name." .. ability_name }, " [lvl 1] unlocked!"}
         draw_upgrade_text(text, player, { x = 0, y = 3 })
+        add_arena_gui_ability_info(player, player_data.abilities[ability_name])
         global.available_abilities[ability_name] = false
     end
 end
@@ -1041,20 +1055,6 @@ local function update_kpm_statistics(player_index, kills_per_minute)
         total_stats.top_kills_per_minute = math.max(total_stats.top_kills_per_minute, kills_per_minute)
         last_attempt_stats.top_kills_per_minute = math.max(last_attempt_stats.top_kills_per_minute, kills_per_minute)
     end
-end
-
----@param player_index uint
----@return uint
-local function calculate_kills_per_minute(player_index)
-    local player_stats = global.statistics[player_index]
-    local kills_per_minute = 0
-    if player_stats then
-        local last_attempt_stats = player_stats.last_attempt
-        local kill_count = last_attempt_stats.kills or 0
-        local start_tick = global.arena_start_tick or 0
-        kills_per_minute = math.min(kill_count, math.floor(kill_count / ((game.tick - start_tick) / 3600)))
-    end
-    return kills_per_minute
 end
 
 ---@param player_index uint
@@ -1416,7 +1416,8 @@ local function on_entity_died(event)
                 upgrade_damage_bonuses(level)
             end
         end
-        update_kill_counter_rendering(player_index, character)
+        -- update_kill_counter_rendering(player_index, character)
+
         -- local enemy_name = entity.name
         -- local radius = math.random(25, 55)
         -- local position = get_random_position_on_circumference(player.position, radius)
@@ -1538,6 +1539,7 @@ local function enter_arena()
                 player.teleport(position, "arena")
                 player.character_running_speed_modifier = 0.33
                 new_attempt_stats_reset(player.index)
+                create_arena_gui(player)
             end
         end
     end
@@ -1728,10 +1730,19 @@ local function on_tick(event)
             local character = valid_player_character(player)
             if character then
                 local player_index = player.index
+                local arena_gui = player.gui.screen.arena_gui
+                local player_stats = global.statistics[player_index]
                 if game.tick % 30 == 0 then
-                    update_kpm_counter_rendering(player_index, character)
-                    update_arena_clock_rendering(player_index, character)
-                    update_lives_remaining_rendering(player_index, character)
+                    -- update_kpm_counter_rendering(player_index, character)
+                    -- update_arena_clock_rendering(player_index, character)
+                    -- update_lives_remaining_rendering(player_index, character)
+
+                    update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
+                    update_arena_gui_time_remaining(player, arena_gui, player_stats)
+                    update_arena_gui_lives_remaining(player, arena_gui, player_stats)
+                end
+                if game.tick % 5 == 0 then
+                    update_arena_gui_kills(player, arena_gui, player_stats)
                 end
                 local balance = difficulties[global.lobby_options.difficulty]
                 if game.tick % balance == 0 then
@@ -1809,6 +1820,7 @@ local function on_tick(event)
                 player.set_controller{type = defines.controllers.god}
                 local character = player.create_character() and player.character
                 initialize_player_data(player)
+                destroy_arena_gui(player)
             end
             global.game_state = "lobby"
             global.arena_start_tick = nil

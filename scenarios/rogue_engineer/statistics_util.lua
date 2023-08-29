@@ -641,9 +641,24 @@ local function initialize_player_statistics(player_index)
     }
 end
 
+---@param player_index uint
+---@return uint
+local function calculate_kills_per_minute(player_index)
+    local player_stats = global.statistics[player_index]
+    local kills_per_minute = 0
+    if player_stats then
+        local last_attempt_stats = player_stats.last_attempt
+        local kill_count = last_attempt_stats.kills or 0
+        local start_tick = global.arena_start_tick or 0
+        kills_per_minute = math.min(kill_count, math.floor(kill_count / ((game.tick - start_tick) / 3600)))
+    end
+    return kills_per_minute
+end
+
 return {
     update_statistics = update_statistics,
     initialize_statistics = initialize_statistics,
     new_attempt_stats_reset = new_attempt_stats_reset,
     initialize_player_statistics = initialize_player_statistics,
+    calculate_kills_per_minute = calculate_kills_per_minute,
 }
