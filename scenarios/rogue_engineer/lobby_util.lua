@@ -183,99 +183,99 @@ local function create_lobby_text()
     local lobby_surface = game.surfaces.lobby
     global.lobby_text = {
         start_level = {
-            top = rendering.draw_text{
+            top = rendering.draw_text {
                 text = { "lobby_text_locale.enter" },
                 surface = lobby_surface,
-                target = {x = 21, y = -2},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 21, y = -2 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
-            bottom = rendering.draw_text{
+            bottom = rendering.draw_text {
                 text = { "lobby_text_locale.arena" },
                 surface = lobby_surface,
-                target = {x = 21, y = 0},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 21, y = 0 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             }
         },
         difficulties = {
-            easy = rendering.draw_text{
+            easy = rendering.draw_text {
                 text = { "difficulty_locale.easy" },
                 surface = lobby_surface,
-                target = {x = -7, y = -9},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = -7, y = -9 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
-            normal = rendering.draw_text{
+            normal = rendering.draw_text {
                 text = { "difficulty_locale.normal" },
                 surface = lobby_surface,
-                target = {x = 0, y = -9},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 0, y = -9 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
-            hard = rendering.draw_text{
+            hard = rendering.draw_text {
                 text = { "difficulty_locale.hard" },
                 surface = lobby_surface,
-                target = {x = 7, y = -9},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 7, y = -9 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
         },
         starting_abilities = {
-            ability_1 = rendering.draw_text{
-                text = { "ability_name.".. global.default_abilities.ability_1 },
+            ability_1 = rendering.draw_text {
+                text = { "ability_name." .. global.default_abilities.ability_1 },
                 surface = lobby_surface,
-                target = {x = -7, y = 7},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = -7, y = 7 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
-            ability_2 = rendering.draw_text{
+            ability_2 = rendering.draw_text {
                 text = { "ability_name." .. global.default_abilities.ability_2 },
                 surface = lobby_surface,
-                target = {x = 0, y = 7},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 0, y = 7 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
-            ability_3 = rendering.draw_text{
+            ability_3 = rendering.draw_text {
                 text = { "ability_name." .. global.default_abilities.ability_3 },
                 surface = lobby_surface,
-                target = {x = 7, y = 7},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 7, y = 7 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 scale = 3,
                 draw_on_ground = true,
             },
         },
         titles = {
-            difficulty = rendering.draw_text{
+            difficulty = rendering.draw_text {
                 text = { "lobby_text_locale.arena_difficulty" },
                 surface = lobby_surface,
-                target = {x = 0, y = -14},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 0, y = -14 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 vertical_alignment = "middle",
                 scale = 4,
                 draw_on_ground = true,
             },
-            starting_ability = rendering.draw_text{
+            starting_ability = rendering.draw_text {
                 text = { "lobby_text_locale.primary_ability" },
                 surface = lobby_surface,
-                target = {x = 0, y = 14},
-                color = {r = 1, g = 1, b = 1},
+                target = { x = 0, y = 14 },
+                color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
                 vertical_alignment = "middle",
                 scale = 4,
