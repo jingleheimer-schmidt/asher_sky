@@ -1720,9 +1720,11 @@ local function on_tick(event)
             local character = valid_player_character(player)
             if character then
                 local player_index = player.index
-                update_kpm_counter_rendering(player_index, character)
-                update_arena_clock_rendering(player_index, character)
-                update_lives_remaining_rendering(player_index, character)
+                if game.tick % 30 == 0 then
+                    update_kpm_counter_rendering(player_index, character)
+                    update_arena_clock_rendering(player_index, character)
+                    update_lives_remaining_rendering(player_index, character)
+                end
                 local balance = difficulties[global.lobby_options.difficulty]
                 if game.tick % balance == 0 then
                     spawn_level_appropriate_enemy(player)
