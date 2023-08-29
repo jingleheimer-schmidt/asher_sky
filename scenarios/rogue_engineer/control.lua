@@ -359,7 +359,7 @@ local function activate_burst_damage(ability_data, player)
     local surface = player.surface
     local radius = ability_data.radius
     local damage_per_tick = ability_data.damage / aoe_damage_modifier
-    local final_tick = game.tick + (raw_abilities_data.burst.frame_count * 1.25)
+    local final_tick = game.tick + (raw_abilities_data.burst.frame_count * 1.125)
     register_damage_zone("burst", radius, damage_per_tick, player, position, surface, final_tick)
 end
 
@@ -372,7 +372,7 @@ local function activate_punch_damage(ability_data, player)
     local surface = player.surface
     damage_enemies_in_radius(radius, damage, position, surface, player)
     local damage_per_tick = damage / aoe_damage_modifier
-    local final_tick = game.tick + (raw_abilities_data.punch.frame_count * 0.75)
+    local final_tick = game.tick + (raw_abilities_data.punch.frame_count * 0.85)
     register_damage_zone("punch", radius, damage_per_tick, player, position, surface, final_tick)
 end
 
