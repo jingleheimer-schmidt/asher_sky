@@ -629,7 +629,7 @@ local function activate_poison_capsule_deployer(ability_data, player)
         source = player.character,
         character = player.character,
         player = player,
-        speed = 1/500,
+        speed = 1/50,
     }
     ---@diagnostic enable: missing-fields
     local final_tick = game.tick + 60 * 45
