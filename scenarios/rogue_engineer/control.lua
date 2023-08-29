@@ -858,7 +858,7 @@ end
 ---@param player LuaPlayer
 local function upgrade_damage(ability_name, ability_data, player)
     ability_data.damage = ability_data.damage * ability_data.damage_multiplier
-    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] damage increased to ", ability_data.damage}
+    local text = {"", { "ability_name." .. ability_name }, " [lvl ", ability_data.level, "] damage increased to ", ability_data.damage}
     draw_upgrade_text(text, player)
     -- activate_ability(ability_name, ability_data, player)
 end
@@ -868,7 +868,7 @@ end
 ---@param player LuaPlayer
 local function upgrade_radius(ability_name, ability_data, player)
     ability_data.radius = ability_data.radius + ability_data.radius_multiplier
-    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] radius increased to ", ability_data.radius}
+    local text = {"", { "ability_name." .. ability_name }, " [lvl ", ability_data.level, "] radius increased to ", ability_data.radius}
     draw_upgrade_text(text, player)
     -- activate_ability(ability_name, ability_data, player)
 end
@@ -878,7 +878,7 @@ end
 ---@param player LuaPlayer
 local function upgrade_cooldown(ability_name, ability_data, player)
     ability_data.cooldown = math.max(1, math.ceil(ability_data.cooldown - ability_data.cooldown_multiplier))
-    local text = {"", { "ability_locale." .. ability_name }, " [lvl ", ability_data.level, "] cooldown decreased to ", ability_data.cooldown}
+    local text = {"", { "ability_name." .. ability_name }, " [lvl ", ability_data.level, "] cooldown decreased to ", ability_data.cooldown}
     draw_upgrade_text(text, player)
     -- activate_ability(ability_name, ability_data, player)
 end
@@ -934,7 +934,7 @@ local function unlock_named_ability(ability_name, player)
             cooldown_multiplier = raw_data.cooldown_multiplier,
             upgrade_order = raw_data.upgrade_order,
         }
-        local text = {"", { "ability_locale." .. ability_name }, " [lvl 1] unlocked!"}
+        local text = {"", { "ability_name." .. ability_name }, " [lvl 1] unlocked!"}
         draw_upgrade_text(text, player, { x = 0, y = 3 })
         global.available_abilities[ability_name] = false
     end
@@ -959,7 +959,7 @@ end
 ---@param character LuaEntity
 ---@return uint64
 local function create_kill_counter_rendering(character)
-    local text = {"", {"counter_locale.kills"}, ": ", "0"}
+    local text = {"", {"message_locale.kills"}, ": ", "0"}
     local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
@@ -972,7 +972,7 @@ end
 ---@param character LuaEntity
 ---@return uint64
 local function create_kpm_counter_rendering(character)
-    local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"}
+    local text = {"", {"message_locale.kills_per_minute"}, ": [color=", "white", "]", "0", "[/color]"}
     local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
@@ -986,7 +986,7 @@ end
 ---@param character LuaEntity
 ---@return uint64
 local function create_arena_clock_rendering(character)
-    local text = {"", {"counter_locale.time_remaining"}, ": ", "0"}
+    local text = {"", {"message_locale.time_remaining"}, ": ", "0"}
     local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
@@ -1000,7 +1000,7 @@ end
 ---@param character LuaEntity
 ---@return uint64
 local function create_lives_remaining_rendering(character)
-    local text = {"", {"counter_locale.lives_remaining"}, ": ", "0"}
+    local text = {"", {"message_locale.lives_remaining"}, ": ", "0"}
     local surface = character.surface
     local color = { r = 1, g = 1, b = 1 }
     local time_to_live = nil
@@ -1022,7 +1022,7 @@ local function update_kill_counter_rendering(player_index, character)
     if not rendering.is_valid(render_id) then
         render_id = create_kill_counter_rendering(character)
     end
-    local text = {"", {"counter_locale.kills"}, ": ", kill_count}
+    local text = {"", {"message_locale.kills"}, ": ", kill_count}
     rendering.set_text(render_id, text)
 end
 
@@ -1066,7 +1066,7 @@ local function update_kpm_counter_rendering(player_index, character)
     local last_color = last_text and last_text[4] or "white"
     local last_kpm = last_text and tonumber(last_text[6]) or 0
     local color = kills_per_minute > last_kpm and "green" or kills_per_minute < last_kpm and "red" or last_color
-    local text = {"", {"counter_locale.kills_per_minute"}, ": [color=", color, "]", kills_per_minute, "[/color]"}
+    local text = {"", {"message_locale.kills_per_minute"}, ": [color=", color, "]", kills_per_minute, "[/color]"}
     rendering.set_text(render_id, text)
     update_kpm_statistics(player_index, kills_per_minute)
 end
@@ -1087,8 +1087,8 @@ local function update_arena_clock_rendering(player_index, character)
         time_remaining_counter.render_id = create_arena_clock_rendering(character)
     end
     local time_remaining = game_duration - (game.tick - start_tick)
-    local text = {"", {"counter_locale.time_remaining"}, ": ", format_time(time_remaining)}
     rendering.set_text(time_remaining_counter.render_id, text)
+    local text = {"", {"message_locale.time_remaining"}, ": ", format_time(time_remaining)}
 end
 
 ---@param player_index uint
@@ -1103,8 +1103,8 @@ local function update_lives_remaining_rendering(player_index, character)
         lives_remaining_counter.render_id = create_lives_remaining_rendering(character)
     end
     local lives_remaining = global.remaining_lives and global.remaining_lives[player_index] or 0
-    local text = {"", {"counter_locale.lives_remaining"}, ": ", lives_remaining - 1}
     rendering.set_text(lives_remaining_counter.render_id, text)
+    local text = {"", {"message_locale.lives_remaining"}, ": ", lives_remaining}
 end
 
 ---@param surface LuaSurface
