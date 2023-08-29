@@ -6,6 +6,8 @@ local calculate_kills_per_minute = statistics_util.calculate_kills_per_minute
 
 local general_util = require("general_util")
 local format_time = general_util.format_time
+local arena_ticks_remaining = general_util.arena_ticks_remaining
+local arena_ticks_elapsed = general_util.arena_ticks_elapsed
 
 ---@param player LuaPlayer
 local function create_arena_gui(player)
@@ -133,9 +135,7 @@ local function update_arena_gui_time_remaining(player, arena_gui, player_stats)
         player_stats = global.statistics and global.statistics[player.index]
         if not player_stats then return end
     end
-    local arena_start_tick = global.arena_start_tick
-    local game_duration = global.game_duration[global.lobby_options.difficulty]
-    local time_remaining = math.max(0, game_duration - (game.tick - arena_start_tick))
+    local time_remaining = arena_ticks_remaining()
     arena_gui.time_remaining.caption = { "", { "message_locale.time_remaining" }, ": ", format_time(time_remaining) }
 end
 
