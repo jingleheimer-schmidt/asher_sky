@@ -32,6 +32,7 @@ local initialize_statistics = statistics_util.initialize_statistics
 local new_attempt_stats_reset = statistics_util.new_attempt_stats_reset
 local initialize_player_statistics = statistics_util.initialize_player_statistics
 local calculate_kills_per_minute = statistics_util.calculate_kills_per_minute
+local update_kpm_statistics = statistics_util.update_kpm_statistics
 
 local general_util = require("general_util")
 local rotate_orientation = general_util.rotate_orientation
@@ -1042,18 +1043,6 @@ local function update_kill_counter_rendering(player_index, character)
     global.kill_counter_render_ids[player_index] = render_id
     local text = {"", {"message_locale.kills"}, ": ", kill_count}
     rendering.set_text(render_id, text)
-end
-
----@param player_index uint
----@param kills_per_minute uint
-local function update_kpm_statistics(player_index, kills_per_minute)
-    local player_stats = global.statistics[player_index]
-    if player_stats then
-        local total_stats = player_stats.total
-        local last_attempt_stats = player_stats.last_attempt
-        total_stats.top_kills_per_minute = math.max(total_stats.top_kills_per_minute, kills_per_minute)
-        last_attempt_stats.top_kills_per_minute = math.max(last_attempt_stats.top_kills_per_minute, kills_per_minute)
-    end
 end
 
 ---@param player_index uint

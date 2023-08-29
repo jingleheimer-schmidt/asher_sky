@@ -655,10 +655,23 @@ local function calculate_kills_per_minute(player_index)
     return kills_per_minute
 end
 
+---@param player_index uint
+---@param kills_per_minute uint
+local function update_kpm_statistics(player_index, kills_per_minute)
+    local player_stats = global.statistics[player_index]
+    if player_stats then
+        local total_stats = player_stats.total
+        local last_attempt_stats = player_stats.last_attempt
+        total_stats.top_kills_per_minute = math.max(total_stats.top_kills_per_minute, kills_per_minute)
+        last_attempt_stats.top_kills_per_minute = math.max(last_attempt_stats.top_kills_per_minute, kills_per_minute)
+    end
+end
+
 return {
     update_statistics = update_statistics,
     initialize_statistics = initialize_statistics,
     new_attempt_stats_reset = new_attempt_stats_reset,
     initialize_player_statistics = initialize_player_statistics,
     calculate_kills_per_minute = calculate_kills_per_minute,
+    update_kpm_statistics = update_kpm_statistics,
 }
