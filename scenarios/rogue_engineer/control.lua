@@ -1070,7 +1070,7 @@ local function update_kpm_counter_rendering(player_index, character)
     local last_text = rendering.get_text(render_id) --[[@as LocalisedString]]
     local last_color = last_text and last_text[4] or "white"
     local last_kpm = last_text and tonumber(last_text[6]) or 0
-    local color = kills_per_minute > last_kpm and "green" or kills_per_minute < last_kpm and "red" or last_color
+    local color = kills_per_minute > last_kpm and "green" or kills_per_minute < last_kpm and "red" or "white"
     local text = {"", {"message_locale.kills_per_minute"}, ": [color=", color, "]", kills_per_minute, "[/color]"}
     rendering.set_text(render_id, text)
     update_kpm_statistics(player_index, kills_per_minute)
