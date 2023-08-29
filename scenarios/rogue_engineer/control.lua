@@ -1130,8 +1130,8 @@ local function spawn_level_appropriate_enemy(player)
     if not (player.controller_type == defines.controllers.character) then return end
     -- local player_data = global.player_data[player.index]
     -- local level = player_data.level
-    local time_elapsed = arena_ticks_elapsed()
-    local arena_minutes = time_elapsed / 60 / 60
+    local arena_ticks = arena_ticks_elapsed()
+    local arena_minutes = arena_ticks / 60 / 60
     local enemy_name = "small-biter"
     local chance = 15 / 100
     if arena_minutes >= 2 then
@@ -1193,8 +1193,7 @@ local function spawn_level_appropriate_enemy(player)
         enemy_name = "behemoth-worm-turret"
     end
     local radius = math.random(25, 50)
-    local arena_clock = (game.tick - global.arena_start_tick)
-    if arena_clock > global.game_duration[global.lobby_options.difficulty] then
+    if arena_ticks > global.game_duration[global.lobby_options.difficulty] then
         radius = math.random(15, 150)
     end
     local position = get_random_position_on_circumference(player.position, radius)
@@ -1758,7 +1757,7 @@ local function on_tick(event)
             local previous_position = global.previous_positions[player.index]
             if position.x == previous_position.x and position.y == previous_position.y then
                 local chance = 75/100
-                if global.arena_start_tick - game.tick <= 60 * 60 * 0.75 then
+                if arena_ticks_elapsed() <= 60 * 60 * 0.75 then
                     chance = 15/100
                 end
                 if math.random() < chance then
@@ -1767,11 +1766,10 @@ local function on_tick(event)
             end
             global.previous_positions[player.index] = position
         end
-        local arena_start_tick = global.arena_start_tick
         local difficulty = global.lobby_options.difficulty
-        local game_duration = global.game_duration[difficulty]
-        local arena_duration = game.tick - arena_start_tick
-        if arena_duration == game_duration then
+        local max_game_duration = global.game_duration[difficulty]
+        local current_arena_duration = arena_ticks_elapsed()
+        if current_arena_duration == max_game_duration then
             local someone_is_alive = false
             for _, player in pairs(connected_players) do
                 local character = valid_player_character(player)
@@ -1790,7 +1788,7 @@ local function on_tick(event)
                 end
             end
         end
-        if arena_duration > game_duration then
+        if current_arena_duration > max_game_duration then
             for _, player in pairs(connected_players) do
                 spawn_level_appropriate_enemy(player)
             end
