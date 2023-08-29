@@ -1027,6 +1027,7 @@ local function update_kill_counter_rendering(player_index, character)
     if not rendering.is_valid(render_id) then
         render_id = create_kill_counter_rendering(character)
     end
+    global.kill_counter_render_ids[player_index] = render_id
     local text = {"", {"message_locale.kills"}, ": ", kill_count}
     rendering.set_text(render_id, text)
 end
@@ -1066,6 +1067,7 @@ local function update_kpm_counter_rendering(player_index, character)
     if not rendering.is_valid(render_id) then
         render_id = create_kpm_counter_rendering(character)
     end
+    global.kpm_counter_render_ids[player_index] = render_id
     local kills_per_minute = calculate_kills_per_minute(player_index)
     local last_text = rendering.get_text(render_id) --[[@as LocalisedString]]
     local last_color = last_text and last_text[4] or "white"
@@ -1083,33 +1085,31 @@ local function update_arena_clock_rendering(player_index, character)
     if not start_tick then return end
     local game_duration = global.game_duration[global.lobby_options.difficulty]
     if not game_duration then return end
-    global.time_remaining_counters = global.time_remaining_counters or {}
-    global.time_remaining_counters[player_index] = global.time_remaining_counters[player_index] or {
-        render_id = create_arena_clock_rendering(character),
-    }
-    local time_remaining_counter = global.time_remaining_counters[player_index]
-    if not rendering.is_valid(time_remaining_counter.render_id) then
-        time_remaining_counter.render_id = create_arena_clock_rendering(character)
+    global.time_remaining_render_ids = global.time_remaining_render_ids or {}
+    global.time_remaining_render_ids[player_index] = global.time_remaining_render_ids[player_index] or create_arena_clock_rendering(character)
+    local render_id = global.time_remaining_render_ids[player_index]
+    if not rendering.is_valid(render_id) then
+        render_id = create_arena_clock_rendering(character)
     end
+    global.time_remaining_render_ids[player_index] = render_id
     local time_remaining = game_duration - (game.tick - start_tick)
-    rendering.set_text(time_remaining_counter.render_id, text)
     local text = {"", {"message_locale.time_remaining"}, ": ", format_time(time_remaining)}
+    rendering.set_text(render_id, text)
 end
 
 ---@param player_index uint
 ---@param character LuaEntity
 local function update_lives_remaining_rendering(player_index, character)
-    global.lives_remaining_counters = global.lives_remaining_counters or {}
-    global.lives_remaining_counters[player_index] = global.lives_remaining_counters[player_index] or {
-        render_id = create_lives_remaining_rendering(character),
-    }
-    local lives_remaining_counter = global.lives_remaining_counters[player_index]
-    if not rendering.is_valid(lives_remaining_counter.render_id) then
-        lives_remaining_counter.render_id = create_lives_remaining_rendering(character)
+    global.lives_remaining_render_ids = global.lives_remaining_render_ids or {}
+    global.lives_remaining_render_ids[player_index] = global.lives_remaining_render_ids[player_index] or create_lives_remaining_rendering(character)
+    local render_id = global.lives_remaining_render_ids[player_index]
+    if not rendering.is_valid(render_id) then
+        render_id = create_lives_remaining_rendering(character)
     end
+    global.lives_remaining_render_ids[player_index] = render_id
     local lives_remaining = global.remaining_lives and global.remaining_lives[player_index] or 0
-    rendering.set_text(lives_remaining_counter.render_id, text)
     local text = {"", {"message_locale.lives_remaining"}, ": ", lives_remaining}
+    rendering.set_text(render_id, text)
 end
 
 ---@param surface LuaSurface
