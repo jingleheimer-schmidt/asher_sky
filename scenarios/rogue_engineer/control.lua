@@ -101,9 +101,9 @@ local function on_init()
         barrier = true,
     }
     global.default_abilities = {
-        ability_1 = "destroyer",
-        ability_2 = "beam_blast",
-        ability_3 = "defender",
+        ability_1 = "beam_blast",
+        ability_2 = "punch",
+        ability_3 = "rocket_launcher",
     }
     global.statistics = {}
     global.flamethrower_targets = {}
