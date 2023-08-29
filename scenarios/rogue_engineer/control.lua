@@ -653,7 +653,7 @@ local function activate_slowdown_capsule_deployer(ability_data, player)
             source = player.character,
             character = player.character,
             player = player,
-            speed = 1/500,
+            speed = 1/50,
         }
         ---@diagnostic enable: missing-fields
     end
