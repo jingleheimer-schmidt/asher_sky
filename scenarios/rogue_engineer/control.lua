@@ -531,22 +531,27 @@ end
 ---@param player LuaPlayer
 local function activate_distractor_capsule(ability_data, player)
     local surface = player.surface
-    ---@diagnostic disable: missing-fields
-    local distractor = surface.create_entity{
-        name = "distractor",
-        position = player.position,
-        direction = player.character.direction,
-        force = player.force,
-        -- target = enemy,
-        target = player.character,
-        source = player.character,
-        speed = 1/10,
-        max_range = ability_data.radius * 20,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-    if distractor then
-        draw_highlight_line(player, distractor)
+    for i = -2, 2 do
+        local angle = direction_to_angle(player.character.direction)
+        local offset_angle = angle + degrees_to_radians(i * 30)
+        local position = get_position_on_circumference(player.position, ability_data.radius, offset_angle)
+        ---@diagnostic disable: missing-fields
+        local distractor = surface.create_entity{
+            name = "distractor",
+            position = position,
+            direction = player.character.direction,
+            force = player.force,
+            -- target = enemy,
+            target = player.character,
+            source = player.character,
+            speed = 1/10,
+            max_range = ability_data.radius * 20,
+            player = player,
+        }
+        ---@diagnostic enable: missing-fields
+        if distractor then
+            draw_highlight_line(player, distractor)
+        end
     end
 end
 
