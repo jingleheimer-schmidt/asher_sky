@@ -1495,6 +1495,15 @@ local function create_arena_surface()
     end
 end
 
+local function destroy_arena_enemies()
+    local enemies = game.surfaces.arena.find_entities_filtered{
+        force = "enemy",
+    }
+    for _, enemy in pairs(enemies) do
+        enemy.destroy()
+    end
+end
+
 local function enter_arena()
     local all_players_ready = true
     local players = game.connected_players
@@ -1520,14 +1529,9 @@ local function enter_arena()
         end
         if actually_ready then
             create_arena_surface()
+            destroy_arena_enemies()
             global.game_state = "arena"
             global.arena_start_tick = game.tick
-            local enemies = game.surfaces.arena.find_entities_filtered{
-                force = "enemy",
-            }
-            for _, enemy in pairs(enemies) do
-                enemy.destroy()
-            end
             for _, player in pairs(players) do
                 local position = game.get_surface("arena").find_non_colliding_position("character", {x = 0, y = 0}, 100, 1)
                 position = position or {x = player.index * 2, y = 0}
@@ -1815,6 +1819,7 @@ local function on_tick(event)
             randomize_starting_abilities()
             update_lobby_text()
             update_statistics()
+            destroy_arena_enemies()
         end
     end
 end
