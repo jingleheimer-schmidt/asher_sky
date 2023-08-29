@@ -94,6 +94,12 @@ local function valid_player_character(player)
     return player.character
 end
 
+---@param degrees number
+---@return number
+local function degrees_to_radians(degrees)
+    return degrees * (math.pi / 180)
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -106,4 +112,5 @@ return {
     opposite_direction = opposite_direction,
     format_time = format_time,
     valid_player_character = valid_player_character,
+    degrees_to_radians = degrees_to_radians,
 }

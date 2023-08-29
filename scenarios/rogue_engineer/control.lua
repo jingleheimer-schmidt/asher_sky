@@ -45,6 +45,7 @@ local opposite_direction = general_util.opposite_direction
 local normalize_degrees = general_util.normalize_degrees
 local format_time = general_util.format_time
 local valid_player_character = general_util.valid_player_character
+local degrees_to_radians = general_util.degrees_to_radians
 
 local gooey_util = require("gooey_util")
 local create_arena_gui = gooey_util.create_arena_gui
@@ -215,12 +216,6 @@ local function create_flamethrower_target(ability_name, position, player, final_
     global.flamethrower_targets[unique_id] = flamethrower_target
     local burning_until = game.tick + 60 * 45
     register_burn_zone(ability_name, position, player, burning_until)
-end
-
----@param degrees number
----@return number
-local function degrees_to_radians(degrees)
-    return degrees * (math.pi / 180)
 end
 
 ---@param animation_name string
