@@ -1440,7 +1440,6 @@ local function on_player_respawned(event)
     player.character_running_speed_modifier = 0.33
     global.remaining_lives = global.remaining_lives or {}
     global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
-    global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
     if global.remaining_lives[player_index] < 1 then
         local character = player.character
         player.set_controller{type = defines.controllers.spectator}
@@ -1448,6 +1447,7 @@ local function on_player_respawned(event)
             character.destroy()
         end
     end
+    global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
 end
 
 ---@param player LuaPlayer
