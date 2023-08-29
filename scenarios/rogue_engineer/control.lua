@@ -1214,13 +1214,13 @@ local function on_player_died(event)
     player.ticks_to_respawn = ticks
 
     if global.game_state == "arena" then
-        local player_stats = global.statistics[player.index] --[[@type player_statistics]]
+        local player_stats = global.statistics[player.index]
         if player_stats then
             player_stats.total.deaths = player_stats.total.deaths + 1
             player_stats.last_attempt.deaths = player_stats.last_attempt.deaths + 1
         end
         global.remaining_lives = global.remaining_lives or {}
-        global.remaining_lives[player.index] = global.remaining_lives[player.index] or 1
+        global.remaining_lives[player.index] = global.remaining_lives[player.index] or 0
         local text = { "", { "message_locale.engineer_down" }, "! ", global.remaining_lives[player.index], " ", { "message_locale.lives_remaining" } }
         draw_upgrade_text(text, player, { x = 0, y = 3 })
     end
@@ -1408,7 +1408,7 @@ local function on_entity_died(event)
                 unlock_random_ability(player)
             end
             global.remaining_lives = global.remaining_lives or {}
-            global.remaining_lives[player_index] = global.remaining_lives[player_index] or 1
+            global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
             if level % 33 == 0 then
                 global.remaining_lives[player_index] = global.remaining_lives[player_index] + 1
                 draw_upgrade_text({"", {"message_locale.level_up"}, "! ", global.remaining_lives[player_index], " ", {"message_locale.lives_remaining"}}, player, { x = 0, y = 3 })
