@@ -1221,7 +1221,7 @@ local function on_player_died(event)
         end
         global.remaining_lives = global.remaining_lives or {}
         global.remaining_lives[player.index] = global.remaining_lives[player.index] or 1
-        local text = {"", "Engineer down! ", global.remaining_lives[player.index] - 1, " lives remaining"}
+        local text = { "", { "message_locale.engineer_down" }, "! ", global.remaining_lives[player.index], " ", { "message_locale.lives_remaining" } }
         draw_upgrade_text(text, player, { x = 0, y = 3 })
     end
 end
@@ -1411,7 +1411,7 @@ local function on_entity_died(event)
             global.remaining_lives[player_index] = global.remaining_lives[player_index] or 1
             if level % 33 == 0 then
                 global.remaining_lives[player_index] = global.remaining_lives[player_index] + 1
-                draw_upgrade_text({"", "Level up! ", global.remaining_lives[player_index] - 1, " lives remaining"}, player, { x = 0, y = 3 })
+                draw_upgrade_text({"", {"message_locale.level_up"}, "! ", global.remaining_lives[player_index], " ", {"message_locale.lives_remaining"}}, player, { x = 0, y = 3 })
             end
             if level % 2 == 0 then
                 upgrade_damage_bonuses(level)
@@ -1758,12 +1758,12 @@ local function on_tick(event)
         local arena_duration = game.tick - arena_start_tick
         if arena_duration == game_duration then
             for _, player in pairs(connected_players) do
-                local text = {"", "Victory lap!"}
-                draw_announcement_text(text, player)
                 local player_stats = global.statistics[player.index] --[[@type player_statistics]]
                 player_stats.total.victories = player_stats.total.victories + 1
                 player_stats.last_attempt.victories = player_stats.last_attempt.victories + 1
                 global.remaining_lives[player.index] = 0
+                    local text = {"", {"message_locale.victory_lap"}, "!"}
+                    draw_announcement_text(text, player)
             end
         end
         if arena_duration > game_duration then
