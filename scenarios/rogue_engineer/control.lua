@@ -716,7 +716,7 @@ local function activate_shotgun(ability_data, player)
                 source = player.character,
                 character = player.character,
                 player = player,
-                speed = 1,
+                speed = 1.5,
                 max_range = ability_data.radius * 2,
             }
             ---@diagnostic enable: missing-fields
