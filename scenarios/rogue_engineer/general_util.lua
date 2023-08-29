@@ -101,7 +101,7 @@ local function degrees_to_radians(degrees)
 end
 
 ---@return uint
-local function arena_time_remaining()
+local function arena_ticks_remaining()
     local start_tick = global.arena_start_tick or 0
     local game_duration = global.game_duration[global.lobby_options.difficulty]
     local time_remaining = math.max(0, game_duration - (game.tick - start_tick))
@@ -109,7 +109,7 @@ local function arena_time_remaining()
 end
 
 ---@return uint
-local function arena_time_elapsed()
+local function arena_ticks_elapsed()
     local start_tick = global.arena_start_tick or 0
     local time_elapsed = game.tick - start_tick
     return time_elapsed
@@ -128,6 +128,6 @@ return {
     format_time = format_time,
     valid_player_character = valid_player_character,
     degrees_to_radians = degrees_to_radians,
-    arena_time_remaining = arena_time_remaining,
-    arena_time_elapsed = arena_time_elapsed,
+    arena_ticks_remaining = arena_ticks_remaining,
+    arena_ticks_elapsed = arena_ticks_elapsed,
 }
