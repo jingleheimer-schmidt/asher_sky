@@ -686,7 +686,6 @@ local function activate_gun_turret_deployer(ability_data, player)
                 source = player.character,
                 character = player.character,
                 player = player,
-                speed = 1/500,
             }
             ---@diagnostic enable: missing-fields
             if turret then
