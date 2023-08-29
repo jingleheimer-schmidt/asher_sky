@@ -84,6 +84,16 @@ local function format_time(ticks)
     return string.format("%d:%02d", minutes, seconds)
 end
 
+---@param player LuaPlayer?
+---@return LuaEntity?
+local function valid_player_character(player)
+    if not player then return end
+    if not player.valid then return end
+    if not player.character then return end
+    if not player.character.valid then return end
+    return player.character
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -95,4 +105,5 @@ return {
     direction_to_angle = direction_to_angle,
     opposite_direction = opposite_direction,
     format_time = format_time,
+    valid_player_character = valid_player_character,
 }

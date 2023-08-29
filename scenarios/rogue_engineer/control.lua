@@ -43,6 +43,7 @@ local direction_to_angle = general_util.direction_to_angle
 local opposite_direction = general_util.opposite_direction
 local normalize_degrees = general_util.normalize_degrees
 local format_time = general_util.format_time
+local valid_player_character = general_util.valid_player_character
 
 local function on_init()
     global.player_data = {}
@@ -932,16 +933,6 @@ local function unlock_random_ability(player)
     end
     local ability_name = ability_names[math.random(#ability_names)]
     unlock_named_ability(ability_name, player)
-end
-
----@param player LuaPlayer?
----@return LuaEntity?
-local function valid_player_character(player)
-    if not player then return end
-    if not player.valid then return end
-    if not player.character then return end
-    if not player.character.valid then return end
-    return player.character
 end
 
 ---@param character LuaEntity
