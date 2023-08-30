@@ -1207,6 +1207,9 @@ local function on_player_died(event)
         global.remaining_lives = global.remaining_lives or {}
         global.remaining_lives[player.index] = global.remaining_lives[player.index] or 0
         local text = { "", { "message_locale.engineer_down" }, "! ", global.remaining_lives[player.index], " ", { "message_locale.lives_remaining" } }
+        if arena_ticks_remaining() <= 0 then
+            text = { "", { "message_locale.engineer_victorious" }, "!" }
+        end
         draw_upgrade_text(text, player, { x = 0, y = 3 })
     end
 end
