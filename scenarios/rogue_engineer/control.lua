@@ -94,6 +94,7 @@ local function on_init()
         shotgun = true,
         barrier = true,
         purifying_light = true,
+        crystal_blossom = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -114,10 +115,11 @@ local function on_init()
         shotgun = true,
         barrier = true,
         purifying_light = true,
+        crystal_blossom = true,
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
-        ability_2 = "punch",
+        ability_2 = "crystal_blossom",
         ability_3 = "rocket_launcher",
     }
     global.statistics = {}
@@ -814,6 +816,29 @@ local function activate_acid_sponge_ability(ability_data, player, character)
     end
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_crystal_blossom_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local surface = character.surface
+    local ability_radius = ability_data.radius
+    local animation_radius = 1
+    local position = character.position
+    local damage = ability_data.damage
+    local damage_per_tick = damage / aoe_damage_modifier
+    local max_count = ability_radius / 3
+    local frame_count = raw_abilities_data[animation_name].frame_count
+    local final_tick = game.tick + frame_count
+    for i = 1, max_count do
+        local random_angle = math.random() * 2 * math.pi
+        local random_radius = math.random(0, ability_radius)
+        local random_position = get_position_on_circumference(position, random_radius, random_angle)
+        draw_animation(animation_name, random_position, surface, 0, animation_radius, frame_count)
+        register_damage_zone(animation_name, animation_radius, damage_per_tick, player, random_position, surface, final_tick)
+    end
+end
+
 local ability_functions = {
     burst = activate_burst_ability,
     punch = activate_punch_ability,
@@ -833,6 +858,7 @@ local ability_functions = {
     shotgun = activate_shotgun_ability,
     barrier = activate_flamethrower_ability,
     purifying_light = activate_acid_sponge_ability,
+    crystal_blossom = activate_crystal_blossom_ability,
 }
 
 ---@param ability_data active_ability_data
