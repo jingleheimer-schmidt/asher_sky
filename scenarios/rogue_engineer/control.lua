@@ -330,7 +330,8 @@ local function get_enemies_in_radius(surface, position, radius)
         position = position,
         radius = radius,
         force = "enemy",
-        type = {"unit", "turret", "unit-spawner"},
+        -- type = {"unit", "turret", "unit-spawner"},
+        type = {"unit", "turret"},
     }
     enemies = filter_valid_entities(enemies)
     return enemies
