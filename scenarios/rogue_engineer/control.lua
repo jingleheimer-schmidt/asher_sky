@@ -1052,7 +1052,8 @@ local function on_player_died(event)
     }
     local player = game.get_player(event.player_index)
     if not player then return end
-    local ticks = (player and (player.surface.name == "lobby") and (60 * 5)) or (60 * 8)
+    local ticks_remaining = arena_ticks_remaining()
+    local ticks = ((player.surface.name == "lobby") and (60 * 5)) or ((ticks_remaining <= 60 * 8.5) and 1) or (60 * 8)
     player.ticks_to_respawn = ticks
 
     if global.game_state == "arena" then
