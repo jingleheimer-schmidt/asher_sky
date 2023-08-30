@@ -127,7 +127,8 @@ end
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
 ---@param position MapPosition?
-local function draw_animation(animation_name, ability_data, player, position)
+---@param orientation float? -- 0 to 1, 0 is north, 0.25 is east, 0.5 is south, 0.75 is west
+local function draw_animation(animation_name, ability_data, player, position, orientation)
     if not animation_name then return end
     local raw_ability_data = raw_abilities_data[animation_name]
     local time_to_live = raw_ability_data.frame_count --[[@as uint]]
@@ -135,12 +136,13 @@ local function draw_animation(animation_name, ability_data, player, position)
     local target = raw_ability_data.target == "character" and character or position or player.position
     local speed = 1 --defined in data.lua
     local scale = ability_data.radius / 2
+    orientation = orientation or player.character.orientation
     rendering.draw_animation{
         animation = animation_name,
         target = target,
         surface = player.surface,
         time_to_live = time_to_live,
-        orientation = rotate_orientation(player.character.orientation, 0.25),
+        orientation = orientation,
         x_scale = scale,
         y_scale = scale,
         animation_offset = -(game.tick * speed) % raw_ability_data.frame_count,
