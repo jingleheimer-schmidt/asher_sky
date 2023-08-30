@@ -787,7 +787,7 @@ local function activate_flamethrower_ability(ability_data, player, character)
     position = position or get_position_on_circumference(player.position, ability_radius, angle)
     local count =  math.floor(ability_radius / 5)
     for i = -count, count do
-        local offset_angle = angle + degrees_to_radians(i * (73 / count))
+        local offset_angle = angle + degrees_to_radians(i * (40 / count))
         local offset_position = get_position_on_circumference(position, ability_radius, offset_angle)
         draw_animation(animation_name, offset_position, surface, orientation, scale)
         create_flamethrower_target(animation_name, offset_position, player, final_tick)
