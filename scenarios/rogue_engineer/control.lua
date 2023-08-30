@@ -876,15 +876,15 @@ local function upgrade_cooldown(ability_name, ability_data, player)
 end
 
 local ability_upgrade_functions = {
-    ["damage"] = upgrade_damage,
-    ["radius"] = upgrade_radius,
-    ["cooldown"] = upgrade_cooldown,
+    damage = upgrade_damage,
+    radius = upgrade_radius,
+    cooldown = upgrade_cooldown,
 }
 
 ---@param player LuaPlayer
 local function upgrade_random_ability(player)
     local player_data = global.player_data[player.index]
-    local abilities = player_data.abilities --[[@as table<string, active_ability_data>]]
+    local abilities = player_data.abilities
     local upgradeable_abilities = {}
     for _, ability in pairs(abilities) do
         local level = ability.level
@@ -1255,13 +1255,6 @@ local function on_entity_died(event)
                 upgrade_damage_bonuses(level)
             end
         end
-        -- update_kill_counter_rendering(player_index, character)
-
-        -- local enemy_name = entity.name
-        -- local radius = math.random(25, 55)
-        -- local position = get_random_position_on_circumference(player.position, radius)
-        -- position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
-        -- spawn_new_enemy(player.surface, position, enemy_name, player)
         local difficulty_spawn_chances = {
             ["easy"] = 0.75,
             ["normal"] = 0.9,
@@ -1676,7 +1669,6 @@ local function on_tick(event)
         end
     end
 end
-
 
 -- [[ event registration ]] -- 
 
