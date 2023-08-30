@@ -25,6 +25,12 @@ local function create_arena_gui(player)
     arena_gui.style.top_padding = 25
     arena_gui.style.left_padding = 25
     arena_gui.add {
+        type = "label",
+        name = "arena_stats_title",
+        caption = { "", { "message_locale.arena_statistics" } },
+    }
+    arena_gui.arena_stats_title.style.font = font
+    arena_gui.add {
         type = "table",
         name = "player_stats_table",
         column_count = 2,
@@ -79,6 +85,12 @@ local function create_arena_gui(player)
         caption = { "", 0 },
     }
     player_stats_table.lives_remaining_value.style.font = font
+    arena_gui.add {
+        type = "label",
+        name = "spacer",
+        caption = { "", " " },
+    }
+    arena_gui.spacer.style.font = font
     arena_gui.add {
         type = "label",
         name = "active_abilities",
