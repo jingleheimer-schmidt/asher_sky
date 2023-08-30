@@ -948,10 +948,10 @@ local ability_data = {
         height = 192,
         target = "position",
         default_cooldown = 60 * 10,
-        default_radius = 7,
+        default_radius = 6,
         default_damage = 1,
         damage_multiplier = 1.5,
-        radius_multiplier = 3,
+        radius_multiplier = 4,
         cooldown_multiplier = 20,
         upgrade_order = {
             "cooldown",
