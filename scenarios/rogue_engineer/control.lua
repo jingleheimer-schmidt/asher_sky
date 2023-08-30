@@ -306,7 +306,8 @@ local function refill_turrets(animation_name, ability_data, player, position)
     nearby_turrets = filter_valid_entities(nearby_turrets)
     for _, turret in pairs(nearby_turrets) do
         refill_infividual_turret_ammo(turret, ability_data)
-        draw_highlight_line(player, turret)
+        -- draw_highlight_line(player, turret)
+        draw_target_highlight(player, turret)
     end
 end
 
@@ -577,7 +578,8 @@ local function activate_distractor_capsule(ability_data, player)
         }
         ---@diagnostic enable: missing-fields
         if distractor then
-            draw_highlight_line(player, distractor)
+            -- draw_highlight_line(player, distractor)
+            draw_target_highlight(player, distractor)
         end
     end
 end
@@ -717,7 +719,8 @@ local function activate_gun_turret_deployer(ability_data, player)
             ---@diagnostic enable: missing-fields
             if turret then
                 refill_infividual_turret_ammo(turret, ability_data)
-                draw_highlight_line(player, turret)
+                -- draw_highlight_line(player, turret)
+                draw_target_highlight(player, turret)
             end
         end
     end
