@@ -15,6 +15,8 @@ local top_left_offset = constants.top_left_offset
 local walkway_tiles = constants.walkway_tiles
 local raw_abilities_data = constants.ability_data
 
+local aoe_damage_modifier = 20
+
 local lobby_util = require("lobby_util")
 local update_lobby_tiles = lobby_util.update_lobby_tiles
 local reset_lobby_tiles = lobby_util.reset_lobby_tiles
@@ -125,77 +127,42 @@ local function on_init()
     }
 end
 
----@param animation_name string
----@param ability_radius number
----@param player LuaPlayer
----@param position MapPosition?
----@param orientation float? -- 0 to 1, 0 is north, 0.25 is east, 0.5 is south, 0.75 is west
-local function draw_animation(animation_name, ability_radius, player, position, orientation)
-    if not animation_name then return end
-    local raw_ability_data = raw_abilities_data[animation_name]
-    local time_to_live = raw_ability_data.frame_count --[[@as uint]]
-    local character = player.character
-    local target = raw_ability_data.target == "character" and character or position or player.position
-    local speed = 1 --defined in data.lua
-    local scale = ability_radius / 2
-    orientation = orientation or player.character.orientation
+---@param name string
+---@param target LuaEntity|MapPosition
+---@param surface LuaSurface
+---@param orientation float?
+---@param scale number?
+---@param frame_count uint?
+---@param render_layer RenderLayer?
+local function draw_animation(name, target, surface, orientation, scale, frame_count, render_layer)
+    scale = scale and scale / 2 or 1/2
+    frame_count = frame_count or raw_abilities_data[name] and raw_abilities_data[name].frame_count or nil
+    local offset = 0
+    if frame_count then
+        offset = -(game.tick) % frame_count
+    end
     rendering.draw_animation{
-        animation = animation_name,
+        animation = name,
         target = target,
-        surface = player.surface,
-        time_to_live = time_to_live,
+        surface = surface,
+        time_to_live = frame_count,
         orientation = orientation,
         x_scale = scale,
         y_scale = scale,
-        animation_offset = -(game.tick * speed) % raw_ability_data.frame_count,
+        animation_offset = offset,
+        render_layer = render_layer,
     }
 end
 
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_pavement_deployer(ability_data, player)
-    local position = player.position
-    local surface = player.surface
-    local tile = surface.get_tile(position.x, position.y)
-    local tile_name = tile.name
-    local tile_tier = tile_tiers_by_name[tile_name] or 0
-    local normalized_tile_tier = math.min(math.max(ability_data.level - 5, 0), tile_tier)
-    local next_tile_name = tile_tiers_by_order[normalized_tile_tier + 1]
-    if not next_tile_name then return end
-    local tiles = {
-        { name = next_tile_name, position = { x = position.x, y = position.y } }
-    }
-    if ability_data.radius > 1 then
-        local radius = ability_data.radius - 1
-        for x = -radius, radius do
-            for y = -radius, radius do
-                if x ~= 0 or y ~= 0 then
-                    table.insert(tiles, { name = next_tile_name, position = { x = position.x + x, y = position.y + y } })
-                end
-            end
+---@param entities LuaEntity[]
+---@return LuaEntity[]
+local function filter_valid_entities(entities)
+    for id, entity in pairs(entities) do
+        if not entity.valid then
+            entities[id] = nil
         end
     end
-    surface.set_tiles(tiles)
-end
-
----@param turret LuaEntity
----@param ability_data active_ability_data
-local function refill_infividual_turret_ammo(turret, ability_data)
-    local inventory = turret.get_inventory(defines.inventory.turret_ammo)
-    local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
-    local ammo_items = { name = ammo_name, count = math.max(2, ability_data.level / 2)}
-    if inventory and inventory.can_insert(ammo_items) then
-        inventory.insert(ammo_items)
-        local localised_name = {"item-name." .. ammo_name}
-        ---@diagnostic disable: missing-fields
-        turret.surface.create_entity{
-            name = "flying-text",
-            position = turret.position,
-            text = {"", "+", ammo_items.count, " ", localised_name},
-            color = {r = 1, g = 1, b = 1},
-        }
-        ---@diagnostic enable: missing-fields
-    end
+    return entities
 end
 
 local function register_burn_zone(ability_name, position, player, final_tick)
@@ -224,90 +191,6 @@ local function create_flamethrower_target(ability_name, position, player, final_
     register_burn_zone(ability_name, position, player, burning_until)
 end
 
----@param animation_name string
----@param ability_radius number
----@param player LuaPlayer
----@param position MapPosition?
-local function draw_barrier(animation_name, ability_radius, player, position)
-    -- local angle = direction_to_angle(opposite_direction(player.character.direction))
-    local angle = direction_to_angle(player.character.direction)
-    position = position or get_position_on_circumference(player.position, ability_radius, angle)
-    local count =  math.floor(ability_radius / 5)
-    for i = -count, count do
-        local offset_angle = angle + degrees_to_radians(i * (73 / count))
-        local offset_position = get_position_on_circumference(position, ability_radius, offset_angle)
-        draw_animation(animation_name, 2.5, player, offset_position)
-        local final_tick = game.tick + math.ceil(raw_abilities_data.barrier.frame_count * 2/3)
-        create_flamethrower_target(animation_name, offset_position, player, final_tick)
-    end
-end
-
----@param player LuaPlayer
----@param target MapPosition|LuaEntity
-local function draw_highlight_line(player, target)
-    local target_offset = {0, 0}
-    if target.type and target.type == "combat-robot" then
-        target_offset = {0, -1}
-    end
-    rendering.draw_line{
-        color = player.chat_color,
-        width = 5,
-        gap_length = 0,
-        dash_length = 0,
-        from = player.character,
-        to = target,
-        to_offset = target_offset,
-        surface = player.surface,
-        time_to_live = 60 * 2,
-        draw_on_ground = true,
-    }
-end
-
----@param player LuaPlayer
----@param target MapPosition|LuaEntity
-local function draw_target_highlight(player, target)
-    local name = target.name
-    local type = target.type
-    local position = { x = target.position.x, y = target.position.y - 1 }
-    local radius = type == "combat-robot" and 0.75 or 2.25
-    local ability_data = {
-        radius = radius,
-    }
-    local orientation = 0
-    draw_animation("fortify", ability_data.radius, player, position, orientation)
-end
-
----@param entities LuaEntity[]
----@return LuaEntity[]
-local function filter_valid_entities(entities)
-    for id, entity in pairs(entities) do
-        if not entity.valid then
-            entities[id] = nil
-        end
-    end
-    return entities
-end
-
----@param animation_name string
----@param ability_radius number
----@param player LuaPlayer
----@param position MapPosition?
-local function refill_turrets(animation_name, ability_radius, player, position)
-    local nearby_turrets = player.surface.find_entities_filtered{
-        position = position or player.position,
-        radius = ability_radius,
-        force = player.force,
-        type = "ammo-turret",
-    }
-    if not nearby_turrets then return end
-    nearby_turrets = filter_valid_entities(nearby_turrets)
-    for _, turret in pairs(nearby_turrets) do
-        refill_infividual_turret_ammo(turret, ability_data)
-        -- draw_highlight_line(player, turret)
-        draw_target_highlight(player, turret)
-    end
-end
-
 ---@param name string
 ---@param radius integer
 ---@param damage_per_tick number
@@ -327,6 +210,120 @@ local function register_damage_zone(name, radius, damage_per_tick, player, posit
     local unique_id = name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
     global.damage_zones = global.damage_zones or {}
     global.damage_zones[unique_id] = damage_zone
+end
+
+---@param ability_data active_ability_data
+---@param target LuaEntity
+---@param player LuaPlayer
+---@param final_tick uint
+local function register_laser_beam_target(ability_data, target, player, final_tick, primary_target)
+    local laser_beam_target = {
+        ability_data = ability_data,
+        target = target,
+        player = player,
+        surface = player.surface,
+        final_tick = final_tick,
+        primary_target = primary_target,
+    }
+    local unique_id = ability_data.name .. "-" .. player.index .. "-" .. game.tick .. "-" .. target.unit_number
+    global.laser_beam_targets = global.laser_beam_targets or {}
+    global.laser_beam_targets[unique_id] = laser_beam_target
+end
+
+---@param surface LuaSurface
+---@param position MapPosition
+---@param source MapPosition|LuaEntity
+---@param target MapPosition|LuaEntity
+---@param force ForceIdentification
+local function create_laser_beam(surface, position, source, target, force)
+    local beam_name = "no-damage-laser-beam"
+    ---@diagnostic disable: missing-fields
+    local beam = surface.create_entity{
+        name = beam_name,
+        position = position,
+        force = force,
+        target = target,
+        source = source,
+        speed = 1/10,
+        max_range = 100,
+        duration = 33,
+    }
+    ---@diagnostic enable: missing-fields
+end
+
+---@param ability_name string
+---@param position MapPosition
+---@param player LuaPlayer
+---@param final_tick uint
+local function register_poison_zone(ability_name, position, player, final_tick)
+    local poison_zone = {
+        position = position,
+        player = player,
+        surface = player.surface,
+        final_tick = final_tick,
+    }
+    local unique_id = "poison-zone-" .. "-" .. ability_name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
+    global.poison_zones = global.poison_zones or {}
+    global.poison_zones[unique_id] = poison_zone
+end
+
+---@param turret LuaEntity
+---@param ability_data active_ability_data
+local function refill_infividual_turret_ammo(turret, ability_data)
+    local inventory = turret.get_inventory(defines.inventory.turret_ammo)
+    local ammo_name =(( ability_data.level > 12 ) and "uranium-rounds-magazine") or (( ability_data.level > 6 ) and "piercing-rounds-magazine") or "firearm-magazine"
+    local ammo_items = { name = ammo_name, count = math.max(2, ability_data.level / 2)}
+    if inventory and inventory.can_insert(ammo_items) then
+        inventory.insert(ammo_items)
+        local localised_name = {"item-name." .. ammo_name}
+        ---@diagnostic disable: missing-fields
+        turret.surface.create_entity{
+            name = "flying-text",
+            position = turret.position,
+            text = {"", "+", ammo_items.count, " ", localised_name},
+            color = {r = 1, g = 1, b = 1},
+        }
+        ---@diagnostic enable: missing-fields
+    end
+end
+
+---@param ability_data active_ability_data
+---@param character LuaEntity
+local function refill_existing_turrets(ability_data, character)
+    local animation_name = "buff"
+    local radius = ability_data.radius
+    local surface = character.surface
+    local force = character.force
+    local position = character.position
+    local nearby_turrets = surface.find_entities_filtered{
+        position = position,
+        radius = radius,
+        force = force,
+        type = "ammo-turret",
+    }
+    if not nearby_turrets then return end
+    nearby_turrets = filter_valid_entities(nearby_turrets)
+    for _, turret in pairs(nearby_turrets) do
+        refill_infividual_turret_ammo(turret, ability_data)
+        draw_animation(animation_name, turret, surface)
+    end
+end
+
+---@param player LuaPlayer
+---@param target_position MapPosition
+local function activate_flamethrower(player, target_position)
+    local surface = player.surface
+    ---@diagnostic disable: missing-fields
+    local stream = surface.create_entity{
+        name = "handheld-flamethrower-fire-stream",
+        position = player.position,
+        force = player.force,
+        target = target_position,
+        source = player.character,
+        character = player.character,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
 end
 
 ---@param position MapPosition
@@ -375,460 +372,6 @@ local function damage_enemies_in_radius(radius, damage, position, surface, playe
         end
     end
 end
-
-local aoe_damage_modifier = 20
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_burst_damage(ability_data, player)
-    local position = player.position
-    local surface = player.surface
-    local radius = ability_data.radius
-    local damage_per_tick = ability_data.damage / aoe_damage_modifier
-    local final_tick = game.tick + (raw_abilities_data.burst.frame_count * 1.125)
-    register_damage_zone("burst", radius, damage_per_tick, player, position, surface, final_tick)
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_punch_damage(ability_data, player)
-    local radius = ability_data.radius
-    local damage = ability_data.damage --[[@as float]]
-    local position = player.position
-    local surface = player.surface
-    damage_enemies_in_radius(radius, damage, position, surface, player)
-    local damage_per_tick = damage / aoe_damage_modifier
-    local final_tick = game.tick + (raw_abilities_data.punch.frame_count * 0.85)
-    register_damage_zone("punch", radius, damage_per_tick, player, position, surface, final_tick)
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_cure_damage(ability_data, player)
-    global.healing_players = global.healing_players or {}
-    global.healing_players[player.index] = {
-        player = player,
-        damage = ability_data.damage,
-        final_tick = game.tick + (raw_abilities_data.cure.frame_count * 1.25),
-    }
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_slash_damage(ability_data, player)
-    local radius = ability_data.radius
-    local damage = ability_data.damage --[[@as float]]
-    local position = player.position
-    local surface = player.surface
-    damage_enemies_in_radius(radius, damage, position, surface, player)
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_rocket_launcher(ability_data, player)
-    local surface = player.surface
-    local position = player.position
-    local force = player.force
-    local radius = ability_data.radius
-    local character = player.character
-    local enemy = find_nearest_enemy(position, radius, force, surface)
-    if not enemy then return end
-    ---@diagnostic disable: missing-fields
-    local rocket = surface.create_entity{
-        name = "rocket",
-        position = position,
-        force = force,
-        target = enemy,
-        source = character,
-        speed = 1/10,
-        max_range = radius * 20,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_data active_ability_data
----@param target LuaEntity
----@param player LuaPlayer
----@param final_tick uint
-local function register_laser_beam_target(ability_data, target, player, final_tick, primary_target)
-    local laser_beam_target = {
-        ability_data = ability_data,
-        target = target,
-        player = player,
-        surface = player.surface,
-        final_tick = final_tick,
-        primary_target = primary_target,
-    }
-    local unique_id = ability_data.name .. "-" .. player.index .. "-" .. game.tick .. "-" .. target.unit_number
-    global.laser_beam_targets = global.laser_beam_targets or {}
-    global.laser_beam_targets[unique_id] = laser_beam_target
-end
-
----@param surface LuaSurface
----@param position MapPosition
----@param source MapPosition|LuaEntity
----@param target MapPosition|LuaEntity
----@param force ForceIdentification
-local function create_laser_beam(surface, position, source, target, force)
-    local beam_name = "no-damage-laser-beam"
-    ---@diagnostic disable: missing-fields
-    local beam = surface.create_entity{
-        name = beam_name,
-        position = position,
-        force = force,
-        target = target,
-        source = source,
-        speed = 1/10,
-        max_range = 100,
-        duration = 33,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_beam_blast(ability_data, player)
-    local character = valid_player_character(player)
-    if not character then return end
-    local surface = player.surface
-    local player_position = player.position
-    local player_force = player.force
-    local radius = ability_data.radius
-    local primary_target = find_nearest_enemy(player_position, radius * 2, player.force, surface)
-    if not primary_target then return end
-    local primary_target_id = primary_target.unit_number
-    local primary_target_position = primary_target.position
-    local nearby_enemies = get_enemies_in_radius(surface, primary_target.position, radius / 1.5)
-    create_laser_beam(surface, player_position, character, primary_target, player_force)
-    register_laser_beam_target(ability_data, primary_target, player, game.tick + 33, primary_target)
-    for _, secondary_target in pairs(nearby_enemies) do
-        if secondary_target.valid then
-            if secondary_target.unit_number ~= primary_target_id then
-                create_laser_beam(surface, primary_target_position, primary_target, secondary_target, player_force)
-                register_laser_beam_target(ability_data, secondary_target, player, game.tick + 33, primary_target)
-            end
-        end
-    end
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_discharge_defender(ability_data, player)
-    local surface = player.surface
-    ---@diagnostic disable: missing-fields
-    local discharge_defender = surface.create_entity{
-        name = "discharge-defender",
-        position = player.position,
-        direction = player.character.direction,
-        force = player.force,
-        -- target = enemy,
-        target = player.character,
-        source = player.character,
-        speed = 1/10,
-        max_range = ability_data.radius * 20,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_destroyer_capsule(ability_data, player)
-    local surface = player.surface
-    ---@diagnostic disable: missing-fields
-    local destroyer = surface.create_entity{
-        name = "destroyer",
-        position = player.position,
-        direction = player.character.direction,
-        force = player.force,
-        -- target = enemy,
-        target = player.character,
-        source = player.character,
-        speed = 1/10,
-        max_range = ability_data.radius * 20,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_distractor_capsule(ability_data, player)
-    local surface = player.surface
-    for i = -2, 2 do
-        local angle = direction_to_angle(player.character.direction)
-        local offset_angle = angle + degrees_to_radians(i * 30)
-        local position = get_position_on_circumference(player.position, ability_data.radius, offset_angle)
-        ---@diagnostic disable: missing-fields
-        local distractor = surface.create_entity{
-            name = "distractor",
-            position = position,
-            direction = player.character.direction,
-            force = player.force,
-            -- target = enemy,
-            target = player.character,
-            source = player.character,
-            speed = 1/10,
-            max_range = ability_data.radius * 20,
-            player = player,
-        }
-        ---@diagnostic enable: missing-fields
-        if distractor then
-            -- draw_highlight_line(player, distractor)
-            draw_target_highlight(player, distractor)
-        end
-    end
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_defender_capsule(ability_data, player)
-    local surface = player.surface
-    ---@diagnostic disable: missing-fields
-    local defender = surface.create_entity{
-        name = "defender",
-        position = player.position,
-        direction = player.character.direction,
-        force = player.force,
-        -- target = enemy,
-        target = player.character,
-        source = player.character,
-        speed = 1/10,
-        max_range = ability_data.radius * 20,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_landmine_deployer(ability_data, player)
-    local surface = player.surface
-    local radius = math.random(0, ability_data.radius)
-    local random_angle = math.random() * 2 * math.pi
-    local position = get_position_on_circumference(player.position, radius, random_angle)
-    local non_colliding_position = surface.find_non_colliding_position("land-mine", position, radius, 0.25)
-    if not non_colliding_position then return end
-    ---@diagnostic disable: missing-fields
-    local landmine = surface.create_entity{
-        name = "land-mine",
-        position = non_colliding_position,
-        force = player.force,
-        target = player.character,
-        source = player.character,
-        character = player.character,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_name string
----@param position MapPosition
----@param player LuaPlayer
----@param final_tick uint
-local function register_poison_zone(ability_name, position, player, final_tick)
-    local poison_zone = {
-        position = position,
-        player = player,
-        surface = player.surface,
-        final_tick = final_tick,
-    }
-    local unique_id = "poison-zone-" .. "-" .. ability_name .. "-" .. player.index .. "-" .. game.tick .. "-" .. position.x .. "-" .. position.y
-    global.poison_zones = global.poison_zones or {}
-    global.poison_zones[unique_id] = poison_zone
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_poison_capsule_deployer(ability_data, player)
-    local surface = player.surface
-    local radius = ability_data.radius
-    local angle = direction_to_angle(opposite_direction(player.character.direction))
-    local position = get_position_on_circumference(player.position, radius, angle)
-    ---@diagnostic disable: missing-fields
-    surface.create_entity{
-        name = "poison-capsule",
-        position = position,
-        force = player.force,
-        target = position,
-        source = player.character,
-        character = player.character,
-        player = player,
-        speed = 1/50,
-    }
-    ---@diagnostic enable: missing-fields
-    local final_tick = game.tick + 60 * 45
-    register_poison_zone(ability_data.name, position, player, final_tick)
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_slowdown_capsule_deployer(ability_data, player)
-    local surface = player.surface
-    local radius = ability_data.radius
-    for _, direction in pairs(defines.direction) do
-        local angle = direction_to_angle(direction)
-        local position = get_position_on_circumference(player.position, radius, angle)
-        ---@diagnostic disable: missing-fields
-        surface.create_entity{
-            name = "slowdown-capsule",
-            position = position,
-            force = player.force,
-            target = position,
-            source = player.character,
-            character = player.character,
-            player = player,
-            speed = 1/50,
-        }
-        ---@diagnostic enable: missing-fields
-    end
-    if radius > 10 and (radius % 10 == 0) then
-        local secondary_ability_data = {
-            radius = radius / 2,
-        }
-        activate_slowdown_capsule_deployer(secondary_ability_data, player)
-    end
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_gun_turret_deployer(ability_data, player)
-    local surface = player.surface
-    local radius = ability_data.radius
-    local angle = direction_to_angle(player.character.direction)
-    for i = 1, 2 do
-        local degrees = i == 1 and -15 or 15
-        local offset_angle = angle + degrees_to_radians(degrees)
-        local position = get_position_on_circumference(player.position, radius, offset_angle)
-        local non_colliding_position = surface.find_non_colliding_position("gun-turret", position, radius, 0.25)
-        if non_colliding_position then
-        ---@diagnostic disable: missing-fields
-            local turret = surface.create_entity{
-                name = "gun-turret",
-                position = non_colliding_position,
-                force = player.force,
-                target = position,
-                source = player.character,
-                character = player.character,
-                player = player,
-            }
-            ---@diagnostic enable: missing-fields
-            if turret then
-                refill_infividual_turret_ammo(turret, ability_data)
-                -- draw_highlight_line(player, turret)
-                draw_target_highlight(player, turret)
-            end
-        end
-    end
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_shotgun(ability_data, player)
-    local surface = player.surface
-    local radius = ability_data.radius
-    local angle = direction_to_angle(player.character.direction)
-    for _ = 1, 2 do
-        for i = -10, 10 do
-            local offest_angle = angle + degrees_to_radians(i)
-            local target_position = get_position_on_circumference(player.position, radius, offest_angle)
-            local source_position = get_position_on_circumference(player.position, 2, angle)
-                ---@diagnostic disable: missing-fields
-            local bullet = surface.create_entity{
-                name = "shotgun-pellet",
-                position = source_position,
-                force = player.force,
-                target = target_position,
-                source = player.character,
-                character = player.character,
-                player = player,
-                speed = 1.5,
-                max_range = ability_data.radius * 2,
-            }
-            ---@diagnostic enable: missing-fields
-        end
-    end
-end
-
----@param player LuaPlayer
----@param target_position MapPosition
-local function activate_flamethrower(player, target_position)
-    local surface = player.surface
-    ---@diagnostic disable: missing-fields
-    local stream = surface.create_entity{
-        name = "handheld-flamethrower-fire-stream",
-        position = player.position,
-        force = player.force,
-        target = target_position,
-        source = player.character,
-        character = player.character,
-        player = player,
-    }
-    ---@diagnostic enable: missing-fields
-end
-
----@param ability_data active_ability_data
----@param player LuaPlayer
-local function activate_acid_sponge(ability_data, player)
-    local surface = player.surface
-    local radius = ability_data.radius
-    local position = player.position
-    local acids_to_sponge = surface.find_entities_filtered{
-        position = position,
-        radius = radius,
-        force = "enemy",
-        type = {"stream", "fire", "projectile"},
-    }
-    for _, acid in pairs(acids_to_sponge) do
-        if acid.valid then
-            draw_animation("purifying_light", 1, player, acid.position)
-            acid.destroy()
-        end
-    end
-end
-
-local damage_functions = {
-    burst = activate_burst_damage,
-    punch = activate_punch_damage,
-    cure = activate_cure_damage,
-    slash = activate_slash_damage,
-    rocket_launcher = activate_rocket_launcher,
-    pavement = activate_pavement_deployer,
-    beam_blast = activate_beam_blast,
-    discharge_defender = activate_discharge_defender,
-    destroyer = activate_destroyer_capsule,
-    distractor = activate_distractor_capsule,
-    defender = activate_defender_capsule,
-    landmine = activate_landmine_deployer,
-    poison_capsule = activate_poison_capsule_deployer,
-    slowdown_capsule = activate_slowdown_capsule_deployer,
-    gun_turret = activate_gun_turret_deployer,
-    shotgun = activate_shotgun,
-    -- barrier = function() return end,
-    purifying_light = activate_acid_sponge,
-}
-
-local animation_functions = {
-    burst = draw_animation,
-    punch = draw_animation,
-    cure = draw_animation,
-    slash = draw_animation,
-    -- rocket_launcher = draw_animation,
-    -- pavement = draw_pavement,
-    -- beam_blast = draw_animation,
-    -- discharge_defender = draw_animation,
-    -- destroyer = draw_animation,
-    -- distractor = draw_animation,
-    -- defender = draw_animation,
-    -- landmine = draw_animation,
-    -- poison_capsule = draw_animation,
-    -- slowdown_capsule = draw_animation,
-    gun_turret = refill_turrets,
-    -- shotgun = draw_animation,
-    barrier = draw_barrier,
-    -- purifying_light = draw_animation,
-}
 
 ---@param text LocalisedString
 ---@param surface LuaSurface
@@ -883,29 +426,497 @@ local function draw_announcement_text(text, player)
     draw_text(text, surface, position, color, time_to_live, scale)
 end
 
-local function draw_animations(ability_name, ability_data, player)
-    local animate = animation_functions and animation_functions[ability_name]
-    if animate then
-        animate(ability_name, ability_data.radius, player)
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_burst_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local radius = ability_data.radius
+    local damage = ability_data.damage
+    local damage_per_tick = damage / aoe_damage_modifier
+    local position = character.position
+    local surface = character.surface
+    local orientation = character.orientation
+    local frame_count = raw_abilities_data[animation_name].frame_count
+    local final_tick = game.tick + frame_count
+    draw_animation(animation_name, position, surface, orientation, radius, frame_count)
+    register_damage_zone(animation_name, radius, damage_per_tick, player, position, surface, final_tick)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_punch_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local radius = ability_data.radius
+    local damage = ability_data.damage
+    local damage_per_tick = damage / aoe_damage_modifier
+    local position = character.position
+    local surface = character.surface
+    local orientation = character.orientation
+    local frame_count = raw_abilities_data[animation_name].frame_count
+    local final_tick = game.tick + 25
+    draw_animation(animation_name, position, surface, orientation, radius, frame_count)
+    damage_enemies_in_radius(radius, damage, position, surface, player)
+    register_damage_zone(animation_name, radius, damage_per_tick, player, position, surface, final_tick)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_cure_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local radius = ability_data.radius
+    local damage = ability_data.damage
+    local damage_per_tick = damage / aoe_damage_modifier
+    local position = character.position
+    local surface = character.surface
+    local orientation = character.orientation
+    local frame_count = raw_abilities_data[animation_name].frame_count
+    local final_tick = game.tick + frame_count
+    draw_animation(animation_name, character, surface, orientation, radius, frame_count)
+    global.healing_players = global.healing_players or {}
+    global.healing_players[player.index] = {
+        player = player,
+        damage = damage,
+        final_tick = final_tick,
+    }
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_slash_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local radius = ability_data.radius
+    local damage = ability_data.damage
+    local position = character.position
+    local surface = character.surface
+    local orientation = character.orientation - 45/360
+    local frame_count = raw_abilities_data[animation_name].frame_count
+    local final_tick = game.tick + frame_count
+    draw_animation(animation_name, position, surface, orientation, radius, frame_count)
+    damage_enemies_in_radius(radius, damage, position, surface, player)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_rocket_launcher_ability(ability_data, player, character)
+    local animation_name = "debuff"
+    local radius = ability_data.radius
+    local position = character.position
+    local surface = character.surface
+    local orientation = 0
+    local frame_count = raw_abilities_data[animation_name].frame_count
+    local enemy = find_nearest_enemy(position, radius, player.force, surface)
+    if not enemy then return end
+    ---@diagnostic disable: missing-fields
+    local rocket = surface.create_entity{
+        name = "rocket",
+        position = position,
+        force = player.force,
+        target = enemy,
+        source = character,
+        speed = 1/10,
+        max_range = radius * 20,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+    draw_animation(animation_name, enemy, surface, orientation, 0.8, frame_count, "radius-visualization")
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_pavement_ability(ability_data, player, character)
+    local name = ability_data.name
+    local radius = ability_data.radius
+    local position = character.position
+    local surface = character.surface
+    local tile = surface.get_tile(position.x, position.y)
+    local tile_name = tile.name
+    local tile_tier = tile_tiers_by_name[tile_name] or 0
+    local normalized_tile_tier = math.min(math.max(ability_data.level - 5, 0), tile_tier)
+    local next_tile_name = tile_tiers_by_order[normalized_tile_tier + 1]
+    if not next_tile_name then return end
+    local tiles = {
+        { name = next_tile_name, position = { x = position.x, y = position.y } }
+    }
+    if radius > 1 then
+        local edge = radius - 1
+        for x = -edge, edge do
+            for y = -edge, edge do
+                if x ~= 0 or y ~= 0 then
+                    table.insert(tiles, { name = next_tile_name, position = { x = position.x + x, y = position.y + y } })
+                end
+            end
+        end
+    end
+    surface.set_tiles(tiles)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_beam_blast_ability(ability_data, player, character)
+    local surface = character.surface
+    local player_position = character.position
+    local player_force = character.force
+    local radius = ability_data.radius
+    local primary_target = find_nearest_enemy(player_position, radius * 2, player_force, surface)
+    if not primary_target then return end
+    local primary_target_id = primary_target.unit_number
+    local primary_target_position = primary_target.position
+    local nearby_enemies = get_enemies_in_radius(surface, primary_target.position, radius / 1.5)
+    create_laser_beam(surface, player_position, character, primary_target, player_force)
+    register_laser_beam_target(ability_data, primary_target, player, game.tick + 33, primary_target)
+    for _, secondary_target in pairs(nearby_enemies) do
+        if secondary_target.valid then
+            if secondary_target.unit_number ~= primary_target_id then
+                create_laser_beam(surface, primary_target_position, primary_target, secondary_target, player_force)
+                register_laser_beam_target(ability_data, secondary_target, player, game.tick + 33, primary_target)
+            end
+        end
     end
 end
 
----@param ability_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
-local function damage_enemies(ability_name, ability_data, player)
-    local activate_damage = damage_functions and damage_functions[ability_name]
-    if activate_damage then
-        activate_damage(ability_data, player)
+---@param character LuaEntity
+local function activate_discharge_defender_ability(ability_data, player, character)
+    local animation_name = "buff"
+    local surface = character.surface
+    local position = character.position
+    local force = character.force
+    local radius = ability_data.radius
+    ---@diagnostic disable: missing-fields
+    local discharge_defender = surface.create_entity{
+        name = "discharge-defender",
+        position = position,
+        direction = character.direction,
+        force = force,
+        -- target = enemy,
+        target = character,
+        source = character,
+        speed = 1/10,
+        max_range = radius * 20,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+    if discharge_defender then
+        draw_animation(animation_name, discharge_defender, surface)
     end
 end
 
----@param ability_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
-local function activate_ability(ability_name, ability_data, player)
-    draw_animations(ability_name, ability_data, player)
-    damage_enemies(ability_name, ability_data, player)
+---@param character LuaEntity
+local function activate_destroyer_capsule_ability(ability_data, player, character)
+    local animation_name = "buff"
+    local surface = character.surface
+    local position = character.position
+    local force = character.force
+    local radius = ability_data.radius
+    ---@diagnostic disable: missing-fields
+    local destroyer = surface.create_entity{
+        name = "destroyer",
+        position = position,
+        direction = character.direction,
+        force = force,
+        -- target = enemy,
+        target = character,
+        source = character,
+        speed = 1/10,
+        max_range = radius * 20,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+    if destroyer then
+        draw_animation(animation_name, destroyer, surface)
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_distractor_capsule_ability(ability_data, player, character)
+    local animation_name = "buff"
+    local surface = character.surface
+    local character_position = character.position
+    local force = character.force
+    local radius = ability_data.radius
+    for i = -2, 2 do
+        local angle = direction_to_angle(player.character.direction)
+        local offset_angle = angle + degrees_to_radians(i * 30)
+        local position = get_position_on_circumference(character_position, radius, offset_angle)
+        ---@diagnostic disable: missing-fields
+        local distractor = surface.create_entity{
+            name = "distractor",
+            position = position,
+            direction = character.direction,
+            force = force,
+            target = character,
+            source = character,
+            speed = 1/10,
+            max_range = radius * 20,
+            player = player,
+        }
+        ---@diagnostic enable: missing-fields
+        if distractor then
+            draw_animation(animation_name, distractor, surface)
+        end
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_defender_capsule_ability(ability_data, player, character)
+    local animation_name = "buff"
+    local surface = character.surface
+    local position = character.position
+    local force = character.force
+    local radius = ability_data.radius
+    ---@diagnostic disable: missing-fields
+    local defender = surface.create_entity{
+        name = "defender",
+        position = position,
+        direction = character.direction,
+        force = force,
+        target = character,
+        source = character,
+        speed = 1/10,
+        max_range = radius * 20,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+    if defender then
+        draw_animation(animation_name, defender, surface)
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_landmine_ability(ability_data, player, character)
+    local animation_name = "buff"
+    local surface = character.surface
+    local force = character.force
+    local radius = math.random(0, ability_data.radius)
+    local random_angle = math.random() * 2 * math.pi
+    local position = get_position_on_circumference(character.position, radius, random_angle)
+    local non_colliding_position = surface.find_non_colliding_position("land-mine", position, radius, 0.25)
+    if not non_colliding_position then return end
+    ---@diagnostic disable: missing-fields
+    local landmine = surface.create_entity{
+        name = "land-mine",
+        position = non_colliding_position,
+        force = force,
+        target = character,
+        source = character,
+        character = character,
+        player = player,
+    }
+    ---@diagnostic enable: missing-fields
+    if landmine then
+        draw_animation(animation_name, landmine, surface)
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_poison_capsule_ability(ability_data, player, character)
+    local surface = character.surface
+    local force = character.force
+    local radius = ability_data.radius
+    local angle = direction_to_angle(opposite_direction(character.direction))
+    local position = get_position_on_circumference(character.position, radius, angle)
+    ---@diagnostic disable: missing-fields
+    surface.create_entity{
+        name = "poison-capsule",
+        position = position,
+        force = force,
+        target = position,
+        source = character,
+        character = character,
+        player = player,
+        speed = 1/50,
+    }
+    ---@diagnostic enable: missing-fields
+    local final_tick = game.tick + 60 * 45
+    register_poison_zone(ability_data.name, position, player, final_tick)
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_slowdown_capsule_ability(ability_data, player, character)
+    local surface = character.surface
+    local force = character.force
+    local radius = ability_data.radius
+    for _, direction in pairs(defines.direction) do
+        local angle = direction_to_angle(direction)
+        local position = get_position_on_circumference(character.position, radius, angle)
+        ---@diagnostic disable: missing-fields
+        surface.create_entity{
+            name = "slowdown-capsule",
+            position = position,
+            force = force,
+            target = position,
+            source = character,
+            character = character,
+            player = player,
+            speed = 1/50,
+        }
+        ---@diagnostic enable: missing-fields
+    end
+    if radius > 10 and (radius % 10 == 0) then
+        local secondary_ability_data = {
+            radius = radius / 2,
+        }
+        activate_slowdown_capsule_ability(secondary_ability_data, player, character)
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_gun_turret_ability(ability_data, player, character)
+    local animation_name = "buff"
+    local surface = character.surface
+    local force = character.force
+    local radius = ability_data.radius
+    local angle = direction_to_angle(player.character.direction)
+    refill_existing_turrets(ability_data, character)
+    for i = 1, 2 do
+        local degrees = i == 1 and -15 or 15
+        local offset_angle = angle + degrees_to_radians(degrees)
+        local position = get_position_on_circumference(character.position, radius, offset_angle)
+        local non_colliding_position = surface.find_non_colliding_position("gun-turret", position, radius, 1)
+        if non_colliding_position then
+        ---@diagnostic disable: missing-fields
+            local turret = surface.create_entity{
+                name = "gun-turret",
+                position = non_colliding_position,
+                force = force,
+                target = position,
+                source = character,
+                character = character,
+                player = player,
+            }
+            ---@diagnostic enable: missing-fields
+            if turret then
+                refill_infividual_turret_ammo(turret, ability_data)
+                draw_animation(animation_name, turret, surface)
+            end
+        end
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_shotgun_ability(ability_data, player, character)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local angle = direction_to_angle(player.character.direction)
+    for _ = 1, 2 do
+        for i = -10, 10 do
+            local offest_angle = angle + degrees_to_radians(i)
+            local target_position = get_position_on_circumference(player.position, radius, offest_angle)
+            local source_position = get_position_on_circumference(player.position, 2, angle)
+                ---@diagnostic disable: missing-fields
+            local bullet = surface.create_entity{
+                name = "shotgun-pellet",
+                position = source_position,
+                force = player.force,
+                target = target_position,
+                source = player.character,
+                character = player.character,
+                player = player,
+                speed = 1.5,
+                max_range = ability_data.radius * 2,
+            }
+            ---@diagnostic enable: missing-fields
+        end
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_flamethrower_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local ability_radius = ability_data.radius
+    local position = character.position
+    local surface = character.surface
+    local orientation = character.orientation
+    local final_tick = game.tick + math.ceil(raw_abilities_data[animation_name].frame_count * 2/3)
+    local angle = direction_to_angle(player.character.direction)
+    position = position or get_position_on_circumference(player.position, ability_radius, angle)
+    local count =  math.floor(ability_radius / 5)
+    for i = -count, count do
+        local offset_angle = angle + degrees_to_radians(i * (73 / count))
+        local offset_position = get_position_on_circumference(position, ability_radius, offset_angle)
+        draw_animation(animation_name, offset_position, surface, orientation, scale)
+        create_flamethrower_target(animation_name, offset_position, player, final_tick)
+    end
+end
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_acid_sponge_ability(ability_data, player, character)
+    local animation_name = ability_data.name
+    local surface = character.surface
+    local radius = ability_data.radius
+    local position = character.position
+    local acids_to_sponge = surface.find_entities_filtered{
+        position = position,
+        radius = radius,
+        force = "enemy",
+        type = {"stream", "fire", "projectile"},
+    }
+    for _, acid in pairs(acids_to_sponge) do
+        if acid.valid then
+            draw_animation(animation_name, acid.position, surface)
+            acid.destroy()
+        end
+    end
+end
+
+local ability_functions = {
+    burst = activate_burst_ability,
+    punch = activate_punch_ability,
+    cure = activate_cure_ability,
+    slash = activate_slash_ability,
+    rocket_launcher = activate_rocket_launcher_ability,
+    pavement = activate_pavement_ability,
+    beam_blast = activate_beam_blast_ability,
+    discharge_defender = activate_discharge_defender_ability,
+    destroyer = activate_destroyer_capsule_ability,
+    distractor = activate_distractor_capsule_ability,
+    defender = activate_defender_capsule_ability,
+    landmine = activate_landmine_ability,
+    poison_capsule = activate_poison_capsule_ability,
+    slowdown_capsule = activate_slowdown_capsule_ability,
+    gun_turret = activate_gun_turret_ability,
+    shotgun = activate_shotgun_ability,
+    barrier = activate_flamethrower_ability,
+    purifying_light = activate_acid_sponge_ability,
+}
+
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+---@param character LuaEntity
+local function activate_ability(ability_data, player, character)
+    local ability_name = ability_data.name
+    local activate = ability_functions and ability_functions[ability_name]
+    if activate then
+        activate(ability_data, player, character)
+    end
 end
 
 ---@param ability_name string
@@ -1429,7 +1440,7 @@ local function on_entity_died(event)
             player_data.level = player_data.level + 1
             local level = player_data.level
             upgrade_random_ability(player)
-            draw_animation("shimmer", 2, player)
+            draw_animation("shimmer", character, surface, 0, 2)
             if level % 7 == 0 then
                 unlock_random_ability(player)
             end
@@ -1685,12 +1696,14 @@ local function on_tick(event)
     -- lobby and arena --
 
     for _, player in pairs(connected_players) do
-        if not player.character then break end
         global.player_data[player.index] = global.player_data[player.index] or initialize_player_data(player)
         local player_data = global.player_data[player.index]
         for ability_name, ability_data in pairs(player_data.abilities) do
             if (((event.tick + (player.index * 25)) % ability_data.cooldown) == 0) then
-                activate_ability(ability_name, ability_data, player)
+                local character = valid_player_character(player)
+                if character then
+                    activate_ability(ability_data, player, character)
+                end
             end
         end
     end
