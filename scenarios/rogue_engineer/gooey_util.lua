@@ -25,29 +25,60 @@ local function create_arena_gui(player)
     arena_gui.style.top_padding = 25
     arena_gui.style.left_padding = 25
     arena_gui.add {
-        type = "label",
-        name = "total_kills",
-        caption = { "", { "message_locale.kills" }, ": ", 0 },
+        type = "table",
+        name = "player_stats_table",
+        column_count = 2,
     }
-    arena_gui.total_kills.style.font = font
-    arena_gui.add {
+    local player_stats_table = arena_gui.player_stats_table
+    if not player_stats_table then return end
+    player_stats_table.add {
         type = "label",
-        name = "kills_per_minute",
-        caption = { "", { "message_locale.kills_per_minute" }, ": [color=", "white", "]", 0, "[/color]" },
+        name = "total_kills_title",
+        caption = { "", { "message_locale.kills" }, ": " },
     }
-    arena_gui.kills_per_minute.style.font = font
-    arena_gui.add {
+    player_stats_table.total_kills_title.style.font = font
+    player_stats_table.add {
         type = "label",
-        name = "time_remaining",
-        caption = { "", { "message_locale.time_remaining" }, ": ", 0 },
+        name = "total_kills_value",
+        caption = { "", 0 },
     }
-    arena_gui.time_remaining.style.font = font
-    arena_gui.add {
+    player_stats_table.total_kills_value.style.font = font
+    player_stats_table.add {
         type = "label",
-        name = "lives_remaining",
-        caption = { "", { "message_locale.lives_remaining" }, ": ", 0 },
+        name = "kills_per_minute_title",
+        caption = { "", { "message_locale.kills_per_minute" }, ": " },
     }
-    arena_gui.lives_remaining.style.font = font
+    player_stats_table.kills_per_minute_title.style.font = font
+    player_stats_table.add {
+        type = "label",
+        name = "kills_per_minute_value",
+        caption = {"", "[color=", "white", "]", 0, "[/color]"}
+    }
+    player_stats_table.kills_per_minute_value.style.font = font
+    player_stats_table.add {
+        type = "label",
+        name = "time_remaining_title",
+        caption = { "", { "message_locale.time_remaining" }, ": "},
+    }
+    player_stats_table.time_remaining_title.style.font = font
+    player_stats_table.add {
+        type = "label",
+        name = "time_remaining_value",
+        caption = { "", 0 },
+    }
+    player_stats_table.time_remaining_value.style.font = font
+    player_stats_table.add {
+        type = "label",
+        name = "lives_remaining_title",
+        caption = { "", { "message_locale.lives_remaining" }, ": "},
+    }
+    player_stats_table.lives_remaining_title.style.font = font
+    player_stats_table.add {
+        type = "label",
+        name = "lives_remaining_value",
+        caption = { "", 0 },
+    }
+    player_stats_table.lives_remaining_value.style.font = font
     arena_gui.add {
         type = "label",
         name = "active_abilities",
@@ -95,7 +126,7 @@ local function update_arena_gui_kills(player, arena_gui, player_stats)
     end
     local last_stats = player_stats.last_attempt
     local kills = last_stats and last_stats.kills or 0
-    arena_gui.total_kills.caption = { "", { "message_locale.kills" }, ": ", kills }
+    arena_gui.player_stats_table["total_kills_value"].caption = { "", kills }
 end
 
 ---@param player LuaPlayer
@@ -103,7 +134,7 @@ end
 ---@param player_stats player_statistics?
 local function update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
     if not arena_gui then
-        arena_gui = player.gui.screen.arena_gui
+        arena_gui = player.gui.screen.arena_gui.player_stats_table
         if not arena_gui then return end
     end
     if not player_stats then
@@ -111,16 +142,16 @@ local function update_arena_gui_kills_per_minute(player, arena_gui, player_stats
         if not player_stats then return end
     end
     local kills_per_minute = calculate_kills_per_minute(player.index)
-    local last_text = arena_gui.kills_per_minute.caption
-    local last_color = last_text and last_text[4] or "white"
-    local last_kills_per_minute = tonumber(last_text and last_text[6] or 0)
+    local last_text = arena_gui.player_stats_table["kills_per_minute_value"].caption
+    local last_color = last_text and last_text[3] or "white"
+    local last_kills_per_minute = tonumber(last_text and last_text[5] or 0)
     local color = "white"
     if kills_per_minute > last_kills_per_minute then
         color = "green"
     elseif kills_per_minute < last_kills_per_minute then
         color = "red"
     end
-    arena_gui.kills_per_minute.caption = { "", { "message_locale.kills_per_minute" }, ": [color=", color, "]", kills_per_minute, "[/color]" }
+    arena_gui.player_stats_table["kills_per_minute_value"].caption = { "", "[color=", color, "]", kills_per_minute, "[/color]" }
 end
 
 ---@param player LuaPlayer
@@ -136,7 +167,7 @@ local function update_arena_gui_time_remaining(player, arena_gui, player_stats)
         if not player_stats then return end
     end
     local time_remaining = arena_ticks_remaining()
-    arena_gui.time_remaining.caption = { "", { "message_locale.time_remaining" }, ": ", format_time(time_remaining) }
+    arena_gui.player_stats_table["time_remaining_value"].caption = { "", format_time(time_remaining) }
 end
 
 ---@param player LuaPlayer
@@ -152,7 +183,7 @@ local function update_arena_gui_lives_remaining(player, arena_gui, player_stats)
         if not player_stats then return end
     end
     local lives_remaining = global.remaining_lives and global.remaining_lives[player.index] or 0
-    arena_gui.lives_remaining.caption = { "", { "message_locale.lives_remaining" }, ": ", lives_remaining }
+    arena_gui.player_stats_table["lives_remaining_value"].caption = { "", lives_remaining }
 end
 
 local function update_arena_gui(player)
