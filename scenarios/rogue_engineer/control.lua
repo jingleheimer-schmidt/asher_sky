@@ -827,7 +827,7 @@ local function activate_crystal_blossom_ability(ability_data, player, character)
     local position = character.position
     local damage = ability_data.damage
     local damage_per_tick = damage / aoe_damage_modifier
-    local max_count = ability_radius / 3
+    local max_count = math.ceil(ability_radius / 3)
     local frame_count = raw_abilities_data[animation_name].frame_count
     local final_tick = game.tick + frame_count
     for i = 1, max_count do
