@@ -963,7 +963,7 @@ local function unlock_named_ability(ability_name, player)
         local text = {"", { "ability_name." .. ability_name }, " [lvl 1] unlocked!"}
         draw_upgrade_text(text, player, { x = 0, y = 3 })
         add_arena_gui_ability_info(player, player_data.abilities[ability_name])
-        global.available_abilities[ability_name] = false
+        -- global.available_abilities[ability_name] = false
         global.healing_players = global.healing_players or {}
         global.healing_players[player.index] = {
             player = player,
@@ -975,9 +975,10 @@ end
 
 ---@param player LuaPlayer
 local function unlock_random_ability(player)
-    local ability_names = {}
+    local ability_names = {} --[[@type string[]\]]
+    local player_abilities = global.player_data[player.index].abilities
     for name, available in pairs(global.available_abilities) do
-        if available then
+        if available and not player_abilities[name] then
             table.insert(ability_names, name)
         end
     end
