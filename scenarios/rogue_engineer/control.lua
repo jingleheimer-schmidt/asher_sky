@@ -881,6 +881,18 @@ local ability_upgrade_functions = {
     cooldown = upgrade_cooldown,
 }
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function upgrade_named_ability(ability_data, player)
+    local upgrade_type = ability_data.upgrade_order[ability_data.level]
+    local upgrade = ability_upgrade_functions[upgrade_type]
+    if upgrade then
+        ability_data.level = ability_data.level + 1
+        upgrade(ability_data.name, ability_data, player)
+        update_arena_gui_ability_info(player, ability_data)
+    end
+end
+
 ---@param player LuaPlayer
 local function upgrade_random_ability(player)
     local player_data = global.player_data[player.index]
@@ -898,13 +910,7 @@ local function upgrade_random_ability(player)
     end
     local ability_name = upgradeable_abilities[math.random(#upgradeable_abilities)]
     local ability_data = abilities[ability_name]
-    local upgrade_type = ability_data.upgrade_order[ability_data.level]
-    local upgrade = ability_upgrade_functions[upgrade_type]
-    if upgrade then
-        ability_data.level = ability_data.level + 1
-        upgrade(ability_name, ability_data, player)
-        update_arena_gui_ability_info(player, ability_data)
-    end
+    upgrade_named_ability(ability_data, player)
 end
 
 ---@param ability_name string
