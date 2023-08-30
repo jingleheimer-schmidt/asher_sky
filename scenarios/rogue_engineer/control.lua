@@ -1385,12 +1385,20 @@ local function enter_arena()
             global.game_state = "arena"
             global.arena_start_tick = game.tick
             for _, player in pairs(players) do
+                local following_robots = player.following_robots
+                for _, robot in pairs(following_robots) do
+                    robot.destroy()
+                end
                 local position = game.get_surface("arena").find_non_colliding_position("character", {x = 0, y = 0}, 100, 1)
                 position = position or {x = player.index * 2, y = 0}
                 player.teleport(position, "arena")
                 player.character_running_speed_modifier = 0.33
                 new_attempt_stats_reset(player.index)
                 create_arena_gui(player)
+                local abilities = global.player_data[player.index].abilities
+                for _, ability_data in pairs(abilities) do
+                    activate_ability(ability_data, player, player.character)
+                end
             end
         end
     end
