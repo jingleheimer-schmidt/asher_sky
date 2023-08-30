@@ -1240,7 +1240,7 @@ local function on_entity_died(event)
             local level = player_data.level
             upgrade_random_ability(player)
             draw_animation("shimmer", character, surface, 0, 2)
-            if level % 7 == 0 then
+            if level % 8 == 0 then
                 unlock_random_ability(player)
             end
             global.remaining_lives = global.remaining_lives or {}
