@@ -23,8 +23,8 @@ end
 local discharge_defender = table.deepcopy(data.raw["combat-robot"]["defender"])
 discharge_defender.name = "discharge-defender"
 discharge_defender.attack_parameters = table.deepcopy(data.raw["active-defense-equipment"]["discharge-defense-equipment"].attack_parameters)
-discharge_defender.attack_parameters.cooldown = 55
-discharge_defender.time_to_live = 120
+discharge_defender.attack_parameters.cooldown = 60 * 33
+discharge_defender.time_to_live = 60 * 60 * 1.125
 data:extend{discharge_defender}
 
 local no_damage_laser_beam = table.deepcopy(data.raw["beam"]["laser-beam"])
