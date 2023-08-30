@@ -980,8 +980,6 @@ end
 ---@param player LuaPlayer
 local function spawn_level_appropriate_enemy(player)
     if not (player.controller_type == defines.controllers.character) then return end
-    -- local player_data = global.player_data[player.index]
-    -- local level = player_data.level
     local arena_ticks = arena_ticks_elapsed()
     local arena_minutes = arena_ticks / 60 / 60
     local enemy_name = "small-biter"
