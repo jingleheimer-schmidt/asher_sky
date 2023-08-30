@@ -286,7 +286,7 @@ local function refill_existing_turrets(ability_data, character)
     nearby_turrets = filter_valid_entities(nearby_turrets)
     for _, turret in pairs(nearby_turrets) do
         refill_infividual_turret_ammo(turret, ability_data)
-        draw_animation(animation_name, turret, surface)
+        draw_animation(animation_name, turret, surface, 0, 2)
     end
 end
 
@@ -738,7 +738,7 @@ local function activate_gun_turret_ability(ability_data, player, character)
             ---@diagnostic enable: missing-fields
             if turret then
                 refill_infividual_turret_ammo(turret, ability_data)
-                draw_animation(animation_name, turret, surface)
+                draw_animation(animation_name, turret, surface, 0, 2)
             end
         end
     end
