@@ -85,6 +85,7 @@ local function on_init()
         gun_turret = true,
         shotgun = true,
         barrier = true,
+        purifying_light = true,
     }
     global.available_starting_abilities = {
         burst = true,
@@ -104,6 +105,7 @@ local function on_init()
         -- gun_turret = true,
         shotgun = true,
         barrier = true,
+        purifying_light = true,
     }
     global.default_abilities = {
         ability_1 = "beam_blast",
@@ -769,6 +771,26 @@ local function activate_flamethrower(player, target_position)
     ---@diagnostic enable: missing-fields
 end
 
+---@param ability_data active_ability_data
+---@param player LuaPlayer
+local function activate_acid_sponge(ability_data, player)
+    local surface = player.surface
+    local radius = ability_data.radius
+    local position = player.position
+    local acids_to_sponge = surface.find_entities_filtered{
+        position = position,
+        radius = radius,
+        force = "enemy",
+        type = {"stream", "fire", "projectile"},
+    }
+    for _, acid in pairs(acids_to_sponge) do
+        if acid.valid then
+            draw_animation("purifying_light", 1, player, acid.position)
+            acid.destroy()
+        end
+    end
+end
+
 local damage_functions = {
     burst = activate_burst_damage,
     punch = activate_punch_damage,
@@ -787,6 +809,7 @@ local damage_functions = {
     gun_turret = activate_gun_turret_deployer,
     shotgun = activate_shotgun,
     -- barrier = function() return end,
+    purifying_light = activate_acid_sponge,
 }
 
 local animation_functions = {
@@ -807,6 +830,7 @@ local animation_functions = {
     gun_turret = refill_turrets,
     -- shotgun = draw_animation,
     barrier = draw_barrier,
+    -- purifying_light = draw_animation,
 }
 
 ---@param text LocalisedString
