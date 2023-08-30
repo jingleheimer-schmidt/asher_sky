@@ -1329,9 +1329,10 @@ local function upgrade_damage_bonuses(level_threshold)
                 ["weapon-shooting-speed-"] = true,
             },
         }
+        local arena_minutes = arena_ticks_elapsed() / 60 / 60
         for modifier, technologies in pairs(technology_upgrades_by_modifier) do
             local force = game.forces.player
-            for i = 1, math.ceil(level_threshold / modifier) do
+            for i = 1, math.ceil(arena_minutes / modifier) do
                 for name, _ in pairs(technologies) do
                     local tech_name = name .. math.min(i, 7)
                     local technology = force.technologies[tech_name]
