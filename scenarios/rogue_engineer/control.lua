@@ -979,76 +979,43 @@ end
 
 ---@param player LuaPlayer
 local function spawn_level_appropriate_enemy(player)
-    if not (player.controller_type == defines.controllers.character) then return end
+    if player.controller_type ~= defines.controllers.character then return end
+
     local arena_ticks = arena_ticks_elapsed()
     local arena_minutes = arena_ticks / 60 / 60
     local enemy_name = "small-biter"
     local chance = 15 / 100
-    if arena_minutes >= 2 then
-        if math.random() < (chance - 1/100) then
-            enemy_name = "small-spitter"
+
+    local enemy_types = {
+        {name = "small-spitter", minute = 2, chance = chance - 1/100},
+        {name = "medium-biter", minute = 3, chance = chance - 2/100},
+        {name = "medium-spitter", minute = 4, chance = chance - 3/100},
+        {name = "small-worm-turret", minute = 5, chance = chance - 4/100},
+        {name = "big-biter", minute = 6, chance = chance - 5/100},
+        {name = "big-spitter", minute = 7, chance = chance - 6/100},
+        {name = "medium-worm-turret", minute = 8, chance = chance - 7/100},
+        {name = "behemoth-biter", minute = 9, chance = chance - 8/100},
+        {name = "behemoth-spitter", minute = 10, chance = chance - 9/100},
+        {name = "big-worm-turret", minute = 12, chance = chance - 10/100},
+        {name = "behemoth-worm-turret", minute = 14, chance = chance - 11/100},
+        {name = "behemoth-worm-turret", minute = 15, chance = 1},
+    }
+
+    for _, enemy_type in ipairs(enemy_types) do
+        if arena_minutes >= enemy_type.minute and math.random() < enemy_type.chance then
+            enemy_name = enemy_type.name
         end
     end
-    if arena_minutes >= 3 then
-        if math.random() < (chance - 2/100) then
-            enemy_name = "medium-biter"
-        end
-    end
-    if arena_minutes >= 4 then
-        if math.random() < (chance - 3/100) then
-            enemy_name = "medium-spitter"
-        end
-    end
-    if arena_minutes >= 5 then
-        if math.random() < (chance - 4/100) then
-            enemy_name = "small-worm-turret"
-        end
-    end
-    if arena_minutes >= 6 then
-        if math.random() < (chance - 5/100) then
-            enemy_name = "big-biter"
-        end
-    end
-    if arena_minutes >= 7 then
-        if math.random() < (chance - 6/100) then
-            enemy_name = "big-spitter"
-        end
-    end
-    if arena_minutes >= 8 then
-        if math.random() < (chance - 7/100) then
-            enemy_name = "medium-worm-turret"
-        end
-    end
-    if arena_minutes >= 9 then
-        if math.random() < (chance - 8/100) then
-            enemy_name = "behemoth-biter"
-        end
-    end
-    if arena_minutes >= 10 then
-        if math.random() < (chance - 9/100) then
-            enemy_name = "behemoth-spitter"
-        end
-    end
-    if arena_minutes >= 12 then
-        if math.random() < (chance - 10/100) then
-            enemy_name = "big-worm-turret"
-        end
-    end
-    if arena_minutes >= 14 then
-        if math.random() < (chance - 11/100) then
-            enemy_name = "behemoth-worm-turret"
-        end
-    end
-    if arena_minutes >= 15 then
-        enemy_name = "behemoth-worm-turret"
-    end
+
     local radius = math.random(25, 50)
     if arena_ticks > global.game_duration[global.lobby_options.difficulty] then
         radius = math.random(15, 150)
     end
+
     local position = get_random_position_on_circumference(player.position, radius)
-    position = player.surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
-    spawn_new_enemy(player.surface, position, enemy_name, player)
+    local surface = player.surface
+    position = surface.find_non_colliding_position(enemy_name, position, 100, 1) or position
+    spawn_new_enemy(surface, position, enemy_name, player)
 end
 
 ---@param event EventData.on_player_died
