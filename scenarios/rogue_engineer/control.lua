@@ -229,7 +229,8 @@ end
 ---@param player LuaPlayer
 ---@param position MapPosition?
 local function draw_barrier(animation_name, ability_data, player, position)
-    local angle = direction_to_angle(opposite_direction(player.character.direction))
+    -- local angle = direction_to_angle(opposite_direction(player.character.direction))
+    local angle = direction_to_angle(player.character.direction)
     position = position or get_position_on_circumference(player.position, ability_data.radius, angle)
     local modified_ability_data = {
         radius = 2.5,
