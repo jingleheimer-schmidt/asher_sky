@@ -126,18 +126,18 @@ local function on_init()
 end
 
 ---@param animation_name string
----@param ability_data active_ability_data
+---@param ability_radius number
 ---@param player LuaPlayer
 ---@param position MapPosition?
 ---@param orientation float? -- 0 to 1, 0 is north, 0.25 is east, 0.5 is south, 0.75 is west
-local function draw_animation(animation_name, ability_data, player, position, orientation)
+local function draw_animation(animation_name, ability_radius, player, position, orientation)
     if not animation_name then return end
     local raw_ability_data = raw_abilities_data[animation_name]
     local time_to_live = raw_ability_data.frame_count --[[@as uint]]
     local character = player.character
     local target = raw_ability_data.target == "character" and character or position or player.position
     local speed = 1 --defined in data.lua
-    local scale = ability_data.radius / 2
+    local scale = ability_radius / 2
     orientation = orientation or player.character.orientation
     rendering.draw_animation{
         animation = animation_name,
@@ -151,12 +151,10 @@ local function draw_animation(animation_name, ability_data, player, position, or
     }
 end
 
----@param animation_name string
 ---@param ability_data active_ability_data
 ---@param player LuaPlayer
----@param position MapPosition?
-local function draw_pavement(animation_name, ability_data, player, position)
-    position = position or player.position
+local function activate_pavement_deployer(ability_data, player)
+    local position = player.position
     local surface = player.surface
     local tile = surface.get_tile(position.x, position.y)
     local tile_name = tile.name
@@ -227,21 +225,18 @@ local function create_flamethrower_target(ability_name, position, player, final_
 end
 
 ---@param animation_name string
----@param ability_data active_ability_data
+---@param ability_radius number
 ---@param player LuaPlayer
 ---@param position MapPosition?
-local function draw_barrier(animation_name, ability_data, player, position)
+local function draw_barrier(animation_name, ability_radius, player, position)
     -- local angle = direction_to_angle(opposite_direction(player.character.direction))
     local angle = direction_to_angle(player.character.direction)
-    position = position or get_position_on_circumference(player.position, ability_data.radius, angle)
-    local modified_ability_data = {
-        radius = 2.5,
-    }
-    local count =  math.floor(ability_data.radius / 5)
+    position = position or get_position_on_circumference(player.position, ability_radius, angle)
+    local count =  math.floor(ability_radius / 5)
     for i = -count, count do
         local offset_angle = angle + degrees_to_radians(i * (73 / count))
-        local offset_position = get_position_on_circumference(position, ability_data.radius, offset_angle)
-        draw_animation(animation_name, modified_ability_data, player, offset_position)
+        local offset_position = get_position_on_circumference(position, ability_radius, offset_angle)
+        draw_animation(animation_name, 2.5, player, offset_position)
         local final_tick = game.tick + math.ceil(raw_abilities_data.barrier.frame_count * 2/3)
         create_flamethrower_target(animation_name, offset_position, player, final_tick)
     end
@@ -279,7 +274,7 @@ local function draw_target_highlight(player, target)
         radius = radius,
     }
     local orientation = 0
-    draw_animation("fortify", ability_data, player, position, orientation)
+    draw_animation("fortify", ability_data.radius, player, position, orientation)
 end
 
 ---@param entities LuaEntity[]
@@ -294,13 +289,13 @@ local function filter_valid_entities(entities)
 end
 
 ---@param animation_name string
----@param ability_data active_ability_data
+---@param ability_radius number
 ---@param player LuaPlayer
 ---@param position MapPosition?
-local function refill_turrets(animation_name, ability_data, player, position)
+local function refill_turrets(animation_name, ability_radius, player, position)
     local nearby_turrets = player.surface.find_entities_filtered{
         position = position or player.position,
-        radius = ability_data.radius,
+        radius = ability_radius,
         force = player.force,
         type = "ammo-turret",
     }
@@ -422,7 +417,7 @@ end
 ---@param player LuaPlayer
 local function activate_slash_damage(ability_data, player)
     local radius = ability_data.radius
-    local damage = ability_data.damage
+    local damage = ability_data.damage --[[@as float]]
     local position = player.position
     local surface = player.surface
     damage_enemies_in_radius(radius, damage, position, surface, player)
@@ -756,6 +751,8 @@ local function activate_shotgun(ability_data, player)
     end
 end
 
+---@param player LuaPlayer
+---@param target_position MapPosition
 local function activate_flamethrower(player, target_position)
     local surface = player.surface
     ---@diagnostic disable: missing-fields
@@ -797,7 +794,7 @@ local damage_functions = {
     cure = activate_cure_damage,
     slash = activate_slash_damage,
     rocket_launcher = activate_rocket_launcher,
-    -- pavement = function() return end,
+    pavement = activate_pavement_deployer,
     beam_blast = activate_beam_blast,
     discharge_defender = activate_discharge_defender,
     destroyer = activate_destroyer_capsule,
@@ -818,7 +815,7 @@ local animation_functions = {
     cure = draw_animation,
     slash = draw_animation,
     -- rocket_launcher = draw_animation,
-    pavement = draw_pavement,
+    -- pavement = draw_pavement,
     -- beam_blast = draw_animation,
     -- discharge_defender = draw_animation,
     -- destroyer = draw_animation,
@@ -889,7 +886,7 @@ end
 local function draw_animations(ability_name, ability_data, player)
     local animate = animation_functions and animation_functions[ability_name]
     if animate then
-        animate(ability_name, ability_data, player)
+        animate(ability_name, ability_data.radius, player)
     end
 end
 
@@ -1432,8 +1429,7 @@ local function on_entity_died(event)
             player_data.level = player_data.level + 1
             local level = player_data.level
             upgrade_random_ability(player)
-            local shimmer_data = { radius = 2, level = 1, cooldown = 0, damage = 0 }
-            draw_animation("shimmer", shimmer_data, player)
+            draw_animation("shimmer", 2, player)
             if level % 7 == 0 then
                 unlock_random_ability(player)
             end
