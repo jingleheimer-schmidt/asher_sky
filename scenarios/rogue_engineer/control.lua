@@ -1299,6 +1299,27 @@ local function create_arena_surface()
     end
 end
 
+local function replenish_arena_enemies()
+    local arena_surface = game.surfaces.arena
+    local enemies = {
+        "small-biter",
+        "small-spitter",
+        "medium-biter",
+        "medium-spitter",
+        "big-biter",
+        "big-spitter",
+        "behemoth-biter",
+        "behemoth-spitter",
+        "small-worm-turret",
+        "medium-worm-turret",
+        "big-worm-turret",
+        "behemoth-worm-turret",
+        "biter-spawner",
+        "spitter-spawner",
+    }
+    arena_surface.regenerate_entity(enemies)
+end
+
 local function destroy_arena_enemies()
     local enemies = game.surfaces.arena.find_entities_filtered{
         force = "enemy",
@@ -1334,6 +1355,7 @@ local function enter_arena()
         if actually_ready then
             create_arena_surface()
             destroy_arena_enemies()
+            replenish_arena_enemies()
             global.game_state = "arena"
             global.arena_start_tick = game.tick
             for _, player in pairs(players) do
