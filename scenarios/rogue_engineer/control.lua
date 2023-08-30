@@ -966,8 +966,8 @@ local function unlock_named_ability(ability_name, player)
         global.healing_players = global.healing_players or {}
         global.healing_players[player.index] = {
             player = player,
-            damage = player.character.prototype.max_health / 15,
-            final_tick = game.tick + 60 * 15,
+            damage = - player.character.prototype.max_health / (60 * 15),
+            final_tick = game.tick + (60 * 15),
         }
     end
 end
