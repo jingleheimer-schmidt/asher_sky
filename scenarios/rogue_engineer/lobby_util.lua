@@ -238,7 +238,7 @@ local function create_lobby_text()
                 target = { x = -7, y = 7 },
                 color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
-                scale = 3,
+                scale = 2.75,
                 draw_on_ground = true,
             },
             ability_2 = rendering.draw_text {
@@ -247,7 +247,7 @@ local function create_lobby_text()
                 target = { x = 0, y = 7 },
                 color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
-                scale = 3,
+                scale = 2.75,
                 draw_on_ground = true,
             },
             ability_3 = rendering.draw_text {
@@ -256,7 +256,7 @@ local function create_lobby_text()
                 target = { x = 7, y = 7 },
                 color = { r = 1, g = 1, b = 1 },
                 alignment = "center",
-                scale = 3,
+                scale = 2.75,
                 draw_on_ground = true,
             },
         },
