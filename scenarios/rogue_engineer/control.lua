@@ -266,6 +266,20 @@ local function draw_highlight_line(player, target)
     }
 end
 
+---@param player LuaPlayer
+---@param target MapPosition|LuaEntity
+local function draw_target_highlight(player, target)
+    local name = target.name
+    local type = target.type
+    local position = { x = target.position.x, y = target.position.y - 1 }
+    local radius = type == "combat-robot" and 0.75 or 2.25
+    local ability_data = {
+        radius = radius,
+    }
+    local orientation = 0
+    draw_animation("fortify", ability_data, player, position, orientation)
+end
+
 ---@param entities LuaEntity[]
 ---@return LuaEntity[]
 local function filter_valid_entities(entities)
