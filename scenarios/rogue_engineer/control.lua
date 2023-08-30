@@ -905,7 +905,7 @@ local function upgrade_random_ability(player)
         end
     end
     if #upgradeable_abilities == 0 then
-        game.print("no more abilities to upgrade!")
+        draw_announcement_text({ "upgrade_locale.all_abilities_max_level" }, player)
         return
     end
     local ability_name = upgradeable_abilities[math.random(#upgradeable_abilities)]
