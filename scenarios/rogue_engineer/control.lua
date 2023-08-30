@@ -70,7 +70,7 @@ local function on_init()
     global.available_abilities = {
         burst = true,
         punch = true,
-        cure = true,
+        -- cure = true,
         slash = true,
         rocket_launcher = true,
         pavement = true,
@@ -953,6 +953,12 @@ local function unlock_named_ability(ability_name, player)
         draw_upgrade_text(text, player, { x = 0, y = 3 })
         add_arena_gui_ability_info(player, player_data.abilities[ability_name])
         global.available_abilities[ability_name] = false
+        global.healing_players = global.healing_players or {}
+        global.healing_players[player.index] = {
+            player = player,
+            damage = -0.33,
+            final_tick = game.tick + 60 * 15,
+        }
     end
 end
 
