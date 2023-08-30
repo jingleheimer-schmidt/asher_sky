@@ -897,7 +897,7 @@ end
 local function upgrade_random_ability(player)
     local player_data = global.player_data[player.index]
     local abilities = player_data.abilities
-    local upgradeable_abilities = {}
+    local upgradeable_abilities = {} --[[@type string[]\]]
     for _, ability in pairs(abilities) do
         local level = ability.level
         if ability.upgrade_order[level] then
