@@ -1407,6 +1407,26 @@ local function on_entity_color_changed(event)
     end
 end
 
+---@param event EventData.on_player_joined_game
+local function on_player_joined_game(event)
+    local game_state = global.game_state
+    local player_index = event.player_index
+    local player = game.get_player(player_index)
+    if not player then return end
+    local player_data = global.player_data[player_index]
+    if not player_data then
+        initialize_player_data(player)
+    end
+    if game_state == "lobby" then
+        player.teleport({x = -20, y = 0}, "lobby")
+    elseif game_state == "arena" then
+        local character = valid_player_character(player)
+        player.set_controller{type = defines.controllers.spectator}
+        if character then character.destroy() end
+        player.teleport({x = 0, y = 0}, "arena")
+    end
+end
+
 ---@param event EventData.on_tick
 local function on_tick(event)
 
@@ -1699,3 +1719,4 @@ script.on_event(defines.events.on_player_respawned, on_player_respawned)
 script.on_event(defines.events.on_player_died, on_player_died)
 script.on_event(defines.events.on_entity_damaged, on_entity_damaged)
 script.on_event(defines.events.on_entity_color_changed, on_entity_color_changed)
+script.on_event(defines.events.on_player_joined_game, on_player_joined_game)
