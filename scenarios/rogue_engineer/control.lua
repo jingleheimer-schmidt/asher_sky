@@ -1479,11 +1479,9 @@ local function on_tick(event)
         local lobby_surface = game.surfaces.lobby
         initialize_lobby_text_and_tiles()
         for _, player in pairs(connected_players) do
-            local position = player.position
-            if not (player.surface_index == lobby_surface.index) then
-                player.teleport(position, lobby_surface)
+            if player.surface_index ~= lobby_surface.index then
+                player.teleport({ x = -20, y = 0 }, lobby_surface)
             end
-            if not player.character then return end
             if player.character_running_speed_modifier < 0.4 then
                 player.character_running_speed_modifier = 0.4
             end
@@ -1491,49 +1489,53 @@ local function on_tick(event)
             if not global.player_data[player.index] then
                 initialize_player_data(player)
             end
-            local x = position.x
-            local y = position.y
-            if y < -6 and y > -10 then
-                if x < -4 and x > -10 then
-                    if not (lobby_options.difficulty == "easy") then
-                        update_arena_difficulty("easy", player)
+            local character = valid_player_character(player)
+            if character then
+                local position = character.position
+                local x = position.x
+                local y = position.y
+                if y < -6 and y > -10 then
+                    if x < -4 and x > -10 then
+                        if not (lobby_options.difficulty == "easy") then
+                            update_arena_difficulty("easy", player)
+                        end
+                    elseif x < 3 and x > -3 then
+                        if not (lobby_options.difficulty == "normal") then
+                            update_arena_difficulty("normal", player)
+                        end
+                    elseif x < 10 and x > 4 then
+                        if not (lobby_options.difficulty == "hard") then
+                            update_arena_difficulty("hard", player)
+                        end
+                    else
+                        reset_health(player)
                     end
-                elseif x < 3 and x > -3 then
-                    if not (lobby_options.difficulty == "normal") then
-                        update_arena_difficulty("normal", player)
+                elseif y < 10 and y > 6 then
+                    if x < -4 and x > -10 then
+                        if not (lobby_options.starting_ability == "ability_1") then
+                            update_lobby_starting_ability("ability_1", player)
+                        end
+                    elseif x < 3 and x > -3 then
+                        if not (lobby_options.starting_ability == "ability_2") then
+                            update_lobby_starting_ability("ability_2", player)
+                        end
+                    elseif x < 10 and x > 4 then
+                        if not (lobby_options.starting_ability == "ability_3") then
+                            update_lobby_starting_ability("ability_3", player)
+                        end
+                    else
+                        reset_health(player)
                     end
-                elseif x < 10 and x > 4 then
-                    if not (lobby_options.difficulty == "hard") then
-                        update_arena_difficulty("hard", player)
+                elseif y < 3 and y > -3 then
+                    if x < 24 and x > 18 then
+                        initialize_player_data(player)
+                        enter_arena()
+                    else
+                        reset_health(player)
                     end
                 else
                     reset_health(player)
                 end
-            elseif y < 10 and y > 6 then
-                if x < -4 and x > -10 then
-                    if not (lobby_options.starting_ability == "ability_1") then
-                        update_lobby_starting_ability("ability_1", player)
-                    end
-                elseif x < 3 and x > -3 then
-                    if not (lobby_options.starting_ability == "ability_2") then
-                        update_lobby_starting_ability("ability_2", player)
-                    end
-                elseif x < 10 and x > 4 then
-                    if not (lobby_options.starting_ability == "ability_3") then
-                        update_lobby_starting_ability("ability_3", player)
-                    end
-                else
-                    reset_health(player)
-                end
-            elseif y < 3 and y > -3 then
-                if x < 24 and x > 18 then
-                    initialize_player_data(player)
-                    enter_arena()
-                else
-                    reset_health(player)
-                end
-            else
-                reset_health(player)
             end
         end
         initialize_statistics()
