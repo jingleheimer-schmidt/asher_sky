@@ -1440,7 +1440,6 @@ local function on_tick(event)
 
         local lobby_surface = game.surfaces.lobby
         initialize_lobby()
-        initialize_statistics()
         for _, player in pairs(connected_players) do
             local position = player.position
             if not (player.surface_index == lobby_surface.index) then
@@ -1499,6 +1498,7 @@ local function on_tick(event)
                 reset_health(player)
             end
         end
+        initialize_statistics()
         if game.tick % (60 * 25) == 0 then
             local enemies = lobby_surface.find_entities_filtered { type = "unit", force = "enemy", position = { x = 0, y = 0 }, radius = 100 }
             if #enemies == 0 then
