@@ -1578,10 +1578,11 @@ local function on_tick(event)
     -- lobby and arena --
 
     for _, player in pairs(connected_players) do
-        global.player_data[player.index] = global.player_data[player.index] or initialize_player_data(player)
-        local player_data = global.player_data[player.index]
+        local player_index = player.index
+        global.player_data[player_index] = global.player_data[player_index] or initialize_player_data(player)
+        local player_data = global.player_data[player_index]
         for ability_name, ability_data in pairs(player_data.abilities) do
-            if (((event.tick + (player.index * 25)) % ability_data.cooldown) == 0) then
+            if (((event.tick + (player_index * 25)) % ability_data.cooldown) == 0) then
                 local character = valid_player_character(player)
                 if character then
                     activate_ability(ability_data, player, character)
