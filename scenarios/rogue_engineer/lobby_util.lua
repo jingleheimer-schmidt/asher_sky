@@ -354,7 +354,9 @@ local function update_lobby_starting_ability(ability_number, player)
         character.health = player.character.prototype.max_health
         global.lobby_options.starting_ability = ability_number
         local ability_name = global.default_abilities[ability_number]
+        for _, connected_player in pairs(game.connected_players) do
             update_player_starting_ability(ability_name, connected_player)
+        end
         update_lobby_tiles()
     else
         character.health = character.health - character.prototype.max_health / 90
