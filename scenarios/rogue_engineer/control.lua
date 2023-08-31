@@ -1277,7 +1277,7 @@ local function on_player_respawned(event)
     local player_index = event.player_index
     local player = game.get_player(player_index)
     if not player then return end
-    player.character_running_speed_modifier = 0.33
+    player.character_running_speed_modifier = 0.4
     global.remaining_lives = global.remaining_lives or {}
     global.remaining_lives[player_index] = global.remaining_lives[player_index] or 0
     if global.remaining_lives[player_index] < 1 then
@@ -1391,7 +1391,7 @@ local function enter_arena()
                 local position = game.get_surface("arena").find_non_colliding_position("character", {x = 0, y = 0}, 100, 1)
                 position = position or {x = player.index * 2, y = 0}
                 player.teleport(position, "arena")
-                player.character_running_speed_modifier = 0.33
+                player.character_running_speed_modifier = 0.4
                 new_attempt_stats_reset(player.index)
                 create_arena_gui(player)
                 local abilities = global.player_data[player.index].abilities
@@ -1451,8 +1451,8 @@ local function on_tick(event)
                 player.teleport(position, lobby_surface)
             end
             if not player.character then return end
-            if player.character_running_speed_modifier < 0.33 then
-                player.character_running_speed_modifier = 0.33
+            if player.character_running_speed_modifier < 0.4 then
+                player.character_running_speed_modifier = 0.4
             end
             local lobby_options = global.lobby_options
             if not global.player_data[player.index] then
