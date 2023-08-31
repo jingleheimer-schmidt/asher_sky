@@ -1702,7 +1702,7 @@ local function on_tick(event)
             if not (player.controller_type == defines.controllers.spectator) then
                 all_players_dead = false
             end
-            if not (player.controller_type == defines.controllers.character) then
+            if player.controller_type == defines.controllers.ghost then
                 local nearest_enemy = find_nearest_enemy(player.position, 125, player.force, player.surface)
                 if nearest_enemy then
                     ---@diagnostic disable: missing-fields
