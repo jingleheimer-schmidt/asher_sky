@@ -1292,6 +1292,7 @@ local function reset_health(player)
     character.health = character.prototype.max_health
 end
 
+---@param player LuaPlayer
 local function initialize_player_data(player)
     local starting_ability = global.lobby_options.starting_ability
     local ability_name = global.default_abilities[starting_ability]
