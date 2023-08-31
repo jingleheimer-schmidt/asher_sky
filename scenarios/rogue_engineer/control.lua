@@ -1290,11 +1290,17 @@ local function on_player_respawned(event)
     global.remaining_lives[player_index] = global.remaining_lives[player_index] - 1
 end
 
----@param player LuaPlayer
-local function reset_health(player)
-    local character = player.character
-    if not character then return end
+---@param character LuaEntity
+local function reset_character_health(character)
     character.health = character.prototype.max_health
+end
+
+---@param player LuaPlayer
+local function reset_player_health(player)
+    local character = valid_player_character(player)
+    if character then
+        reset_character_health(character)
+    end
 end
 
 ---@param player LuaPlayer
@@ -1508,7 +1514,7 @@ local function on_tick(event)
                             update_arena_difficulty("hard", player)
                         end
                     else
-                        reset_health(player)
+                        reset_character_health(character)
                     end
                 elseif y < 10 and y > 6 then
                     if x < -4 and x > -10 then
@@ -1524,17 +1530,17 @@ local function on_tick(event)
                             update_lobby_starting_ability("ability_3", player)
                         end
                     else
-                        reset_health(player)
+                        reset_character_health(character)
                     end
                 elseif y < 3 and y > -3 then
                     if x < 24 and x > 18 then
                         initialize_player_data(player)
                         enter_arena()
                     else
-                        reset_health(player)
+                        reset_character_health(character)
                     end
                 else
-                    reset_health(player)
+                    reset_character_health(character)
                 end
             end
         end
