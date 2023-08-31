@@ -1470,9 +1470,11 @@ local function on_tick(event)
     if not script.level and script.level.mod_name == "asher_sky" then return end
     global.game_state = global.game_state or "lobby"
     local connected_players = game.connected_players
+    local game_tick = game.tick
+    local game_state = global.game_state
 
     -- lobby mode --
-    if global.game_state == "lobby" then
+    if game_state == "lobby" then
 
         local lobby_surface = game.surfaces.lobby
         initialize_lobby()
@@ -1610,7 +1612,7 @@ local function on_tick(event)
 
     -- arena mode --
 
-    if global.game_state == "arena" then
+    if game_state == "arena" then
         local difficulties = {
             easy = 40,
             normal = 25,
@@ -1622,18 +1624,18 @@ local function on_tick(event)
                 local player_index = player.index
                 local arena_gui = player.gui.screen.arena_gui
                 local player_stats = global.statistics[player_index]
-                if game.tick % 30 == 0 then
+                if game_tick % 30 == 0 then
                     local kpm = calculate_kills_per_minute(player_index)
                     update_kpm_statistics(player_index, kpm)
                     update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
                     update_arena_gui_time_remaining(player, arena_gui, player_stats)
                     update_arena_gui_lives_remaining(player, arena_gui, player_stats)
                 end
-                if game.tick % 5 == 0 then
+                if game_tick % 5 == 0 then
                     update_arena_gui_kills(player, arena_gui, player_stats)
                 end
                 local balance = difficulties[global.lobby_options.difficulty]
-                if game.tick % balance == 0 then
+                if game_tick % balance == 0 then
                     spawn_level_appropriate_enemy(player)
                 end
 
