@@ -102,13 +102,13 @@ local function update_statistics()
     end
 end
 
-local function initialize_statistics()
+local function initialize_statistics_rendering_ids()
 
     local render_ids = global.statistics_render_ids
-    local lobby_surface = game.surfaces.lobby
-    local stat_title_x = -40
-    local stat_title_y = -12
     if not render_ids then
+        local lobby_surface = game.surfaces.lobby
+        local stat_title_x = -40
+        local stat_title_y = -12
         global.statistics_render_ids = {
             title = rendering.draw_text{
                 text = { "statistics_locale.statistics" },
@@ -669,7 +669,7 @@ end
 
 return {
     update_statistics = update_statistics,
-    initialize_statistics = initialize_statistics,
+    initialize_statistics = initialize_statistics_rendering_ids,
     new_attempt_stats_reset = new_attempt_stats_reset,
     initialize_player_statistics = initialize_player_statistics,
     calculate_kills_per_minute = calculate_kills_per_minute,
