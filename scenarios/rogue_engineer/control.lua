@@ -1419,10 +1419,10 @@ local function on_player_joined_game(event)
     local player_index = event.player_index
     local player = game.get_player(player_index)
     if not player then return end
-    local player_data = global.player_data[player_index]
-    if not player_data then
-        initialize_player_data(player)
-    end
+    -- local player_data = global.player_data[player_index]
+    -- if not player_data then
+    --     initialize_player_data(player)
+    -- end
     if game_state == "lobby" then
         player.teleport({x = -20, y = 0}, "lobby")
     elseif game_state == "arena" then
