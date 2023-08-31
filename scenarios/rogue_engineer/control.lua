@@ -533,7 +533,7 @@ local function activate_discharge_defender_ability(ability_data, player, charact
         player = player,
     }
     ---@diagnostic enable: missing-fields
-    if discharge_defender then
+    if discharge_defender and discharge_defender.valid then
         draw_animation(animation_name, discharge_defender, surface)
     end
 end
@@ -561,7 +561,7 @@ local function activate_destroyer_capsule_ability(ability_data, player, characte
         player = player,
     }
     ---@diagnostic enable: missing-fields
-    if destroyer then
+    if destroyer and destroyer.valid then
         draw_animation(animation_name, destroyer, surface)
     end
 end
@@ -592,7 +592,7 @@ local function activate_distractor_capsule_ability(ability_data, player, charact
             player = player,
         }
         ---@diagnostic enable: missing-fields
-        if distractor then
+        if distractor and distractor.valid then
             draw_animation(animation_name, distractor, surface)
         end
     end
@@ -620,7 +620,7 @@ local function activate_defender_capsule_ability(ability_data, player, character
         player = player,
     }
     ---@diagnostic enable: missing-fields
-    if defender then
+    if defender and defender.valid then
         draw_animation(animation_name, defender, surface)
     end
 end
@@ -648,7 +648,7 @@ local function activate_landmine_ability(ability_data, player, character)
         player = player,
     }
     ---@diagnostic enable: missing-fields
-    if landmine then
+    if landmine and landmine.valid then
         draw_animation(animation_name, landmine, surface)
     end
 end
@@ -736,7 +736,7 @@ local function activate_gun_turret_ability(ability_data, player, character)
                 player = player,
             }
             ---@diagnostic enable: missing-fields
-            if turret then
+            if turret and turret.valid then
                 refill_infividual_turret_ammo(turret, ability_data)
                 draw_animation(animation_name, turret, surface, 0, 2)
             end
