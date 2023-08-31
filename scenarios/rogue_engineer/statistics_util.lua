@@ -615,9 +615,9 @@ local function new_attempt_stats_reset(player_index)
     end
 end
 
-local function initialize_player_statistics(player_index)
+local function reset_player_statistics_data(player_index)
     global.statistics = global.statistics or {} --[[@type table<uint, player_statistics>]]
-    global.statistics[player_index] = global.statistics[player_index] or {
+    global.statistics[player_index] = {
         total = {
             kills = 0,
             deaths = 0,
@@ -671,7 +671,7 @@ return {
     update_statistics = update_statistics,
     initialize_statistics = initialize_statistics_rendering_ids,
     new_attempt_stats_reset = new_attempt_stats_reset,
-    initialize_player_statistics = initialize_player_statistics,
+    reset_player_statistics_data = reset_player_statistics_data,
     calculate_kills_per_minute = calculate_kills_per_minute,
     update_kpm_statistics = update_kpm_statistics,
 }

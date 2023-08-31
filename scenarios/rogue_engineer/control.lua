@@ -32,7 +32,7 @@ local statistics_util = require("statistics_util")
 local update_statistics = statistics_util.update_statistics
 local initialize_statistics = statistics_util.initialize_statistics
 local new_attempt_stats_reset = statistics_util.new_attempt_stats_reset
-local initialize_player_statistics = statistics_util.initialize_player_statistics
+local reset_player_statistics_data = statistics_util.reset_player_statistics_data
 local calculate_kills_per_minute = statistics_util.calculate_kills_per_minute
 local update_kpm_statistics = statistics_util.update_kpm_statistics
 
