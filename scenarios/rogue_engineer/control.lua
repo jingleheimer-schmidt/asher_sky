@@ -1428,6 +1428,22 @@ local function update_statistics_colors()
     end
 end
 
+local function respawn_lobby_practice_enemy()
+    local lobby_surface = game.surfaces.lobby
+    local enemies = lobby_surface.find_entities_filtered { type = "unit", force = "enemy", position = { x = 0, y = 0 }, radius = 100 }
+    if #enemies == 0 then
+        local positions = {
+            {x = 12, y = 12},
+            {x = -12, y = 12},
+            {x = 12, y = -12},
+            {x = -12, y = -12},
+        }
+        local index = math.random(1, #positions)
+        local position = positions[index]
+        spawn_new_enemy(lobby_surface, position, "small-biter")
+    end
+end
+
 ---@param event EventData.on_player_joined_game
 local function on_player_joined_game(event)
     local game_state = global.game_state
@@ -1519,19 +1535,8 @@ local function on_tick(event)
             end
         end
         initialize_statistics()
-        if game.tick % (60 * 25) == 0 then
-            local enemies = lobby_surface.find_entities_filtered { type = "unit", force = "enemy", position = { x = 0, y = 0 }, radius = 100 }
-            if #enemies == 0 then
-                local positions = {
-                    {x = 12, y = 12},
-                    {x = -12, y = 12},
-                    {x = 12, y = -12},
-                    {x = -12, y = -12},
-                }
-                local index = math.random(1, #positions)
-                local position = positions[index]
-                spawn_new_enemy(lobby_surface, position, "small-biter")
-            end
+        if game_tick % (60 * 25) == 0 then
+            respawn_lobby_practice_enemy()
         end
         if game_tick % (60 * 2) == 0 then
             update_statistics_colors()
