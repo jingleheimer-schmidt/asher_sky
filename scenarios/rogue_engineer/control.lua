@@ -1363,9 +1363,14 @@ local function enter_arena()
     local all_players_ready = true
     local players = game.connected_players
     for _, player in pairs(players) do
-        local x = player.position.x
-        local y = player.position.y
-        if not ((y < 3 and y > -3) and (x < 24 and x > 18)) then
+        local character = valid_player_character(player)
+        if character then
+            local x = character.position.x
+            local y = character.position.y
+            if not ((y < 3 and y > -3) and (x < 24 and x > 18)) then
+                all_players_ready = false
+            end
+        else
             all_players_ready = false
         end
     end
