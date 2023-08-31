@@ -1372,14 +1372,15 @@ local function enter_arena()
     if all_players_ready then
         local actually_ready = false
         for _, player in pairs(players) do
-            local character = player.character
-            if not character then return end
-            local ratio = character.get_health_ratio()
-            if ratio < 0.01 then
-                character.health = player.character.prototype.max_health
-                actually_ready = true
-            else
-                character.health = character.health - character.prototype.max_health / 180
+            local character = valid_player_character(player)
+            if character then
+                local ratio = character.get_health_ratio()
+                if ratio < 0.01 then
+                    character.health = player.character.prototype.max_health
+                    actually_ready = true
+                else
+                    character.health = character.health - character.prototype.max_health / 180
+                end
             end
         end
         if actually_ready then
