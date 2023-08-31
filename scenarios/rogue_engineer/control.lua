@@ -24,7 +24,7 @@ local create_lobby_text = lobby_util.create_lobby_text
 local update_lobby_text = lobby_util.update_lobby_text
 local initialize_lobby = lobby_util.initialize_lobby
 local set_ability = lobby_util.set_ability
-local set_difficulty = lobby_util.set_difficulty
+local update_arena_difficulty = lobby_util.update_arena_difficulty
 local set_starting_ability = lobby_util.set_starting_ability
 local randomize_starting_abilities = lobby_util.randomize_starting_abilities
 
@@ -1496,15 +1496,15 @@ local function on_tick(event)
             if y < -6 and y > -10 then
                 if x < -4 and x > -10 then
                     if not (lobby_options.difficulty == "easy") then
-                        set_difficulty("easy", player)
+                        update_arena_difficulty("easy", player)
                     end
                 elseif x < 3 and x > -3 then
                     if not (lobby_options.difficulty == "normal") then
-                        set_difficulty("normal", player)
+                        update_arena_difficulty("normal", player)
                     end
                 elseif x < 10 and x > 4 then
                     if not (lobby_options.difficulty == "hard") then
-                        set_difficulty("hard", player)
+                        update_arena_difficulty("hard", player)
                     end
                 else
                     reset_health(player)

@@ -363,7 +363,7 @@ end
 
 ---@param difficulty string
 ---@param player LuaPlayer
-local function set_difficulty(difficulty, player)
+local function update_arena_difficulty(difficulty, player)
     local character = player.character
     if not character then return end
     local ratio = character.get_health_ratio()
@@ -399,6 +399,6 @@ return {
     update_lobby_text = update_lobby_text,
     set_ability = set_ability,
     set_starting_ability = set_starting_ability,
-    set_difficulty = set_difficulty,
+    update_arena_difficulty = update_arena_difficulty,
     randomize_starting_abilities = randomize_starting_abilities,
 }
