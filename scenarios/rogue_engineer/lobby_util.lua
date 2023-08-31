@@ -335,13 +335,13 @@ local function set_ability(ability_name, player)
             }
         },
     }
-    global.available_abilities = global.available_abilities or {}
-    global.available_abilities[ability_name] = false
-    for name, _ in pairs(global.available_abilities) do
-        if name ~= ability_name then
-            global.available_abilities[name] = true
-        end
-    end
+    -- global.available_abilities = global.available_abilities or {}
+    -- global.available_abilities[ability_name] = false
+    -- for name, _ in pairs(global.available_abilities) do
+    --     if name ~= ability_name then
+    --         global.available_abilities[name] = true
+    --     end
+    -- end
 end
 
 ---@param ability_number string
