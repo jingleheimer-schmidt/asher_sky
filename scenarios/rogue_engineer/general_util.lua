@@ -46,7 +46,7 @@ local function random_table_value(table_param)
 end
 
 ---@param table_param table
----@return unknown
+---@return any
 local function random_table_key(table_param)
     local keys = {}
     for key, _ in pairs(table_param) do
