@@ -13,8 +13,9 @@ local raw_abilities_data = constants.ability_data
 local general_util = require("general_util")
 local random_table_key = general_util.random_table_key
 
-local function reset_lobby_tiles()
-    local surface = game.surfaces.lobby
+---@param lobby_surface LuaSurface?
+local function reset_lobby_tiles(lobby_surface)
+    lobby_surface = lobby_surface or game.surfaces.lobby
     local tiles = {}
     for difficulty, offset in pairs(difficulty_offsets) do
         table.insert(tiles, {
@@ -89,12 +90,13 @@ local function reset_lobby_tiles()
             end
         end
     end
-    surface.set_tiles(tiles)
+    lobby_surface.set_tiles(tiles)
 end
 
-local function update_lobby_tiles()
+---@param lobby_surface LuaSurface?
+local function update_lobby_tiles(lobby_surface)
+    lobby_surface = game.surfaces.lobby
     local difficulty = global.lobby_options.difficulty
-    local surface = game.surfaces.lobby
     local starting_ability = global.lobby_options.starting_ability
     local tiles = {
         {
@@ -176,12 +178,13 @@ local function update_lobby_tiles()
             })
         end
     end
-    reset_lobby_tiles()
-    surface.set_tiles(tiles)
+    reset_lobby_tiles(lobby_surface)
+    lobby_surface.set_tiles(tiles)
 end
 
-local function create_lobby_text()
-    local lobby_surface = game.surfaces.lobby
+---@param lobby_surface LuaSurface?
+local function create_lobby_text(lobby_surface)
+    lobby_surface = lobby_surface or game.surfaces.lobby
     global.lobby_text = {
         start_level = {
             top = rendering.draw_text {
