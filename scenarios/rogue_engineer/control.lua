@@ -1440,6 +1440,7 @@ local function on_tick(event)
 
         local lobby_surface = game.surfaces.lobby
         initialize_lobby()
+        initialize_statistics()
         for _, player in pairs(connected_players) do
             local position = player.position
             if not (player.surface_index == lobby_surface.index) then
@@ -1498,7 +1499,6 @@ local function on_tick(event)
                 reset_health(player)
             end
         end
-        initialize_statistics()
         if game.tick % (60 * 25) == 0 then
             local enemies = lobby_surface.find_entities_filtered { type = "unit", force = "enemy", position = { x = 0, y = 0 }, radius = 100 }
             if #enemies == 0 then
@@ -1624,24 +1624,24 @@ local function on_tick(event)
                 if game.tick % balance == 0 then
                     spawn_level_appropriate_enemy(player)
                 end
+
+                local position = player.position
+                global.previous_positions = global.previous_positions or {}
+                global.previous_positions[player_index] = global.previous_positions[player_index] or position
+                local previous_position = global.previous_positions[player_index]
+                if position.x == previous_position.x and position.y == previous_position.y then
+                    local chance = 75/100
+                    if arena_ticks_elapsed() <= 60 * 60 * 0.75 then
+                        chance = 15/100
+                    end
+                    if math.random() < chance then
+                        spawn_level_appropriate_enemy(player)
+                    end
+                end
+                global.previous_positions[player_index] = position
             end
         end
-        for _, player in pairs(connected_players) do
-            local position = player.position
-            global.previous_positions = global.previous_positions or {}
-            global.previous_positions[player.index] = global.previous_positions[player.index] or position
-            local previous_position = global.previous_positions[player.index]
-            if position.x == previous_position.x and position.y == previous_position.y then
-                local chance = 75/100
-                if arena_ticks_elapsed() <= 60 * 60 * 0.75 then
-                    chance = 15/100
-                end
-                if math.random() < chance then
-                    spawn_level_appropriate_enemy(player)
-                end
-            end
-            global.previous_positions[player.index] = position
-        end
+
         local difficulty = global.lobby_options.difficulty
         local max_game_duration = global.game_duration[difficulty]
         local current_arena_duration = arena_ticks_elapsed()
