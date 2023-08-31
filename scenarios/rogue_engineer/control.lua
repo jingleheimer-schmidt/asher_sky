@@ -1329,14 +1329,6 @@ end
 local function replenish_arena_enemies()
     local arena_surface = game.surfaces.arena
     local enemies = {
-        -- "small-biter",
-        -- "small-spitter",
-        -- "medium-biter",
-        -- "medium-spitter",
-        -- "big-biter",
-        -- "big-spitter",
-        -- "behemoth-biter",
-        -- "behemoth-spitter",
         "small-worm-turret",
         "medium-worm-turret",
         "big-worm-turret",
