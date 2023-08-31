@@ -285,7 +285,7 @@ local function create_lobby_text()
     }
 end
 
-local function update_lobby_text()
+local function update_lobby_starting_ability_text()
     local lobby_text = global.lobby_text
     local starting_abilities = lobby_text.starting_abilities
     for ability_number, render_id in pairs(starting_abilities) do
@@ -295,8 +295,9 @@ local function update_lobby_text()
     end
 end
 
-local function initialize_lobby()
-    local lobby_surface = game.surfaces.lobby
+---@param lobby_surface LuaSurface?
+local function initialize_lobby(lobby_surface)
+    lobby_surface = lobby_surface or game.surfaces.lobby
     if not global.lobby_text then
         create_lobby_text()
     end
@@ -398,7 +399,7 @@ return {
     update_lobby_tiles = update_lobby_tiles,
     create_lobby_text = create_lobby_text,
     initialize_lobby = initialize_lobby,
-    update_lobby_text = update_lobby_text,
+    update_lobby_starting_ability_text = update_lobby_starting_ability_text,
     update_player_starting_ability = update_player_starting_ability,
     update_lobby_starting_ability = update_lobby_starting_ability,
     update_arena_difficulty = update_arena_difficulty,

@@ -21,7 +21,7 @@ local lobby_util = require("lobby_util")
 local update_lobby_tiles = lobby_util.update_lobby_tiles
 local reset_lobby_tiles = lobby_util.reset_lobby_tiles
 local create_lobby_text = lobby_util.create_lobby_text
-local update_lobby_text = lobby_util.update_lobby_text
+local update_lobby_starting_ability_text = lobby_util.update_lobby_starting_ability_text
 local initialize_lobby = lobby_util.initialize_lobby
 local update_player_starting_ability = lobby_util.update_player_starting_ability
 local update_arena_difficulty = lobby_util.update_arena_difficulty
@@ -1719,7 +1719,7 @@ local function on_tick(event)
             global.kpm_counter_render_ids = nil
             game.forces.player.reset()
             randomize_starting_abilities()
-            update_lobby_text()
+            update_lobby_starting_ability_text()
             update_statistics()
             destroy_arena_enemies()
         end
