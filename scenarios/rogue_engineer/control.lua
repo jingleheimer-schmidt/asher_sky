@@ -114,7 +114,7 @@ local function on_init()
         -- gun_turret = true,
         shotgun = true,
         barrier = true,
-        purifying_light = true,
+        -- purifying_light = true,
         crystal_blossom = true,
     }
     global.default_abilities = {
