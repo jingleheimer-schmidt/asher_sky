@@ -1699,7 +1699,7 @@ local function on_tick(event)
         end
         local all_players_dead = true
         for _, player in pairs(connected_players) do
-            if not (player.controller_type == defines.controllers.spectator) then
+            if player.controller_type ~= defines.controllers.spectator then
                 all_players_dead = false
             end
             if player.controller_type == defines.controllers.ghost then
