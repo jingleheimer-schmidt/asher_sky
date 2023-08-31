@@ -1608,9 +1608,6 @@ local function on_tick(event)
                 local arena_gui = player.gui.screen.arena_gui
                 local player_stats = global.statistics[player_index]
                 if game.tick % 30 == 0 then
-                    -- update_kpm_counter_rendering(player_index, character)
-                    -- update_arena_clock_rendering(player_index, character)
-                    -- update_lives_remaining_rendering(player_index, character)
                     local kpm = calculate_kills_per_minute(player_index)
                     update_kpm_statistics(player_index, kpm)
                     update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
