@@ -9,6 +9,7 @@ local bottom_right_offset = constants.bottom_right_offset
 local bottom_left_offset = constants.bottom_left_offset
 local top_left_offset = constants.top_left_offset
 local raw_abilities_data = constants.ability_data
+
 local general_util = require("general_util")
 local random_table_key = general_util.random_table_key
 
