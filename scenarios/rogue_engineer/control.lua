@@ -1493,36 +1493,6 @@ local function on_tick(event)
             end
             local x = position.x
             local y = position.y
-            local boundaries = {
-                easy = {
-                    x = { min = -10, max = -4 },
-                    y = { min = -10, max = -6 },
-                },
-                normal = {
-                    x = { min = -3, max = 3 },
-                    y = { min = -10, max = -6 },
-                },
-                hard = {
-                    x = { min = 4, max = 10 },
-                    y = { min = -10, max = -6 },
-                },
-                ability_1 = {
-                    x = { min = -10, max = -4 },
-                    y = { min = 6, max = 10 },
-                },
-                ability_2 = {
-                    x = { min = -3, max = 3 },
-                    y = { min = 6, max = 10 },
-                },
-                ability_3 = {
-                    x = { min = 4, max = 10 },
-                    y = { min = 6, max = 10 },
-                },
-                start = {
-                    x = { min = 18, max = 24 },
-                    y = { min = -3, max = 3 },
-                },
-            }
             if y < -6 and y > -10 then
                 if x < -4 and x > -10 then
                     if not (lobby_options.difficulty == "easy") then
