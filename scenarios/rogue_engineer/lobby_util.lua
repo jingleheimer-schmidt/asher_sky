@@ -312,7 +312,7 @@ end
 
 ---@param ability_name string
 ---@param player LuaPlayer
-local function set_ability(ability_name, player)
+local function update_player_starting_ability(ability_name, player)
     global.player_data = global.player_data or {} --[[@type table<uint, player_data>]]
     local raw_data = raw_abilities_data[ability_name]
     global.player_data[player.index] = {
@@ -346,7 +346,7 @@ end
 
 ---@param ability_number string
 ---@param player LuaPlayer
-local function set_starting_ability(ability_number, player)
+local function update_lobby_starting_ability(ability_number, player)
     local character = player.character
     if not character then return end
     local ratio = character.get_health_ratio()
@@ -354,7 +354,7 @@ local function set_starting_ability(ability_number, player)
         character.health = player.character.prototype.max_health
         global.lobby_options.starting_ability = ability_number
         local ability_name = global.default_abilities[ability_number]
-        set_ability(ability_name, player)
+            update_player_starting_ability(ability_name, connected_player)
         update_lobby_tiles()
     else
         character.health = character.health - character.prototype.max_health / 90
@@ -397,8 +397,8 @@ return {
     create_lobby_text = create_lobby_text,
     initialize_lobby = initialize_lobby,
     update_lobby_text = update_lobby_text,
-    set_ability = set_ability,
-    set_starting_ability = set_starting_ability,
+    update_player_starting_ability = update_player_starting_ability,
+    update_lobby_starting_ability = update_lobby_starting_ability,
     update_arena_difficulty = update_arena_difficulty,
     randomize_starting_abilities = randomize_starting_abilities,
 }

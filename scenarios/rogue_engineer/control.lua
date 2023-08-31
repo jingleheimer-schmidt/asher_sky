@@ -23,9 +23,9 @@ local reset_lobby_tiles = lobby_util.reset_lobby_tiles
 local create_lobby_text = lobby_util.create_lobby_text
 local update_lobby_text = lobby_util.update_lobby_text
 local initialize_lobby = lobby_util.initialize_lobby
-local set_ability = lobby_util.set_ability
+local update_player_starting_ability = lobby_util.update_player_starting_ability
 local update_arena_difficulty = lobby_util.update_arena_difficulty
-local set_starting_ability = lobby_util.set_starting_ability
+local update_lobby_starting_ability = lobby_util.update_lobby_starting_ability
 local randomize_starting_abilities = lobby_util.randomize_starting_abilities
 
 local statistics_util = require("statistics_util")
@@ -1301,7 +1301,7 @@ end
 local function initialize_player_data(player)
     local starting_ability = global.lobby_options.starting_ability
     local ability_name = global.default_abilities[starting_ability]
-    set_ability(ability_name, player)
+    update_player_starting_ability(ability_name, player)
     initialize_player_statistics(player.index)
 end
 
@@ -1512,15 +1512,15 @@ local function on_tick(event)
             elseif y < 10 and y > 6 then
                 if x < -4 and x > -10 then
                     if not (lobby_options.starting_ability == "ability_1") then
-                        set_starting_ability("ability_1", player)
+                        update_lobby_starting_ability("ability_1", player)
                     end
                 elseif x < 3 and x > -3 then
                     if not (lobby_options.starting_ability == "ability_2") then
-                        set_starting_ability("ability_2", player)
+                        update_lobby_starting_ability("ability_2", player)
                     end
                 elseif x < 10 and x > 4 then
                     if not (lobby_options.starting_ability == "ability_3") then
-                        set_starting_ability("ability_3", player)
+                        update_lobby_starting_ability("ability_3", player)
                     end
                 else
                     reset_health(player)
