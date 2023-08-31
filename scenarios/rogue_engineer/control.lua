@@ -23,7 +23,7 @@ local reset_lobby_tiles = lobby_util.reset_lobby_tiles
 local create_lobby_text = lobby_util.create_lobby_text
 local update_lobby_starting_ability_text = lobby_util.update_lobby_starting_ability_text
 local initialize_lobby_text_and_tiles = lobby_util.initialize_lobby_text_and_tiles
-local update_player_starting_ability = lobby_util.update_player_starting_ability
+local reset_player_starting_ability = lobby_util.reset_player_starting_ability
 local update_arena_difficulty = lobby_util.update_arena_difficulty
 local update_lobby_starting_ability = lobby_util.update_lobby_starting_ability
 local randomize_starting_abilities = lobby_util.randomize_starting_abilities
@@ -1304,11 +1304,10 @@ local function reset_player_health(player)
 end
 
 ---@param player LuaPlayer
-local function initialize_player_data(player)
+local function reset_player_ability_data(player)
     local starting_ability = global.lobby_options.starting_ability
     local ability_name = global.default_abilities[starting_ability]
-    update_player_starting_ability(ability_name, player)
-    initialize_player_statistics(player.index)
+    reset_player_starting_ability(ability_name, player)
 end
 
 local function create_arena_surface()
@@ -1493,7 +1492,7 @@ local function on_tick(event)
             end
             local lobby_options = global.lobby_options
             if not global.player_data[player.index] then
-                initialize_player_data(player)
+                reset_player_ability_data(player)
             end
             local character = valid_player_character(player)
             if character then
@@ -1534,7 +1533,7 @@ local function on_tick(event)
                     end
                 elseif y < 3 and y > -3 then
                     if x < 24 and x > 18 then
-                        initialize_player_data(player)
+                        reset_player_ability_data(player)
                         enter_arena()
                     else
                         reset_character_health(character)
@@ -1557,7 +1556,7 @@ local function on_tick(event)
 
     for _, player in pairs(connected_players) do
         local player_index = player.index
-        global.player_data[player_index] = global.player_data[player_index] or initialize_player_data(player)
+        global.player_data[player_index] = global.player_data[player_index] or reset_player_ability_data(player)
         local player_data = global.player_data[player_index]
         for ability_name, ability_data in pairs(player_data.abilities) do
             if (((event.tick + (player_index * 25)) % ability_data.cooldown) == 0) then
@@ -1717,7 +1716,7 @@ local function on_tick(event)
                 player.teleport({x = -20, y = 0}, "lobby")
                 player.set_controller{type = defines.controllers.god}
                 local character = player.create_character() and player.character
-                initialize_player_data(player)
+                reset_player_ability_data(player)
                 destroy_arena_gui(player)
             end
             global.game_state = "lobby"

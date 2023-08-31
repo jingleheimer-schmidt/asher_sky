@@ -317,7 +317,7 @@ end
 
 ---@param ability_name string
 ---@param player LuaPlayer
-local function update_player_starting_ability(ability_name, player)
+local function reset_player_starting_ability(ability_name, player)
     global.player_data = global.player_data or {} --[[@type table<uint, player_data>]]
     local raw_data = raw_abilities_data[ability_name]
     global.player_data[player.index] = {
@@ -360,7 +360,7 @@ local function update_lobby_starting_ability(ability_number, player)
         global.lobby_options.starting_ability = ability_number
         local ability_name = global.default_abilities[ability_number]
         for _, connected_player in pairs(game.connected_players) do
-            update_player_starting_ability(ability_name, connected_player)
+            reset_player_starting_ability(ability_name, connected_player)
         end
         update_lobby_tiles()
     else
@@ -404,7 +404,7 @@ return {
     create_lobby_text = create_lobby_text,
     initialize_lobby_text_and_tiles = initialize_lobby_text_and_tiles,
     update_lobby_starting_ability_text = update_lobby_starting_ability_text,
-    update_player_starting_ability = update_player_starting_ability,
+    reset_player_starting_ability = reset_player_starting_ability,
     update_lobby_starting_ability = update_lobby_starting_ability,
     update_arena_difficulty = update_arena_difficulty,
     randomize_starting_abilities = randomize_starting_abilities,
