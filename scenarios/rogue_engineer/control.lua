@@ -22,7 +22,7 @@ local update_lobby_tiles = lobby_util.update_lobby_tiles
 local reset_lobby_tiles = lobby_util.reset_lobby_tiles
 local create_lobby_text = lobby_util.create_lobby_text
 local update_lobby_starting_ability_text = lobby_util.update_lobby_starting_ability_text
-local initialize_lobby = lobby_util.initialize_lobby
+local initialize_lobby_text_and_tiles = lobby_util.initialize_lobby_text_and_tiles
 local update_player_starting_ability = lobby_util.update_player_starting_ability
 local update_arena_difficulty = lobby_util.update_arena_difficulty
 local update_lobby_starting_ability = lobby_util.update_lobby_starting_ability
@@ -1477,7 +1477,7 @@ local function on_tick(event)
     if game_state == "lobby" then
 
         local lobby_surface = game.surfaces.lobby
-        initialize_lobby()
+        initialize_lobby_text_and_tiles()
         for _, player in pairs(connected_players) do
             local position = player.position
             if not (player.surface_index == lobby_surface.index) then

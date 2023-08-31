@@ -300,7 +300,7 @@ local function update_lobby_starting_ability_text()
 end
 
 ---@param lobby_surface LuaSurface?
-local function initialize_lobby(lobby_surface)
+local function initialize_lobby_text_and_tiles(lobby_surface)
     lobby_surface = lobby_surface or game.surfaces.lobby
     if not global.lobby_text then
         create_lobby_text()
@@ -402,7 +402,7 @@ return {
     reset_lobby_tiles = reset_lobby_tiles,
     update_lobby_tiles = update_lobby_tiles,
     create_lobby_text = create_lobby_text,
-    initialize_lobby = initialize_lobby,
+    initialize_lobby_text_and_tiles = initialize_lobby_text_and_tiles,
     update_lobby_starting_ability_text = update_lobby_starting_ability_text,
     update_player_starting_ability = update_player_starting_ability,
     update_lobby_starting_ability = update_lobby_starting_ability,
