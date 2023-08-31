@@ -615,6 +615,7 @@ local function new_attempt_stats_reset(player_index)
     end
 end
 
+---@param player_index uint
 local function reset_player_statistics_data(player_index)
     global.statistics = global.statistics or {} --[[@type table<uint, player_statistics>]]
     global.statistics[player_index] = {
