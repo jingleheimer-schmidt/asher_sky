@@ -1,5 +1,5 @@
 
-local function update_statistics()
+local function update_lobby_statistics_renderings()
     local players = game.players
     local statistics = global.statistics --[[@type table<uint, player_statistics>]]
     local render_ids = global.statistics_render_ids
@@ -599,7 +599,7 @@ local function initialize_statistics_rendering_ids()
 end
 
 ---@param player_index uint
-local function new_attempt_stats_reset(player_index)
+local function increase_arena_attempts_statistics_data(player_index)
     global.statistics = global.statistics or {}
     local player_stats = global.statistics[player_index] --[[@type player_statistics]]
     if player_stats then
@@ -669,9 +669,9 @@ local function update_kpm_statistics(player_index, kills_per_minute)
 end
 
 return {
-    update_statistics = update_statistics,
+    update_statistics = update_lobby_statistics_renderings,
     initialize_statistics = initialize_statistics_rendering_ids,
-    new_attempt_stats_reset = new_attempt_stats_reset,
+    reset_last_attempt_statistics_data = reset_last_attempt_statistics_data,
     reset_player_statistics_data = reset_player_statistics_data,
     calculate_kills_per_minute = calculate_kills_per_minute,
     update_kpm_statistics = update_kpm_statistics,
