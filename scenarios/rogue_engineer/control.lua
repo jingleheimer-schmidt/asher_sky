@@ -14,8 +14,7 @@ local bottom_left_offset = constants.bottom_left_offset
 local top_left_offset = constants.top_left_offset
 local walkway_tiles = constants.walkway_tiles
 local raw_abilities_data = constants.ability_data
-
-local aoe_damage_modifier = 20
+local aoe_damage_modifier = constants.aoe_damage_modifier
 
 local lobby_util = require("lobby_util")
 local update_lobby_tiles = lobby_util.update_lobby_tiles

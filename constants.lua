@@ -1,4 +1,6 @@
 
+local aoe_damage_modifier = 20
+
 local tile_tiers_by_name = {
     ["stone-path"] = 1,
     ["concrete"] = 2,
@@ -1011,4 +1013,5 @@ return {
     top_left_offset = top_left_offset,
     difficulty_tile_names = difficulty_tile_names,
     walkway_tiles = walkway_tiles,
+    aoe_damage_modifier = aoe_damage_modifier,
 }
