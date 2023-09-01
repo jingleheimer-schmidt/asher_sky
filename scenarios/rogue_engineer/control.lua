@@ -1309,6 +1309,7 @@ local function reset_player_ability_data(player)
     local starting_ability = global.lobby_options.starting_ability
     local ability_name = global.default_abilities[starting_ability]
     reset_player_starting_ability(ability_name, player)
+    -- initialize_player_statistics(player.index)
 end
 
 local function create_arena_surface()
