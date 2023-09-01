@@ -1659,7 +1659,7 @@ local function on_tick(event)
                     spawn_level_appropriate_enemy(player)
                 end
 
-                local position = player.position
+                local position = character.position
                 global.previous_positions = global.previous_positions or {}
                 global.previous_positions[player_index] = global.previous_positions[player_index] or position
                 local previous_position = global.previous_positions[player_index]
