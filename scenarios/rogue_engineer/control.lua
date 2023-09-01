@@ -1198,14 +1198,15 @@ local function upgrade_damage_bonuses(level_threshold)
             local force = game.forces.player
             for i = 1, math.ceil(arena_minutes / modifier) do
                 for name, _ in pairs(technologies) do
+                    local force_technologies = force.technologies
                     local tech_name = name .. math.min(i, 7)
-                    local technology = force.technologies[tech_name]
+                    local technology = force_technologies[tech_name]
                     if not technology then break end
                     local prerequisites = technology.prerequisites
                     for _, prerequisite in pairs(prerequisites) do
-                        force.technologies[prerequisite.name].researched = true
+                        force_technologies[prerequisite.name].researched = true
                     end
-                    force.technologies[tech_name].researched = true
+                    force_technologies[tech_name].researched = true
                 end
             end
         end
