@@ -1470,7 +1470,9 @@ local function on_player_joined_game(event)
     --     initialize_player_data(player)
     -- end
     if game_state == "lobby" then
-        player.teleport({x = -20, y = 0}, "lobby")
+        local position = {x = -20, y = 0}
+        position = game.surfaces.lobby.find_non_colliding_position("character", position, 100, 1) or position
+        player.teleport(position, "lobby")
     elseif game_state == "arena" then
         local character = valid_player_character(player)
         player.set_controller{type = defines.controllers.spectator}
@@ -1723,7 +1725,9 @@ local function on_tick(event)
         end
         if all_players_dead then
             for _, player in pairs(connected_players) do
-                player.teleport({x = -20, y = 0}, "lobby")
+                local position = {x = -20, y = 0}
+                position = game.surfaces.lobby.find_non_colliding_position("character", position, 100, 1) or position
+                player.teleport(position, "lobby")
                 player.set_controller{type = defines.controllers.god}
                 local character = player.create_character() and player.character
                 reset_player_ability_data(player)
