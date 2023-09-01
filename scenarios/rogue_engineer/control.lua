@@ -31,6 +31,7 @@ local randomize_starting_abilities = lobby_util.randomize_starting_abilities
 local statistics_util = require("statistics_util")
 local update_statistics = statistics_util.update_statistics
 local initialize_statistics = statistics_util.initialize_statistics
+local increase_arena_attempts_statistics_data = statistics_util.increase_arena_attempts_statistics_data
 local new_attempt_stats_reset = statistics_util.reset_last_attempt_statistics_data
 local reset_player_statistics_data = statistics_util.reset_player_statistics_data
 local calculate_kills_per_minute = statistics_util.calculate_kills_per_minute
@@ -1404,6 +1405,7 @@ local function enter_arena()
                 player.teleport(position, "arena")
                 player.character_running_speed_modifier = 0.4
                 new_attempt_stats_reset(player.index)
+                increase_arena_attempts_statistics_data(player_index)
                 create_arena_gui(player)
                 local abilities = global.player_data[player.index].abilities
                 for _, ability_data in pairs(abilities) do

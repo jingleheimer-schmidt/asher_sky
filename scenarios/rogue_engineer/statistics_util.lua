@@ -604,7 +604,9 @@ local function increase_arena_attempts_statistics_data(player_index)
     local player_stats = global.statistics[player_index] --[[@type player_statistics]]
     if player_stats then
         player_stats.total.attempts = player_stats.total.attempts + 1
-        player_stats.last_attempt.attempts = 1
+        player_stats.last_attempt.attempts = player_stats.last_attempt.attempts + 1
+    end
+end
         player_stats.last_attempt.kills = 0
         player_stats.last_attempt.deaths = 0
         player_stats.last_attempt.damage_dealt = 0
@@ -671,6 +673,7 @@ end
 return {
     update_statistics = update_lobby_statistics_renderings,
     initialize_statistics = initialize_statistics_rendering_ids,
+    increase_arena_attempts_statistics_data = increase_arena_attempts_statistics_data,
     reset_last_attempt_statistics_data = reset_last_attempt_statistics_data,
     reset_player_statistics_data = reset_player_statistics_data,
     calculate_kills_per_minute = calculate_kills_per_minute,
