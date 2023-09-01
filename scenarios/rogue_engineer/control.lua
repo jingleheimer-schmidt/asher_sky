@@ -1405,10 +1405,11 @@ local function enter_arena()
                 position = position or {x = player.index * 2, y = 0}
                 player.teleport(position, "arena")
                 player.character_running_speed_modifier = 0.4
+                local player_index = player.index
                 new_attempt_stats_reset(player.index)
                 increase_arena_attempts_statistics_data(player_index)
                 create_arena_gui(player)
-                local abilities = global.player_data[player.index].abilities
+                local abilities = global.player_data[player_index].abilities
                 for _, ability_data in pairs(abilities) do
                     activate_ability(ability_data, player, player.character)
                 end
