@@ -201,6 +201,7 @@ end
 local function update_arena_gui(player)
     local arena_gui = player.gui.screen.arena_gui
     local player_stats = global.statistics and global.statistics[player.index]
+    if not arena_gui or not player_stats then return end
     update_arena_gui_kills(player, arena_gui, player_stats)
     update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
     update_arena_gui_time_remaining(player, arena_gui, player_stats)
