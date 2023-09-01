@@ -3,8 +3,8 @@ local function update_lobby_statistics_renderings()
     local players = game.players
     local statistics = global.statistics --[[@type table<uint, player_statistics>]]
     local render_ids = global.statistics_render_ids
-    local player_total_scores = {}
-    local player_last_scores = {}
+    local player_total_scores = {} --[[@type table<uint, uint>]]
+    local player_last_scores = {} --[[@type table<uint, uint>]]
     for _, player in pairs(players) do
         local player_index = player.index
         local player_stats = statistics[player_index]
@@ -13,8 +13,8 @@ local function update_lobby_statistics_renderings()
         local last_score = (player_stats.last_attempt.kills / (player_stats.last_attempt.deaths + 1)) * (player_stats.last_attempt.victories + 1 / (player_stats.last_attempt.attempts + 1))
         player_last_scores[player_index] = last_score
     end
-    local sorted_total_scores = {}
-    local sorted_last_scores = {}
+    local sorted_total_scores = {} --[[@type table<{player_index: uint, score: uint}[]>]]
+    local sorted_last_scores = {} --[[@type table<{player_index: uint, score: uint}[]>]]
     for player_index, score in pairs(player_total_scores) do
         table.insert(sorted_total_scores, {player_index = player_index, score = score})
     end
