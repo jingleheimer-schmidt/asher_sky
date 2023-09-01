@@ -53,6 +53,7 @@ local degrees_to_radians = general_util.degrees_to_radians
 local arena_ticks_remaining = general_util.arena_ticks_remaining
 local arena_ticks_elapsed = general_util.arena_ticks_elapsed
 local distance = general_util.distance
+local filter_valid_entities = general_util.filter_valid_entities
 
 local gooey_util = require("gooey_util")
 local create_arena_gui = gooey_util.create_arena_gui
@@ -134,17 +135,6 @@ local function on_init()
         normal = 60 * 60 * 11,
         hard = 60 * 60 * 15,
     }
-end
-
----@param entities LuaEntity[]
----@return LuaEntity[]
-local function filter_valid_entities(entities)
-    for id, entity in pairs(entities) do
-        if not entity.valid then
-            entities[id] = nil
-        end
-    end
-    return entities
 end
 
 local function register_burn_zone(ability_name, position, player, final_tick)

@@ -124,6 +124,17 @@ local function distance(position_1, position_2)
     return math.sqrt(x * x + y * y)
 end
 
+---@param entities LuaEntity[]
+---@return LuaEntity[]
+local function filter_valid_entities(entities)
+    for id, entity in pairs(entities) do
+        if not entity.valid then
+            entities[id] = nil
+        end
+    end
+    return entities
+end
+
 return {
     rotate_orientation = rotate_orientation,
     normalize_degrees = normalize_degrees,
@@ -140,4 +151,5 @@ return {
     arena_ticks_remaining = arena_ticks_remaining,
     arena_ticks_elapsed = arena_ticks_elapsed,
     distance = distance,
+    filter_valid_entities = filter_valid_entities,
 }
