@@ -29,8 +29,8 @@ local update_lobby_starting_ability = lobby_util.update_lobby_starting_ability
 local randomize_starting_abilities = lobby_util.randomize_starting_abilities
 
 local statistics_util = require("statistics_util")
-local update_statistics = statistics_util.update_statistics
-local initialize_statistics = statistics_util.initialize_statistics
+local update_lobby_statistics_renderings = statistics_util.update_lobby_statistics_renderings
+local initialize_statistics_render_ids = statistics_util.initialize_statistics_rendering_ids
 local increase_arena_attempts_statistics_data = statistics_util.increase_arena_attempts_statistics_data
 local new_attempt_stats_reset = statistics_util.reset_last_attempt_statistics_data
 local reset_player_statistics_data = statistics_util.reset_player_statistics_data
@@ -1456,7 +1456,7 @@ local function on_entity_color_changed(event)
     local entity = event.entity
     if entity.type == "character" then
         if entity.player then
-            update_statistics()
+            update_lobby_statistics_renderings()
         end
     end
 end
@@ -1469,7 +1469,7 @@ local function update_statistics_colors()
         local old = global.player_chat_colors[index]
         if old then
             if not ((new.r == old.r) and (new.g == old.g) and (new.b == old.b)) then
-                update_statistics()
+                update_lobby_statistics_renderings()
             end
         end
         global.player_chat_colors[index] = new
@@ -1540,8 +1540,8 @@ local function on_tick(event)
             if not global.player_data[player_index] then
                 reset_player_ability_data(player)
                 reset_player_statistics_data(player_index)
-                initialize_statistics()
-                update_statistics()
+                initialize_statistics_render_ids()
+                update_lobby_statistics_renderings()
             end
             local character = valid_player_character(player)
             if character then
@@ -1592,7 +1592,7 @@ local function on_tick(event)
                 end
             end
         end
-        initialize_statistics()
+        initialize_statistics_render_ids()
         if game_tick % (60 * 25) == 0 then
             respawn_lobby_practice_enemy()
         end
@@ -1609,8 +1609,8 @@ local function on_tick(event)
         if not global.player_data[player_index] then
             reset_player_ability_data(player)
             reset_player_statistics_data(player_index)
-            initialize_statistics()
-            update_statistics()
+            initialize_statistics_render_ids()
+            update_lobby_statistics_renderings()
         end
         local player_data = global.player_data[player_index]
         for ability_name, ability_data in pairs(player_data.abilities) do
@@ -1797,7 +1797,7 @@ local function on_tick(event)
             game.forces.player.reset()
             randomize_starting_abilities()
             update_lobby_starting_ability_text()
-            update_statistics()
+            update_lobby_statistics_renderings()
             destroy_arena_enemies()
         end
     end

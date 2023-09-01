@@ -102,7 +102,7 @@ local function update_lobby_statistics_renderings()
     end
 end
 
-local function initialize_statistics_rendering_ids()
+local function initialize_statistics_render_ids()
 
     local render_ids = global.statistics_render_ids
     if not render_ids then
@@ -679,8 +679,8 @@ local function update_kpm_statistics(player_index, kills_per_minute)
 end
 
 return {
-    update_statistics = update_lobby_statistics_renderings,
-    initialize_statistics = initialize_statistics_rendering_ids,
+    update_lobby_statistics_renderings = update_lobby_statistics_renderings,
+    initialize_statistics_rendering_ids = initialize_statistics_render_ids,
     increase_arena_attempts_statistics_data = increase_arena_attempts_statistics_data,
     reset_last_attempt_statistics_data = reset_last_attempt_statistics_data,
     reset_player_statistics_data = reset_player_statistics_data,
