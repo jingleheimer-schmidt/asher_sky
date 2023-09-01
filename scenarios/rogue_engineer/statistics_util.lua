@@ -16,10 +16,10 @@ local function update_lobby_statistics_renderings()
     local sorted_total_scores = {} --[[@type table<{player_index: uint, score: uint}[]>]]
     local sorted_last_scores = {} --[[@type table<{player_index: uint, score: uint}[]>]]
     for player_index, score in pairs(player_total_scores) do
-        table.insert(sorted_total_scores, {player_index = player_index, score = score})
+        table.insert(sorted_total_scores, 1, {player_index = player_index, score = score})
     end
     for player_index, score in pairs(player_last_scores) do
-        table.insert(sorted_last_scores, {player_index = player_index, score = score})
+        table.insert(sorted_last_scores, 1, {player_index = player_index, score = score})
     end
     table.sort(sorted_total_scores, function(a, b) return a.score > b.score end)
     table.sort(sorted_last_scores, function(a, b) return a.score > b.score end)
