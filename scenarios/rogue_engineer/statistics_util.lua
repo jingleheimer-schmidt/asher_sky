@@ -594,7 +594,7 @@ local function initialize_statistics_rendering_ids()
                 scale = 2,
             },
         }
-        update_statistics()
+        update_lobby_statistics_renderings()
     end
 end
 
