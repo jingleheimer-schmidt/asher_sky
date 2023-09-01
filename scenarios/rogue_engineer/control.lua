@@ -1503,8 +1503,12 @@ local function on_tick(event)
                 player.character_running_speed_modifier = 0.4
             end
             local lobby_options = global.lobby_options
-            if not global.player_data[player.index] then
+            local player_index = player.index
+            if not global.player_data[player_index] then
                 reset_player_ability_data(player)
+                reset_player_statistics_data(player_index)
+                initialize_statistics()
+                update_statistics()
             end
             local character = valid_player_character(player)
             if character then
@@ -1568,7 +1572,13 @@ local function on_tick(event)
 
     for _, player in pairs(connected_players) do
         local player_index = player.index
-        global.player_data[player_index] = global.player_data[player_index] or reset_player_ability_data(player)
+        global.player_data = global.player_data or {}
+        if not global.player_data[player_index] then
+            reset_player_ability_data(player)
+            reset_player_statistics_data(player_index)
+            initialize_statistics()
+            update_statistics()
+        end
         local player_data = global.player_data[player_index]
         for ability_name, ability_data in pairs(player_data.abilities) do
             if (((event.tick + (player_index * 25)) % ability_data.cooldown) == 0) then
