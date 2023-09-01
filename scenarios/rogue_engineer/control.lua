@@ -1362,19 +1362,50 @@ local function destroy_arena_enemies()
     end
 end
 
+---@param character LuaEntity
+---@return boolean
+local function character_is_standing_on_arena_entrance(character)
+    local position = character.position
+    local x = position.x
+    local y = position.y
+    if (y < 3 and y > -3) and (x < 24 and x > 18) then
+        return true
+    end
+    return false
+end
+
+---@param player LuaPlayer
+---@return boolean
+local function player_is_standing_on_arena_entrance(player)
+    local character = valid_player_character(player)
+    if character then
+        return character_is_standing_on_arena_entrance(character)
+    end
+    return false
+end
+
 local function enter_arena()
-    local all_players_ready = true
     local players = game.connected_players
+    local ready_players = {}
     for _, player in pairs(players) do
         local character = valid_player_character(player)
-        if character then
-            local x = character.position.x
-            local y = character.position.y
-            if not ((y < 3 and y > -3) and (x < 24 and x > 18)) then
-                all_players_ready = false
-            end
+        ready_players[player.index] = character and character_is_standing_on_arena_entrance(character)
+    end
+    local all_players_ready = false
+    for index, bool in pairs(ready_players) do
+        if bool then
+            all_players_ready = true
         else
             all_players_ready = false
+            break
+        end
+    end
+    if not all_players_ready then
+        for _, player in pairs(players) do
+            local character = valid_player_character(player)
+            if character and ready_players[player.index] then
+                reset_character_health(character)
+            end
         end
     end
     if all_players_ready then
