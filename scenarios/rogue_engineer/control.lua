@@ -1191,6 +1191,7 @@ local function upgrade_damage_bonuses(level_threshold)
             },
             [7] = {
                 ["weapon-shooting-speed-"] = true,
+                ["laser-shooting-speed-"] = true,
             },
         }
         local arena_minutes = arena_ticks_elapsed() / 60 / 60
@@ -1204,9 +1205,9 @@ local function upgrade_damage_bonuses(level_threshold)
                     if not technology then break end
                     local prerequisites = technology.prerequisites
                     for _, prerequisite in pairs(prerequisites) do
-                        force_technologies[prerequisite.name].researched = true
+                        prerequisite.researched = true
                     end
-                    force_technologies[tech_name].researched = true
+                    technology.researched = true
                 end
             end
         end
