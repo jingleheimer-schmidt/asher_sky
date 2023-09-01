@@ -1633,21 +1633,21 @@ local function on_tick(event)
             hard = 10,
         }
         for _, player in pairs(connected_players) do
+            local player_index = player.index
+            local arena_gui = player.gui.screen.arena_gui
+            local player_stats = global.statistics[player_index]
+            if game_tick % 30 == 0 then
+                local kpm = calculate_kills_per_minute(player_index)
+                update_kpm_statistics(player_index, kpm)
+                update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
+                update_arena_gui_time_remaining(player, arena_gui, player_stats)
+                update_arena_gui_lives_remaining(player, arena_gui, player_stats)
+            end
+            if game_tick % 5 == 0 then
+                update_arena_gui_kills(player, arena_gui, player_stats)
+            end
             local character = valid_player_character(player)
             if character then
-                local player_index = player.index
-                local arena_gui = player.gui.screen.arena_gui
-                local player_stats = global.statistics[player_index]
-                if game_tick % 30 == 0 then
-                    local kpm = calculate_kills_per_minute(player_index)
-                    update_kpm_statistics(player_index, kpm)
-                    update_arena_gui_kills_per_minute(player, arena_gui, player_stats)
-                    update_arena_gui_time_remaining(player, arena_gui, player_stats)
-                    update_arena_gui_lives_remaining(player, arena_gui, player_stats)
-                end
-                if game_tick % 5 == 0 then
-                    update_arena_gui_kills(player, arena_gui, player_stats)
-                end
                 local balance = difficulties[global.lobby_options.difficulty]
                 if game_tick % balance == 0 then
                     spawn_level_appropriate_enemy(player)
