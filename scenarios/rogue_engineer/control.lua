@@ -1621,6 +1621,19 @@ local function on_tick(event)
                 end
             end
         end
+        local character = valid_player_character(player)
+        if character then
+            rendering.draw_circle{
+                surface = character.surface,
+                target = character.position,
+                color = player.chat_color,
+                filled = true,
+                radius = 0.5,
+                time_to_live = 2,
+                draw_on_ground = true,
+                only_in_alt_mode = true,
+            }
+        end
     end
     for id, damage_zone in pairs(global.damage_zones) do
         local player = damage_zone.player
